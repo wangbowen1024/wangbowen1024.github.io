@@ -1,0 +1,326 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"><title>Hadoop学习笔记（五）HA | IT小王</title><meta name="description" content="Hadoop学习笔记（五）HA"><meta name="keywords" content="HA"><meta name="author" content="IT小王"><meta name="copyright" content="IT小王"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.svg"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin><link rel="preconnect" href="//busuanzi.ibruce.info"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Hadoop学习笔记（五）HA"><meta name="twitter:description" content="Hadoop学习笔记（五）HA"><meta name="twitter:image" content="https://wangbowen.cn/postImages/HadoopCover.jpg"><meta property="og:type" content="article"><meta property="og:title" content="Hadoop学习笔记（五）HA"><meta property="og:url" content="https://wangbowen.cn/2020/02/26/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89HA/"><meta property="og:site_name" content="IT小王"><meta property="og:description" content="Hadoop学习笔记（五）HA"><meta property="og:image" content="https://wangbowen.cn/postImages/HadoopCover.jpg"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>const autoChangeMode = 'false'
+var t = Cookies.get("theme");
+if (autoChangeMode == '1'){
+const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+const isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+const isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+if (t === undefined){
+  if (isLightMode) activateLightMode()
+  else if (isDarkMode) activateDarkMode()
+  else if (isNotSpecified || hasNoSupport){
+    console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+    now = new Date();
+    hour = now.getHours();
+    isNight = hour < 6 || hour >= 18
+    isNight ? activateDarkMode() : activateLightMode()
+}
+} else if (t == 'light') activateLightMode()
+else activateDarkMode()
+
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="https://wangbowen.cn/2020/02/26/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89HA/"><link rel="prev" title="Hive学习笔记" href="https://wangbowen.cn/2020/02/27/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><link rel="next" title="Hadoop学习笔记（四）数据的输入与输出" href="https://wangbowen.cn/2020/02/24/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%E6%95%B0%E6%8D%AE%E7%9A%84%E8%BE%93%E5%85%A5%E4%B8%8E%E8%BE%93%E5%87%BA/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.js" defer></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"ELVDUY5WGR","apiKey":"55783f8f2945106559981cc355ad5d57","indexName":"hexoSearch","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"http://wangbowen.cn/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    title: 'Snackbar.bookmark.title',
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"title":"Snackbar.bookmark.title","message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"top-center"},
+  baiduPush: false,
+  isHome: false,
+  isPost: true
+  
+}</script><meta name="generator" content="Hexo 4.2.0"></head><body><header> <div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">IT小王</a></span><span class="toggle-menu pull_right close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div></div></span><span class="pull_right" id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></span></div></header><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">37</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">23</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">28</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div></div></div><div id="mobile-sidebar-toc"><div class="toc_mobile_headline">目录</div><div class="sidebar-toc__content"><ol class="toc_mobile_items"><li class="toc_mobile_items-item toc_mobile_items-level-1"><a class="toc_mobile_items-link" href="#Hadoop学习笔记（五）HA"><span class="toc_mobile_items-text">Hadoop学习笔记（五）HA</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#一、简介"><span class="toc_mobile_items-text">一、简介</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#二、硬件资源"><span class="toc_mobile_items-text">二、硬件资源</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#三、部署HA"><span class="toc_mobile_items-text">三、部署HA</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#3-1-前期准备"><span class="toc_mobile_items-text">3.1 前期准备</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#3-2-配置XML（HDFS）"><span class="toc_mobile_items-text">3.2 配置XML（HDFS）</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#3-3-数据迁移"><span class="toc_mobile_items-text">3.3 数据迁移</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#四、管理命令"><span class="toc_mobile_items-text">四、管理命令</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#4-1-切换激活态"><span class="toc_mobile_items-text">4.1 切换激活态</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#4-2-切换待命态"><span class="toc_mobile_items-text">4.2 切换待命态</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#4-3-强行激活"><span class="toc_mobile_items-text">4.3 强行激活</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#4-4-模拟容灾"><span class="toc_mobile_items-text">4.4 模拟容灾</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#五、HA自动容灾"><span class="toc_mobile_items-text">五、HA自动容灾</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#5-1-介绍"><span class="toc_mobile_items-text">5.1 介绍</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#5-2-HDFS自动容灾"><span class="toc_mobile_items-text">5.2 HDFS自动容灾</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#5-3-RM自动容灾"><span class="toc_mobile_items-text">5.3 RM自动容灾</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#5-4-集群总结"><span class="toc_mobile_items-text">5.4 集群总结</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#集群规划情况"><span class="toc_mobile_items-text">集群规划情况</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#启动集群"><span class="toc_mobile_items-text">启动集群</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#关闭集群"><span class="toc_mobile_items-text">关闭集群</span></a></li></ol></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true">     </i><div class="auto_open" id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hadoop学习笔记（五）HA"><span class="toc-text">Hadoop学习笔记（五）HA</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、简介"><span class="toc-text">一、简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、硬件资源"><span class="toc-text">二、硬件资源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、部署HA"><span class="toc-text">三、部署HA</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-前期准备"><span class="toc-text">3.1 前期准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-配置XML（HDFS）"><span class="toc-text">3.2 配置XML（HDFS）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-数据迁移"><span class="toc-text">3.3 数据迁移</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、管理命令"><span class="toc-text">四、管理命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-切换激活态"><span class="toc-text">4.1 切换激活态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-切换待命态"><span class="toc-text">4.2 切换待命态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-强行激活"><span class="toc-text">4.3 强行激活</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-模拟容灾"><span class="toc-text">4.4 模拟容灾</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、HA自动容灾"><span class="toc-text">五、HA自动容灾</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-介绍"><span class="toc-text">5.1 介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-HDFS自动容灾"><span class="toc-text">5.2 HDFS自动容灾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-RM自动容灾"><span class="toc-text">5.3 RM自动容灾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-集群总结"><span class="toc-text">5.4 集群总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#集群规划情况"><span class="toc-text">集群规划情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#启动集群"><span class="toc-text">启动集群</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#关闭集群"><span class="toc-text">关闭集群</span></a></li></ol></li></ol></li></ol></li></ol></div></div></div><main id="content-outer"><div id="top-container" style="background-image: url(/postImages/HadoopCover.jpg)"><div id="post-info"><div id="post-title"><div class="posttitle">Hadoop学习笔记（五）HA</div></div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 发表于 2020-02-26<span class="post-meta__separator">|</span><i class="fa fa-history fa-fw" aria-hidden="true"></i> 更新于 2020-03-10</time><span class="post-meta__separator">|</span><span><i class="fa fa-inbox post-meta__icon fa-fw" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon fa-fw" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop/">Hadoop</a></span><div class="post-meta-wordcount"><div class="post-meta-pv-cv"><span><i class="fa fa-eye post-meta__icon fa-fw" aria-hidden="true"> </i>阅读量:</span><span id="busuanzi_value_page_pv"></span></div></div></div></div></div><div class="layout layout_post" id="content-inner">   <article id="post"><div class="article-container" id="post-content"><h1 id="Hadoop学习笔记（五）HA"><a href="#Hadoop学习笔记（五）HA" class="headerlink" title="Hadoop学习笔记（五）HA"></a>Hadoop学习笔记（五）HA</h1><h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><p>high availability（HA, 高可用)。之前我们的NameNode只有一个节点，这就容易造成单点故障，即NameNode一旦出现问题，整个集群将不可用。因此HA就显得重要了。它的特点：</p>
+<ol>
+<li>拥有两个名称节点，分别处于active（激活态）、standby（待命）。</li>
+<li>与客户端进行交互的只有处于active，standby不参与。</li>
+<li>两个节点都和 Journal Node（JN，存放编辑日志的节点）守护进程构成组的进行通信。</li>
+<li>同一时刻，只能有一个处于active。</li>
+<li>脑裂：即两个节点都是激活态（这是非常严重的）。为了防止脑裂,JNs只允许同一时刻只有一个节点向其写数据。容灾发生的时候，成为active的节点的namenode接管向jn写入的工作。</li>
+</ol>
+<h2 id="二、硬件资源"><a href="#二、硬件资源" class="headerlink" title="二、硬件资源"></a>二、硬件资源</h2><ol>
+<li><p>两个名称节点硬件配置要相同</p>
+</li>
+<li><p>JN节点：轻量级进程，至少3个节点，允许挂掉的节点数为（n - 2 ）/ 2。</p>
+<p>note：因为有了JN，不再需要运行辅助名称节点。</p>
+</li>
+</ol>
+<h2 id="三、部署HA"><a href="#三、部署HA" class="headerlink" title="三、部署HA"></a>三、部署HA</h2><h3 id="3-1-前期准备"><a href="#3-1-前期准备" class="headerlink" title="3.1 前期准备"></a>3.1 前期准备</h3><p>因为需要两个节点作为NameNode（而目前的规划是：名称节点 s201，数据节点 s202,s203,s204，辅助名称节点s206），我们知道在HA下，是不需要辅助名称节点的。因此，将s205作为另一台NameNode。</p>
+<p>目前只有s201可以SSH到其余所有节点，而s205同样也需要。</p>
+<ol>
+<li><p>s205生成SSH</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ssh-keygen -t rsa -P &#39;&#39; -f ~&#x2F;.ssh&#x2F;id_rsa</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>把公钥发送到s201</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s205 &#x2F;home&#x2F;wbw&#x2F;.ssh]$scp ~&#x2F;.ssh&#x2F;id_rsa.pub wbw@s201:&#x2F;home&#x2F;wbw&#x2F;.ssh&#x2F;id_rsa.pub.s205</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>在s201上将公钥分发到所有节点上，并追加到列表</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw&#x2F;.ssh]$xsync.sh id_rsa.pub.s205</span><br><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw&#x2F;.ssh]$xcall.sh &quot;cat &#x2F;home&#x2F;wbw&#x2F;.ssh&#x2F;id_rsa.pub.s205 &gt;&gt; &#x2F;home&#x2F;wbw&#x2F;.ssh&#x2F;authorized_keys&quot;</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>验证s201和s205是否可以SSH所有节点</p>
+</li>
+<li><p>记得把s201上的黑白名单也拷过去</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc]$scp dfs.hosts wbw@s205:&#x2F;soft&#x2F;hadoop&#x2F;etc&#x2F;dfs.hosts</span><br><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc]$scp dfs.hosts.exclude wbw@s205:&#x2F;soft&#x2F;hadoop&#x2F;etc&#x2F;dfs.hosts.exclude</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h3 id="3-2-配置XML（HDFS）"><a href="#3-2-配置XML（HDFS）" class="headerlink" title="3.2 配置XML（HDFS）"></a>3.2 配置XML（HDFS）</h3><ol>
+<li><p>在s201上，复制一份完全分布式full的配置，取名为ha</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc]$cp -r full ha</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>在ha中修改hdfs-site.xml配置文件信息（主要说明谁是NN谁是JN）</p>
+<ul>
+<li><p>配置nameservice</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.nameservices<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>mycluster<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>dfs.ha.namenodes.[nameservice ID]</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- myucluster下的名称节点两个id(只能有2个) --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.ha.namenodes.mycluster<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>nn1,nn2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>dfs.namenode.rpc-address.[nameservice ID].[name node ID] </p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置每个nn的rpc地址 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.rpc-address.mycluster.nn1<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s201:8020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.rpc-address.mycluster.nn2<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s205:8020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>dfs.namenode.http-address.[nameservice ID].[name node ID]</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置每个nn的webui端口 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.http-address.mycluster.nn1<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s201:9870<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.http-address.mycluster.nn2<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s205:9870<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>dfs.namenode.shared.edits.dir</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 名称节点共享编辑目录,即JN节点 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.shared.edits.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>qjournal://s202:8485;s203:8485;s204:8485/mycluster<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>dfs.client.failover.proxy.provider.[nameservice ID]</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- java类，client使用它判断哪个节点是激活态 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.client.failover.proxy.provider.mycluster<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>dfs.ha.fencing.methods</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 脚本列表或者java类，在容灾保护激活态的nn. --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.ha.fencing.methods<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span></span><br><span class="line">        sshfence</span><br><span class="line">        shell(/bin/true)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.ha.fencing.ssh.private-key-files<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/home/wbw/.ssh/id_rsa<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>dfs.journalnode.edits.dir</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置JN存放edit的本地路径 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.journalnode.edits.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/home/wbw/hadoop/journal<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ul>
+</li>
+</ol>
+<ol start="3">
+<li><p>在ha中修改core-site.xml配置文件信息（主要说明谁是NN谁是JN）</p>
+<ul>
+<li><p>配置hdfs文件系统名称服务</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://mycluster<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+</ul>
+</li>
+<li><p>最后将ha分发到所有节点上，并且把hadoop连接到ha</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc]$xsync.sh ha</span><br><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc]$xcall.sh &quot;ln -sfT &#x2F;soft&#x2F;hadoop&#x2F;etc&#x2F;ha &#x2F;soft&#x2F;hadoop&#x2F;etc&#x2F;hadoop&quot;</span><br><span class="line">查看是否成功</span><br><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc]$xcall.sh &quot;ls -al &#x2F;soft&#x2F;hadoop&#x2F;etc&#x2F;&quot;</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h3 id="3-3-数据迁移"><a href="#3-3-数据迁移" class="headerlink" title="3.3 数据迁移"></a>3.3 数据迁移</h3><ol>
+<li><p>停掉所有Hadoop进程</p>
+</li>
+<li><p>在JN节点（s202,s203,s204）上分别启动JN进程</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s202 &#x2F;home&#x2F;wbw]$hadoop-daemon.sh start journalnode</span><br><span class="line">[wbw@s203 &#x2F;home&#x2F;wbw]$hadoop-daemon.sh start journalnode</span><br><span class="line">[wbw@s204 &#x2F;home&#x2F;wbw]$hadoop-daemon.sh start journalnode</span><br></pre></td></tr></table></figure></div>
+
+<p><a href="/postImages/HA1.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HA1.png" class="lazyload"></a></p>
+</li>
+<li><p>启动jn之后，在两个NN之间进行disk元数据同步</p>
+<ul>
+<li><p>如果是全新集群，先format文件系统,只需要在一个nn上执行</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hadoop namenode -format</span><br></pre></td></tr></table></figure></div>
+
+<p>如果之前有数据，但是不想要了，想要一个全新的。那么就直接删除所有节点的日志和本地数据。然后执行该命令。（即全新，保证两个NN内容都是空的）</p>
+</li>
+<li><p>如果将非HA集群转换成HA集群，复制原NameNode的metadata到另一个nn</p>
+<ol>
+<li><p>到s201将元数据信息复制到s205</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw]$scp -r &#x2F;home&#x2F;wbw&#x2F;hadoop&#x2F;dfs wbw@s205:&#x2F;home&#x2F;wbw&#x2F;hadoop&#x2F;</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>在新的nn(未格式化的nn)【这里为s205】上运行一下命令，实现待命状态引导。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 需要s201的namenode为启动状态,提示是否格式化,选择N</span><br><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw]$hadoop-daemon.sh start namenode</span><br><span class="line">[wbw@s205 &#x2F;home&#x2F;wbw]$hdfs namenode -bootstrapStandby</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>在一个NN上执行以下命令，完成edit日志到jn节点的传输。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw]$hdfs namenode -initializeSharedEdits</span><br><span class="line"># 查看s202,s203，s204是否有edit数据.</span><br></pre></td></tr></table></figure></div>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>启动所有节点</p>
+<ul>
+<li><p>在s201</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$&gt;hadoop-daemon.sh start namenode		&#x2F;&#x2F;启动名称节点</span><br><span class="line">$&gt;hadoop-daemons.sh start datanode		&#x2F;&#x2F;启动所有数据节点</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>在s205</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$&gt;hadoop-daemon.sh start namenode		&#x2F;&#x2F;启动名称节点</span><br></pre></td></tr></table></figure></div>
+</li>
+</ul>
+</li>
+<li><p>查看web-UI（如果zookeeper没有配置，那么s201,s205将都出现standby）</p>
+</li>
+</ol>
+<h2 id="四、管理命令"><a href="#四、管理命令" class="headerlink" title="四、管理命令"></a>四、管理命令</h2><p>假如你没有配置zookeeper，这时候如果查看WEB-UI发现2个都是standby状态，说明不能自动切换现在，还需要ZK才可以自动。现在只能手动切换</p>
+<h3 id="4-1-切换激活态"><a href="#4-1-切换激活态" class="headerlink" title="4.1 切换激活态"></a>4.1 切换激活态</h3><p>$&gt;hdfs haadmin -transitionToActive nn1</p>
+<h3 id="4-2-切换待命态"><a href="#4-2-切换待命态" class="headerlink" title="4.2 切换待命态"></a>4.2 切换待命态</h3><p>$&gt;hdfs haadmin -transitionToStandby nn1</p>
+<h3 id="4-3-强行激活"><a href="#4-3-强行激活" class="headerlink" title="4.3 强行激活"></a>4.3 强行激活</h3><p>会出现2个active很危险！！！</p>
+<p>$&gt;hdfs haadmin -transitionToActive –forceactive nn2</p>
+<h3 id="4-4-模拟容灾"><a href="#4-4-模拟容灾" class="headerlink" title="4.4 模拟容灾"></a>4.4 模拟容灾</h3><p>模拟容灾演示,从nn1切换到nn2</p>
+<p>$&gt;hdfs haadmin -failover nn1 nn2</p>
+<h2 id="五、HA自动容灾"><a href="#五、HA自动容灾" class="headerlink" title="五、HA自动容灾"></a>五、HA自动容灾</h2><p>如果要实现自动容灾，那么请移步”ZooKeeper学习笔记“文章，先给集群装上zookeeper然后进行相应配置。</p>
+<p>【NOTE】如果你的zookeeper不够干净，即使用操作过。那么先进行清理操作：删除zookeeper数据目录中的版本信息verson目录。然后启动ZK集群。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 之前有对集群操作过，所以进行数据清理</span><br><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw&#x2F;zookeeper]$rm -r version-2&#x2F;</span><br><span class="line">[wbw@s202 &#x2F;home&#x2F;wbw&#x2F;zookeeper]$rm -r version-2&#x2F;</span><br><span class="line">[wbw@s203 &#x2F;home&#x2F;wbw&#x2F;zookeeper]$rm -r version-2&#x2F;</span><br><span class="line"># 开启所有ZK节点服务，查看内容是否清理干净。这里我用之前的测试类JAVAAPI来查看</span><br><span class="line">&#x2F;</span><br><span class="line">&#x2F;zookeeper</span><br><span class="line">&#x2F;zookeeper&#x2F;quota</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="5-1-介绍"><a href="#5-1-介绍" class="headerlink" title="5.1 介绍"></a>5.1 介绍</h3><p>自动容灾引入两个组件，zk quarum + zk容灾控制器(ZKFC)。</p>
+<p>运行NN的主机还要运行ZKFC进程，主要负责: </p>
+<pre><code>1. 健康监控
+2. session管理
+3. 选举</code></pre><h3 id="5-2-HDFS自动容灾"><a href="#5-2-HDFS自动容灾" class="headerlink" title="5.2 HDFS自动容灾"></a>5.2 HDFS自动容灾</h3><ol>
+<li><p>停掉所有进程</p>
+</li>
+<li><p>修改hdfs-site.xml</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">[wbw@s201 /soft/hadoop/etc/ha]$vi hdfs-site.xml</span><br><span class="line"># 添加如下内容</span><br><span class="line"><span class="comment">&lt;!-- 启动自动容灾 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.ha.automatic-failover.enabled<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>修改core-site.xml（我的zk集群规划为s201,s202,s203）</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"># 添加新内容</span><br><span class="line"><span class="comment">&lt;!-- 指定zk连接地址，s生产环境一般用IP --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>ha.zookeeper.quorum<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s201:2181,s202:2181,s203:2181<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>分发以上两个文件到所有节点</p>
+</li>
+<li><p>登录其中一台NN（s201），在ZK中初始化HA状态。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hdfs zkfc -formatZK</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>启动hdfs进程</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$start-dfs.sh</span><br><span class="line"></span><br><span class="line">Starting namenodes on [s201 s205]</span><br><span class="line">Starting datanodes</span><br><span class="line">Starting journal nodes [s202 s204 s203]</span><br><span class="line">Starting ZK Failover Controllers on NN hosts [s201 s205]</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>查看zookeeper会发现，多了以下内容</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;hadoop-ha</span><br><span class="line">&#x2F;hadoop-ha&#x2F;mycluster</span><br><span class="line">&#x2F;hadoop-ha&#x2F;mycluster&#x2F;ActiveBreadCrumb</span><br><span class="line">&#x2F;hadoop-ha&#x2F;mycluster&#x2F;ActiveStandbyElectorLock</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>查看WEB-UI，可以看到可以自动切换成active了</p>
+<p><a href="/postImages/AUTOHA1.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/AUTOHA1.png" class="lazyload"></a></p>
+<p><a href="/postImages/AUTOHA2.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/AUTOHA2.png" class="lazyload"></a></p>
+</li>
+<li><p>测试自动容灾（当前active在s201，则kill -9 掉s201的nn）</p>
+<p><a href="/postImages/AUTOHA3.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/AUTOHA3.png" class="lazyload"></a></p>
+<p>可以看到可以实现自动容灾了。</p>
+</li>
+</ol>
+<h3 id="5-3-RM自动容灾"><a href="#5-3-RM自动容灾" class="headerlink" title="5.3 RM自动容灾"></a>5.3 RM自动容灾</h3><p>resourcemanager的自动容灾也是需要zk来实现</p>
+<ol>
+<li><p>配置yarn-site.xml</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">xml</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">[wbw@s201 /soft/hadoop/etc/ha]$vi yarn-site.xml</span><br><span class="line"># 添加如下内容</span><br><span class="line"><span class="comment">&lt;!-- 开启yarn的HA --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.ha.enabled<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置名字ID --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.cluster-id<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>cluster1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.ha.rm-ids<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>rm1,rm2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置RM节点地址 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname.rm1<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s201<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname.rm2<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s205<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置RM，WEB-UI端口 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.webapp.address.rm1<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s201:8088<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.webapp.address.rm2<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s205:8088<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置ZK集群 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.zk-address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>s201:2181,s202:2181,s203:2181<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>分发到所有节点</p>
+</li>
+<li><p>启动yarn</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$start-yarn.sh</span><br><span class="line"></span><br><span class="line">Starting resourcemanagers on [ s201 s205]</span><br><span class="line">Starting nodemanagers</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>管理命令查看</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc&#x2F;ha]$yarn rmadmin -getServiceState rm1</span><br><span class="line">standby</span><br><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc&#x2F;ha]$yarn rmadmin -getServiceState rm2</span><br><span class="line">active</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>WEB-UI查看（IP:8088 –&gt; Aboute）</p>
+<p><a href="/postImages/AUTOHA4.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/AUTOHA4.png" class="lazyload"></a></p>
+<p><a href="/postImages/AUTOHA5.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/AUTOHA5.png" class="lazyload"></a></p>
+</li>
+<li><p>模拟容灾</p>
+<ul>
+<li><p>首先检查JPS是否2个节点上的RM进程都开启，如果没有，则进入相应节点上启动。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 启动单个RM节点</span><br><span class="line">$yarn-daemon.sh start resourcemanager</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>杀掉active的RM进程（这里是s205）</p>
+</li>
+<li><p>查看状态</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc&#x2F;ha]$yarn rmadmin -getServiceState rm1</span><br><span class="line">active</span><br></pre></td></tr></table></figure></div>
+
+<p>自动容灾成功。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-4-集群总结"><a href="#5-4-集群总结" class="headerlink" title="5.4 集群总结"></a>5.4 集群总结</h3><p>自此，应该可以说所有的相关设置都已经完成了。现在来总结下：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;soft&#x2F;hadoop&#x2F;etc&#x2F;ha]$xcall.sh jps</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; s201 : jps &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">2128 NameNode</span><br><span class="line">3412 Jps</span><br><span class="line">1913 DFSZKFailoverController</span><br><span class="line">1340 QuorumPeerMain</span><br><span class="line">2638 ResourceManager</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; s202 : jps &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">1728 NodeManager</span><br><span class="line">1419 DataNode</span><br><span class="line">1948 Jps</span><br><span class="line">1309 QuorumPeerMain</span><br><span class="line">1485 JournalNode</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; s203 : jps &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">1296 QuorumPeerMain</span><br><span class="line">1398 DataNode</span><br><span class="line">1465 JournalNode</span><br><span class="line">1707 NodeManager</span><br><span class="line">1934 Jps</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; s204 : jps &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">1861 Jps</span><br><span class="line">1337 DataNode</span><br><span class="line">1403 JournalNode</span><br><span class="line">1643 NodeManager</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; s205 : jps &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">1332 NameNode</span><br><span class="line">1396 DFSZKFailoverController</span><br><span class="line">2180 Jps</span><br><span class="line">2123 ResourceManager</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="集群规划情况"><a href="#集群规划情况" class="headerlink" title="集群规划情况"></a>集群规划情况</h4><p>HDFS</p>
+<ul>
+<li>NameNode：s201、s205</li>
+<li>DateNode：s202、s203、s204</li>
+</ul>
+<p>Yarn</p>
+<ul>
+<li>ResourceManager：s201、s205</li>
+<li>NodeManager：s202、s203、s204</li>
+</ul>
+<p>ZooKeeper</p>
+<ul>
+<li>DFSZKFailoverController(ZKFC)：s201、s205</li>
+<li>QuorumPeerMain：s201、s202、s203</li>
+</ul>
+<p>HA</p>
+<ul>
+<li>JournalNode：s202、s203、s204</li>
+</ul>
+<h4 id="启动集群"><a href="#启动集群" class="headerlink" title="启动集群"></a>启动集群</h4><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw]$zkServer.sh start</span><br><span class="line">[wbw@s202 &#x2F;home&#x2F;wbw]$zkServer.sh start</span><br><span class="line">[wbw@s203 &#x2F;home&#x2F;wbw]$zkServer.sh start</span><br><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw]$start-dfs.sh</span><br><span class="line">Starting namenodes on [s201 s205]</span><br><span class="line">Starting datanodes</span><br><span class="line">Starting journal nodes [s202 s204 s203]</span><br><span class="line">Starting ZK Failover Controllers on NN hosts [s201 s205]</span><br><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw]$start-yarn.sh</span><br><span class="line">Starting resourcemanagers on [ s201 s205]</span><br><span class="line">Starting nodemanagers</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="关闭集群"><a href="#关闭集群" class="headerlink" title="关闭集群"></a>关闭集群</h4><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw]$stop-yarn.sh</span><br><span class="line">Stopping nodemanagers</span><br><span class="line">Stopping resourcemanagers on [ s201 s205]</span><br><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw]$stop-dfs.sh</span><br><span class="line">Stopping namenodes on [s201 s205]</span><br><span class="line">Stopping datanodes</span><br><span class="line">Stopping journal nodes [s202 s204 s203]</span><br><span class="line">Stopping ZK Failover Controllers on NN hosts [s201 s205]</span><br><span class="line">[wbw@s201 &#x2F;home&#x2F;wbw]$zkServer.sh stop</span><br><span class="line">[wbw@s202 &#x2F;home&#x2F;wbw]$zkServer.sh stop</span><br><span class="line">[wbw@s203 &#x2F;home&#x2F;wbw]$zkServer.sh stop</span><br></pre></td></tr></table></figure></div>
+
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">IT小王</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://wangbowen.cn/2020/02/26/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89HA/">https://wangbowen.cn/2020/02/26/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89HA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wangbowen.cn">IT小王</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HA/">HA    </a></div><div class="post_share"><div class="social-share" data-image="/postImages/HadoopCover.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2020/02/27/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><img class="prev_cover lazyload" data-src="/postImages/HiveCover.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="label">上一篇</div><div class="prev_info"><span>Hive学习笔记</span></div></a></div><div class="next-post pull_right"><a href="/2020/02/24/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%E6%95%B0%E6%8D%AE%E7%9A%84%E8%BE%93%E5%85%A5%E4%B8%8E%E8%BE%93%E5%87%BA/"><img class="next_cover lazyload" data-src="/postImages/HadoopCover.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="label">下一篇</div><div class="next_info"><span>Hadoop学习笔记（四）数据的输入与输出</span></div></a></div></nav><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var notify = false == true ? true : false;
+var verify = false == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'iYYoev4NDSyr3HqlY1VVCTIV-gzGzoHsz',
+  appKey:'Hli8dWTFUKrXj9FnhnSQUvRe',
+  placeholder:'快来评论吖！ヾﾉ≧∀≦)o',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10',
+  lang:'en',
+  recordIP: true
+});</script></div></div></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2020 By IT小王</div><div class="framework-info"><span>驱动 </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="icp"><a href="http://www.beian.miit.gov.cn" target="_blank" rel="noopener"><img class="icp-icon" src="/img/icp.png"><span>闽ICP备18027071号-1</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script id="ribbon" src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/js/canvas-ribbon.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script id="canvas_nest" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/js/canvas-nest.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script><div class="search-dialog" id="algolia-search"><div class="search-dialog__title" id="algolia-search-title">Algolia</div><div id="algolia-input-panel"><div id="algolia-search-input"></div></div><hr><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-stats"></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

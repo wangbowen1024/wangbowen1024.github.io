@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"><title>CentOS7下FTP安装与配置 | IT小王</title><meta name="description" content="CentOS7下FTP安装与配置"><meta name="keywords" content="Linux"><meta name="author" content="IT小王"><meta name="copyright" content="IT小王"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.svg"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin><link rel="preconnect" href="//busuanzi.ibruce.info"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="CentOS7下FTP安装与配置"><meta name="twitter:description" content="CentOS7下FTP安装与配置"><meta name="twitter:image" content="https://wangbowen.cn/postImages/LinuxCover.jpg"><meta property="og:type" content="article"><meta property="og:title" content="CentOS7下FTP安装与配置"><meta property="og:url" content="https://wangbowen.cn/2020/03/11/CentOS7%E4%B8%8BFTP%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/"><meta property="og:site_name" content="IT小王"><meta property="og:description" content="CentOS7下FTP安装与配置"><meta property="og:image" content="https://wangbowen.cn/postImages/LinuxCover.jpg"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>const autoChangeMode = 'false'
+var t = Cookies.get("theme");
+if (autoChangeMode == '1'){
+const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+const isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+const isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+if (t === undefined){
+  if (isLightMode) activateLightMode()
+  else if (isDarkMode) activateDarkMode()
+  else if (isNotSpecified || hasNoSupport){
+    console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+    now = new Date();
+    hour = now.getHours();
+    isNight = hour < 6 || hour >= 18
+    isNight ? activateDarkMode() : activateLightMode()
+}
+} else if (t == 'light') activateLightMode()
+else activateDarkMode()
+
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="https://wangbowen.cn/2020/03/11/CentOS7%E4%B8%8BFTP%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/"><link rel="prev" title="HBase学习笔记" href="https://wangbowen.cn/2020/03/29/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><link rel="next" title="ZooKeeper学习笔记" href="https://wangbowen.cn/2020/03/07/ZooKeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.js" defer></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"ELVDUY5WGR","apiKey":"55783f8f2945106559981cc355ad5d57","indexName":"hexoSearch","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"http://wangbowen.cn/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    title: 'Snackbar.bookmark.title',
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"title":"Snackbar.bookmark.title","message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"top-center"},
+  baiduPush: false,
+  isHome: false,
+  isPost: true
+  
+}</script><meta name="generator" content="Hexo 4.2.0"></head><body><header> <div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">IT小王</a></span><span class="toggle-menu pull_right close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div></div></span><span class="pull_right" id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></span></div></header><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">37</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">23</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">28</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div></div></div><div id="mobile-sidebar-toc"><div class="toc_mobile_headline">目录</div><div class="sidebar-toc__content"><ol class="toc_mobile_items"><li class="toc_mobile_items-item toc_mobile_items-level-1"><a class="toc_mobile_items-link" href="#FTP安装与配置（虚拟用户）"><span class="toc_mobile_items-text">FTP安装与配置（虚拟用户）</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-1"><a class="toc_mobile_items-link" href="#FTP安装与配置【推荐】"><span class="toc_mobile_items-text">FTP安装与配置【推荐】</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#一、安装-vsftpd"><span class="toc_mobile_items-text">一、安装 vsftpd</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#二、配置-vsftpd"><span class="toc_mobile_items-text">二、配置 vsftpd</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#三、创建用户"><span class="toc_mobile_items-text">三、创建用户</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#四、防火墙设置"><span class="toc_mobile_items-text">四、防火墙设置</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#五、修改Selinux"><span class="toc_mobile_items-text">五、修改Selinux</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#六、登录"><span class="toc_mobile_items-text">六、登录</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#七、有效用户配置"><span class="toc_mobile_items-text">七、有效用户配置</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#八、其他操作"><span class="toc_mobile_items-text">八、其他操作</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#8-1-不受限目录用户设置"><span class="toc_mobile_items-text">8.1 不受限目录用户设置</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#8-2-设置匿名登录访问公共目录"><span class="toc_mobile_items-text">8.2 设置匿名登录访问公共目录</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#8-3-添加用户允许在公共目录上传文件"><span class="toc_mobile_items-text">8.3 添加用户允许在公共目录上传文件</span></a></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true">     </i><div class="auto_open" id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#FTP安装与配置（虚拟用户）"><span class="toc-text">FTP安装与配置（虚拟用户）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#FTP安装与配置【推荐】"><span class="toc-text">FTP安装与配置【推荐】</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、安装-vsftpd"><span class="toc-text">一、安装 vsftpd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、配置-vsftpd"><span class="toc-text">二、配置 vsftpd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、创建用户"><span class="toc-text">三、创建用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、防火墙设置"><span class="toc-text">四、防火墙设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、修改Selinux"><span class="toc-text">五、修改Selinux</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、登录"><span class="toc-text">六、登录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#七、有效用户配置"><span class="toc-text">七、有效用户配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#八、其他操作"><span class="toc-text">八、其他操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-不受限目录用户设置"><span class="toc-text">8.1 不受限目录用户设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-设置匿名登录访问公共目录"><span class="toc-text">8.2 设置匿名登录访问公共目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-添加用户允许在公共目录上传文件"><span class="toc-text">8.3 添加用户允许在公共目录上传文件</span></a></li></ol></li></ol></li></ol></div></div></div><main id="content-outer"><div id="top-container" style="background-image: url(/postImages/LinuxCover.jpg)"><div id="post-info"><div id="post-title"><div class="posttitle">CentOS7下FTP安装与配置</div></div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 发表于 2020-03-11<span class="post-meta__separator">|</span><i class="fa fa-history fa-fw" aria-hidden="true"></i> 更新于 2020-03-11</time><span class="post-meta__separator">|</span><span><i class="fa fa-inbox post-meta__icon fa-fw" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon fa-fw" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/Linux/">Linux</a></span><div class="post-meta-wordcount"><div class="post-meta-pv-cv"><span><i class="fa fa-eye post-meta__icon fa-fw" aria-hidden="true"> </i>阅读量:</span><span id="busuanzi_value_page_pv"></span></div></div></div></div></div><div class="layout layout_post" id="content-inner">   <article id="post"><div class="article-container" id="post-content"><h1 id="FTP安装与配置（虚拟用户）"><a href="#FTP安装与配置（虚拟用户）" class="headerlink" title="FTP安装与配置（虚拟用户）"></a>FTP安装与配置（虚拟用户）</h1><p>FTP安装与配置：<a href="https://www.inqingdao.cn/598.html" target="_blank" rel="noopener">https://www.inqingdao.cn/598.html</a></p>
+<p>FTP解决权限不足：<a href="https://blog.csdn.net/haoxizh/article/details/41546601" target="_blank" rel="noopener">https://blog.csdn.net/haoxizh/article/details/41546601</a></p>
+<p>FTP命令操作：<a href="https://blog.csdn.net/u012842630/article/details/100864483" target="_blank" rel="noopener">https://blog.csdn.net/u012842630/article/details/100864483</a></p>
+<h1 id="FTP安装与配置【推荐】"><a href="#FTP安装与配置【推荐】" class="headerlink" title="FTP安装与配置【推荐】"></a>FTP安装与配置【推荐】</h1><h2 id="一、安装-vsftpd"><a href="#一、安装-vsftpd" class="headerlink" title="一、安装 vsftpd"></a>一、安装 vsftpd</h2><ol>
+<li><p>切换root用户</p>
+</li>
+<li><p>查看是否安装vsftp</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rpm -qa |grep vsftpd</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>如果没有安装，那么安装</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install vsftpd -y</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>启动vsftpd服务，以及重启命令</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl start vsftpd.service		# 启动vsftpd服务</span><br><span class="line">systemctl restart vsftpd.service	# 重启命令</span><br><span class="line">systemctl enable vsftpd.service		# 设置开启自启</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>确认服务是否启动</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">netstat -antup | grep ftp</span><br></pre></td></tr></table></figure></div>
+
+<p>如没有安装netstat，先进行安装</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install -y net-tools</span><br></pre></td></tr></table></figure></div>
+
+<p>结果如下，则FTP服务启动成功：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# netstat -antup | grep ftp</span><br><span class="line">tcp6       0      0 :::21                   :::*                    LISTEN      1777&#x2F;vsftpd</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h2 id="二、配置-vsftpd"><a href="#二、配置-vsftpd" class="headerlink" title="二、配置 vsftpd"></a>二、配置 vsftpd</h2><ol>
+<li><p>修改配置文件</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;vsftpd&#x2F;vsftpd.conf</span><br></pre></td></tr></table></figure></div>
+
+<p>修改以下配置参数，设置匿名用户和本地用户的登录权限，设置指定例外用户列表文件的路径，并开启监听 IPv4 sockets。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">anonymous_enable&#x3D;NO							# 是否允许匿名ftp,如否则选择NO   </span><br><span class="line">local_enable&#x3D;YES							# 是否允许本地用户登录</span><br><span class="line">chroot_local_user&#x3D;YES						# 本地用户禁锢在宿主目录中 </span><br><span class="line">chroot_list_enable&#x3D;YES						# 是否将系统用户限止在自己的home目录下   </span><br><span class="line">chroot_list_file&#x3D;&#x2F;etc&#x2F;vsftpd&#x2F;chroot_list	# 列出的是不chroot的用户的列表 </span><br><span class="line">listen&#x3D;YES</span><br></pre></td></tr></table></figure></div>
+
+<p>注释 <code>listen_ipv6=YES</code> 配置参数，关闭监听 IPv6 sockets。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#listen_ipv6&#x3D;YES</span><br></pre></td></tr></table></figure></div>
+
+<p>添加以下配置参数，开启被动模式，设置本地用户登录后所在目录，以及云服务器建立数据传输可使用的端口范围值。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">allow_writeable_chroot&#x3D;YES</span><br><span class="line">pasv_enable&#x3D;YES</span><br><span class="line">#pasv_address&#x3D;xxx.xx.xxx.xx #如果是云服务器，请开放注释并修改为您的 Linux 云服务器公网 IP</span><br><span class="line">pasv_min_port&#x3D;40000</span><br><span class="line">pasv_max_port&#x3D;45000</span><br><span class="line"></span><br><span class="line"># 设置本地用户登录后所在的目录。默认配置文件中没有设置该项，此时用户登录FTP服务器后，所在的目录为该用户的主目录，对于root用户，则为&#x2F;root目录。</span><br><span class="line">local_root&#x3D;&#x2F;var&#x2F;ftp   </span><br><span class="line"># 设置匿名用户登录后所在的目录。若未指定，则默认为&#x2F;var&#x2F;ftp目录。</span><br><span class="line">anon_root&#x3D;&#x2F;var&#x2F;ftp&#x2F;pub</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>可选配置</strong></p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 所有用户禁止下载</span><br><span class="line">download_enable&#x3D;NO</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>创建并编辑 <code>chroot_list</code> 文件</p>
+<p>如果希望某个用户可以访问根目录，不受限于自己的目录，把用户名加入.</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;vsftpd&#x2F;chroot_list</span><br></pre></td></tr></table></figure></div>
+
+<p>输入 <strong>:wq</strong> 退出文件</p>
+</li>
+<li><p>重启FTP服务器</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl restart vsftpd.service</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h2 id="三、创建用户"><a href="#三、创建用户" class="headerlink" title="三、创建用户"></a>三、创建用户</h2><ol>
+<li><p>创建一个组，用于存放ftp用户</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">groupadd ftpgroups</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>在 /home 目录下创建一个ftp目录专门存放ftp用户</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir &#x2F;home&#x2F;ftp</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>创建ftp用户，并加入ftpgroups组</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">useradd -d &#x2F;home&#x2F;ftp&#x2F;ftpuser1 -g ftpgroups ftpuser1</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>设置密码（这里作为测试就取：111）</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd ftpuser1</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>设置不允许用于用户登录</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">usermod -s &#x2F;sbin&#x2F;nologin ftpuser1</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h2 id="四、防火墙设置"><a href="#四、防火墙设置" class="headerlink" title="四、防火墙设置"></a>四、防火墙设置</h2><p>如果是再云服务器上搭建的话，防火墙默认没开，所以只要配置安全组，开放21端口，和40000-45000端口即可。</p>
+<ol>
+<li><p>方式一：部分端口开放</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">firewall-cmd --zone&#x3D;public --add-service&#x3D;ftp --permanent</span><br><span class="line">firewall-cmd --zone&#x3D;public --add-port&#x3D;21&#x2F;tcp --permanent</span><br><span class="line">firewall-cmd --zone&#x3D;public --add-port&#x3D;40000-45000&#x2F;tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>方式二：关闭防火墙</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl stop firewalld.service #停止firewall</span><br><span class="line">systemctl disable firewalld.service #禁止firewall开机启动</span><br><span class="line">firewall-cmd --state #查看默认防火墙状态（关闭后显示notrunning，开启后显示running）</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h2 id="五、修改Selinux"><a href="#五、修改Selinux" class="headerlink" title="五、修改Selinux"></a>五、修改Selinux</h2><p>如果是云服务器，这个默认没有开启。因此不用设置。直接跳过。</p>
+<p><strong>【1、2部先跳过，后面再次搭建的时候好像不用配置，最后还是不行的时候再来执行】</strong></p>
+<ol>
+<li><p>修改Selinux文件</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;selinux&#x2F;config</span><br></pre></td></tr></table></figure></div>
+
+<p>修改：SELINUX=disabled</p>
+</li>
+<li><p>重启服务</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl restart vsftpd.service</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>如果上面配置后，还是不能登录</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">getsebool -a | grep ftp</span><br></pre></td></tr></table></figure></div>
+
+<p>结果：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ftpd_anon_write --&gt; off</span><br><span class="line">ftpd_connect_all_unreserved --&gt; off</span><br><span class="line">ftpd_connect_db --&gt; off</span><br><span class="line">ftpd_full_access --&gt; off			# 开启</span><br><span class="line">ftpd_use_cifs --&gt; off</span><br><span class="line">ftpd_use_fusefs --&gt; off</span><br><span class="line">ftpd_use_nfs --&gt; off</span><br><span class="line">ftpd_use_passive_mode --&gt; off</span><br><span class="line">httpd_can_connect_ftp --&gt; off</span><br><span class="line">httpd_enable_ftp_server --&gt; off</span><br><span class="line">tftp_anon_write --&gt; off</span><br><span class="line">tftp_home_dir --&gt; off				# 开启</span><br></pre></td></tr></table></figure></div>
+
+<p>开启上面2个：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">setsebool tftp_home_dir 1</span><br><span class="line">setsebool ftpd_full_access 1</span><br><span class="line"># 查看是否开启成功</span><br><span class="line">getsebool -a | grep ftp</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h2 id="六、登录"><a href="#六、登录" class="headerlink" title="六、登录"></a>六、登录</h2><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C:\Users\XXX&gt;ftp 192.168.174.50</span><br><span class="line">连接到 192.168.174.50。</span><br><span class="line">220 (vsFTPd 3.0.2)</span><br><span class="line">200 Always in UTF8 mode.</span><br><span class="line">用户(192.168.174.50:(none)): ftpuser1</span><br><span class="line">331 Please specify the password.</span><br><span class="line">密码:</span><br><span class="line">230 Login successful.</span><br><span class="line">ftp&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>如果这里显示 530 Login incorrect.</strong></p>
+<p>注释 <strong>/etc/pam.d/vsftpd</strong> 文件里的这一行, 在前面加 # 号: </p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#auth       required    pam_shells.so</span><br></pre></td></tr></table></figure></div>
+
+<p>然后重启</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl restart vsftpd.service</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h2 id="七、有效用户配置"><a href="#七、有效用户配置" class="headerlink" title="七、有效用户配置"></a>七、有效用户配置</h2><p><strong>如果上面的配置还不能进行登录的话，可以进行如下操作</strong>（可以就跳过）：</p>
+<p>ftp会根据/etc/shells这个文件来判断一个用户是否是有效用户，会阻止那些shell不在/etc/shells里的用户登陆.</p>
+<p>所以如果ftp用户的登录shell为/sbin/nologin  则</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;shells</span><br></pre></td></tr></table></figure></div>
+
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;bin&#x2F;sh</span><br><span class="line">&#x2F;bin&#x2F;bash</span><br><span class="line">&#x2F;usr&#x2F;bin&#x2F;sh</span><br><span class="line">&#x2F;usr&#x2F;bin&#x2F;bash</span><br><span class="line">&#x2F;sbin&#x2F;nologin	# 新增</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h2 id="八、其他操作"><a href="#八、其他操作" class="headerlink" title="八、其他操作"></a>八、其他操作</h2><h3 id="8-1-不受限目录用户设置"><a href="#8-1-不受限目录用户设置" class="headerlink" title="8.1 不受限目录用户设置"></a>8.1 不受限目录用户设置</h3><ol>
+<li><p>按第三节再创建一个用户 <strong>ftpuser2</strong></p>
+</li>
+<li><p>添加不受限用户</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;vsftpd&#x2F;chroot_list</span><br></pre></td></tr></table></figure></div>
+
+<p>添加用户名，一行一个名字</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ftpuser2</span><br><span class="line">:wq</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>验证是否成功</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C:\Users\BoWenWang&gt;ftp 192.168.174.50</span><br><span class="line">连接到 192.168.174.50。</span><br><span class="line">220 (vsFTPd 3.0.2)</span><br><span class="line">200 Always in UTF8 mode.</span><br><span class="line">用户(192.168.174.50:(none)): ftpuser2</span><br><span class="line">331 Please specify the password.</span><br><span class="line">密码:</span><br><span class="line">230 Login successful.</span><br><span class="line">ftp&gt;</span><br><span class="line">ftp&gt; cd &#x2F;</span><br><span class="line">250 Directory successfully changed.</span><br><span class="line">ftp&gt; ls</span><br><span class="line">200 PORT command successful. Consider using PASV.</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">bin</span><br><span class="line">boot</span><br><span class="line">dev</span><br><span class="line">etc</span><br><span class="line">home</span><br><span class="line">lib</span><br><span class="line">lib64</span><br><span class="line">media</span><br><span class="line">mnt</span><br><span class="line">opt</span><br><span class="line">proc</span><br><span class="line">root</span><br><span class="line">run</span><br><span class="line">sbin</span><br><span class="line">srv</span><br><span class="line">sys</span><br><span class="line">tmp</span><br><span class="line">usr</span><br><span class="line">var</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp: 收到 107 字节，用时 0.03秒 3.82千字节&#x2F;秒。</span><br><span class="line">ftp&gt; put D:\tmp\1.txt</span><br><span class="line">200 PORT command successful. Consider using PASV.</span><br><span class="line">553 Could not create file.</span><br><span class="line">ftp&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>可以看到，虽然说可以访问到根目录，但是没有权限的话，还是不能进行操作！</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ftp&gt; cd ~</span><br><span class="line">250 Directory successfully changed.</span><br><span class="line">ftp&gt; ls</span><br><span class="line">200 PORT command successful. Consider using PASV.</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp&gt; put D:\tmp\1.txt</span><br><span class="line">200 PORT command successful. Consider using PASV.</span><br><span class="line">150 Ok to send data.</span><br><span class="line">226 Transfer complete.</span><br><span class="line">ftp&gt;</span><br><span class="line">ftp&gt; get 1.txt D:\tmp\ttttttt.txt</span><br><span class="line">200 PORT command successful. Consider using PASV.</span><br><span class="line">150 Opening BINARY mode data connection for 1.txt (0 bytes).</span><br><span class="line">226 Transfer complete.</span><br><span class="line">ftp&gt;</span><br></pre></td></tr></table></figure></div>
+
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost ftpuser2]# ll</span><br><span class="line">total 0</span><br><span class="line">-rw-r--r--. 1 ftpuser2 ftpgroups 0 Mar 12 11:06 1.txt</span><br></pre></td></tr></table></figure></div>
+
+<p>可以在自己的目录下上传，下载文件。</p>
+</li>
+</ol>
+<h3 id="8-2-设置匿名登录访问公共目录"><a href="#8-2-设置匿名登录访问公共目录" class="headerlink" title="8.2 设置匿名登录访问公共目录"></a>8.2 设置匿名登录访问公共目录</h3><p>在拥有用户名登录的同时，也有公共的匿名登录，进行文件共享，那么可以进行如下设置：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;vsftpd&#x2F;vsftpd.conf</span><br></pre></td></tr></table></figure></div>
+
+<p>修改如下地方：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">anonymous_enable&#x3D;YES</span><br><span class="line"></span><br><span class="line"># 设置匿名用户登录后所在的目录。若未指定，则默认为&#x2F;var&#x2F;ftp目录。(该属性需要自己添加)</span><br><span class="line">anon_root&#x3D;&#x2F;var&#x2F;ftp&#x2F;pub</span><br></pre></td></tr></table></figure></div>
+
+<p>重启FTP服务</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl restart vsftpd.service</span><br></pre></td></tr></table></figure></div>
+
+<p>通过WEB或者文件资源管理器，查看：</p>
+<p>在地址栏输入（你自己的服务器IP） <strong><a href="ftp://192.168.174.50/" target="_blank" rel="noopener">ftp://192.168.174.50/</a></strong></p>
+<p><a href="/postImages/FTP.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/FTP.png" class="lazyload"></a></p>
+<p><a href="/postImages/FTP2.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/FTP2.png" class="lazyload"></a></p>
+<p>匿名用户试图修改文件：</p>
+<p><a href="/postImages/FTP3.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/FTP3.png" class="lazyload"></a></p>
+<h3 id="8-3-添加用户允许在公共目录上传文件"><a href="#8-3-添加用户允许在公共目录上传文件" class="headerlink" title="8.3 添加用户允许在公共目录上传文件"></a>8.3 添加用户允许在公共目录上传文件</h3><ol>
+<li><p>再添加一个用户 <strong>ftpuser3</strong></p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">useradd -d &#x2F;var&#x2F;ftp&#x2F;pub -g ftpgroups ftpuser3</span><br><span class="line">passwd ftpuser3</span><br><span class="line">usermod -s &#x2F;sbin&#x2F;nologin ftpuser3</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>如果是将已有用户的主目录改为公共目录</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">usermod -d &#x2F;var&#x2F;ftp&#x2F;pub ftpwbw</span><br><span class="line">systemctl restart vsftpd.service</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>更改公共目录所有者（或者添加一个管理组也可以，原理一样就是权限更改）</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost ftp]# chown -R ftpuser3 pub</span><br><span class="line">[root@localhost ftp]# ll</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x. 2 ftpuser3 root 21 Mar 12 11:20 pub</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>测试效果</p>
+<p>查看文件列表，确定该用户家目录为公共目录。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C:\Users\BoWenWang&gt;ftp 192.168.174.50</span><br><span class="line">连接到 192.168.174.50。</span><br><span class="line">220 (vsFTPd 3.0.2)</span><br><span class="line">200 Always in UTF8 mode.</span><br><span class="line">用户(192.168.174.50:(none)): ftpuser3</span><br><span class="line">331 Please specify the password.</span><br><span class="line">密码:</span><br><span class="line">230 Login successful.</span><br><span class="line">ftp&gt; ls</span><br><span class="line">200 PORT command successful. Consider using PASV.</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">pub.txt</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp: 收到 12 字节，用时 0.00秒 12.00千字节&#x2F;秒。</span><br><span class="line">ftp&gt; ls</span><br><span class="line">200 PORT command successful. Consider using PASV.</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">pub.txt</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp: 收到 12 字节，用时 0.00秒 12.00千字节&#x2F;秒。</span><br></pre></td></tr></table></figure></div>
+
+<p>创建文件夹、上传一个文件</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ftp&gt; mkdir admin</span><br><span class="line">257 &quot;&#x2F;admin&quot; created</span><br><span class="line">ftp&gt; cd admin</span><br><span class="line">250 Directory successfully changed.</span><br><span class="line">ftp&gt; put D:\tmp\1.txt</span><br><span class="line">200 PORT command successful. Consider using PASV.</span><br><span class="line">150 Ok to send data.</span><br><span class="line">226 Transfer complete.</span><br><span class="line">ftp&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>通过WEB查看</p>
+<p><a href="/postImages/FTP4.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/FTP4.png" class="lazyload"></a></p>
+<p>通过文件资源管理器，发现匿名用户依旧无法修改文件。</p>
+<p>接着用ftpuser3进行操作，重命名成功：</p>
+<p><a href="/postImages/FTP5.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/FTP5.png" class="lazyload"></a></p>
+</li>
+</ol>
+<p><a href="/postImages/FTP6.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/FTP6.png" class="lazyload"></a></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">IT小王</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://wangbowen.cn/2020/03/11/CentOS7%E4%B8%8BFTP%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/">https://wangbowen.cn/2020/03/11/CentOS7%E4%B8%8BFTP%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wangbowen.cn">IT小王</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux    </a></div><div class="post_share"><div class="social-share" data-image="/postImages/LinuxCover.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2020/03/29/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><img class="prev_cover lazyload" data-src="/postImages/HBaseCover.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="label">上一篇</div><div class="prev_info"><span>HBase学习笔记</span></div></a></div><div class="next-post pull_right"><a href="/2020/03/07/ZooKeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><img class="next_cover lazyload" data-src="/postImages/ZooKeeperCover.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="label">下一篇</div><div class="next_info"><span>ZooKeeper学习笔记</span></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/04/16/CentOS7之GRUB相关操作/" title="CentOS7之GRUB相关操作"><img class="relatedPosts_cover lazyload"data-src="/postImages/LinuxCover.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-16</div><div class="relatedPosts_title">CentOS7之GRUB相关操作</div></div></a></div><div class="relatedPosts_item"><a href="/2020/04/23/CentOS7搭建Samba/" title="CentOS7搭建Samba"><img class="relatedPosts_cover lazyload"data-src="/postImages/LinuxCover.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-23</div><div class="relatedPosts_title">CentOS7搭建Samba</div></div></a></div><div class="relatedPosts_item"><a href="/2019/09/17/Linux基础操作/" title="Linux基础操作"><img class="relatedPosts_cover lazyload"data-src="/postImages/LinuxCover.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2019-09-17</div><div class="relatedPosts_title">Linux基础操作</div></div></a></div><div class="relatedPosts_item"><a href="/2020/02/28/Linux学习笔记/" title="Linux学习笔记"><img class="relatedPosts_cover lazyload"data-src="/postImages/LinuxCover.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-02-28</div><div class="relatedPosts_title">Linux学习笔记</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var notify = false == true ? true : false;
+var verify = false == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'iYYoev4NDSyr3HqlY1VVCTIV-gzGzoHsz',
+  appKey:'Hli8dWTFUKrXj9FnhnSQUvRe',
+  placeholder:'快来评论吖！ヾﾉ≧∀≦)o',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10',
+  lang:'en',
+  recordIP: true
+});</script></div></div></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2020 By IT小王</div><div class="framework-info"><span>驱动 </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="icp"><a href="http://www.beian.miit.gov.cn" target="_blank" rel="noopener"><img class="icp-icon" src="/img/icp.png"><span>闽ICP备18027071号-1</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script id="ribbon" src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/js/canvas-ribbon.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script id="canvas_nest" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/js/canvas-nest.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script><div class="search-dialog" id="algolia-search"><div class="search-dialog__title" id="algolia-search-title">Algolia</div><div id="algolia-input-panel"><div id="algolia-search-input"></div></div><hr><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-stats"></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
