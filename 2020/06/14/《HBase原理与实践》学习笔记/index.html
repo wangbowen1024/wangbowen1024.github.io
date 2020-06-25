@@ -1,0 +1,803 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"><title>《HBase原理与实践》学习笔记 | IT小王</title><meta name="description" content="《HBase原理与实践》学习笔记"><meta name="keywords" content="HBase"><meta name="author" content="IT小王"><meta name="copyright" content="IT小王"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.svg"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin><link rel="preconnect" href="//busuanzi.ibruce.info"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="《HBase原理与实践》学习笔记"><meta name="twitter:description" content="《HBase原理与实践》学习笔记"><meta name="twitter:image" content="https://wangbowen.cn/postImages/HBaseCover.jpg"><meta property="og:type" content="article"><meta property="og:title" content="《HBase原理与实践》学习笔记"><meta property="og:url" content="https://wangbowen.cn/2020/06/14/%E3%80%8AHBase%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><meta property="og:site_name" content="IT小王"><meta property="og:description" content="《HBase原理与实践》学习笔记"><meta property="og:image" content="https://wangbowen.cn/postImages/HBaseCover.jpg"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>const autoChangeMode = 'false'
+var t = Cookies.get("theme");
+if (autoChangeMode == '1'){
+const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+const isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+const isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+if (t === undefined){
+  if (isLightMode) activateLightMode()
+  else if (isDarkMode) activateDarkMode()
+  else if (isNotSpecified || hasNoSupport){
+    console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+    now = new Date();
+    hour = now.getHours();
+    isNight = hour < 6 || hour >= 18
+    isNight ? activateDarkMode() : activateLightMode()
+}
+} else if (t == 'light') activateLightMode()
+else activateDarkMode()
+
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="https://wangbowen.cn/2020/06/14/%E3%80%8AHBase%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><link rel="next" title="Hadoop学习笔记（六）Yarn" href="https://wangbowen.cn/2020/06/10/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89Yarn/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.js" defer></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"ELVDUY5WGR","apiKey":"55783f8f2945106559981cc355ad5d57","indexName":"hexoSearch","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"http://wangbowen.cn/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    title: 'Snackbar.bookmark.title',
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"title":"Snackbar.bookmark.title","message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"top-center"},
+  baiduPush: false,
+  isHome: false,
+  isPost: true
+  
+}</script><meta name="generator" content="Hexo 4.2.0"></head><body><header> <div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">IT小王</a></span><span class="toggle-menu pull_right close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div></div></span><span class="pull_right" id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></span></div></header><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">40</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">25</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">29</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div></div></div><div id="mobile-sidebar-toc"><div class="toc_mobile_headline">目录</div><div class="sidebar-toc__content"><ol class="toc_mobile_items"><li class="toc_mobile_items-item toc_mobile_items-level-1"><a class="toc_mobile_items-link" href="#《HBase原理与实践》学习笔记"><span class="toc_mobile_items-text">《HBase原理与实践》学习笔记</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#一、HBase概述"><span class="toc_mobile_items-text">一、HBase概述</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#1-1-HBase数据模型"><span class="toc_mobile_items-text">1.1 HBase数据模型</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#1-1-1-逻辑视图"><span class="toc_mobile_items-text">1.1.1 逻辑视图</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#1-1-2-物理视图"><span class="toc_mobile_items-text">1.1.2 物理视图</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#1-2-HBase体系结构"><span class="toc_mobile_items-text">1.2 HBase体系结构</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#1-2-1-Master"><span class="toc_mobile_items-text">1.2.1 Master</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#1-2-2-RegionServer"><span class="toc_mobile_items-text">1.2.2 RegionServer</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#1-3-HBase系统特性"><span class="toc_mobile_items-text">1.3 HBase系统特性</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#1-3-1-HBase的优点"><span class="toc_mobile_items-text">1.3.1 HBase的优点</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#1-3-2-HBase的缺点"><span class="toc_mobile_items-text">1.3.2 HBase的缺点</span></a></li></ol></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#二、基础数据结构与算法"><span class="toc_mobile_items-text">二、基础数据结构与算法</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#2-1-跳跃表"><span class="toc_mobile_items-text">2.1 跳跃表</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#2-2-LSM树"><span class="toc_mobile_items-text">2.2 LSM树</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#2-2-1-KeyValue存储格式"><span class="toc_mobile_items-text">2.2.1 KeyValue存储格式</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#2-2-2-多路并归"><span class="toc_mobile_items-text">2.2.2 多路并归</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#2-2-3-LSM树的索引结构"><span class="toc_mobile_items-text">2.2.3 LSM树的索引结构</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#2-3布隆过滤器"><span class="toc_mobile_items-text">2.3布隆过滤器</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#三、HBase依赖服务"><span class="toc_mobile_items-text">三、HBase依赖服务</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#3-1-ZooKeeper"><span class="toc_mobile_items-text">3.1 ZooKeeper</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#3-2-HDFS"><span class="toc_mobile_items-text">3.2 HDFS</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#3-3-HBase在HDFS中的文件布局"><span class="toc_mobile_items-text">3.3 HBase在HDFS中的文件布局</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#四、HBase客户端"><span class="toc_mobile_items-text">四、HBase客户端</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#4-1-客户端与服务端交互流程"><span class="toc_mobile_items-text">4.1 客户端与服务端交互流程</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#4-2-定位Meta表"><span class="toc_mobile_items-text">4.2 定位Meta表</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#4-2-1-Meta表构成"><span class="toc_mobile_items-text">4.2.1 Meta表构成</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#4-2-2-热点Region问题"><span class="toc_mobile_items-text">4.2.2 热点Region问题</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#4-3-Scan-操作"><span class="toc_mobile_items-text">4.3 Scan 操作</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#4-3-1-客户端读取Result流程"><span class="toc_mobile_items-text">4.3.1 客户端读取Result流程</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#4-3-2-Scan的几个重要概念"><span class="toc_mobile_items-text">4.3.2 Scan的几个重要概念</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#4-4-HBase-客户端避坑指南"><span class="toc_mobile_items-text">4.4 HBase 客户端避坑指南</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#4-4-1-RPC重试配置要点（几个超时参数）"><span class="toc_mobile_items-text">4.4.1 RPC重试配置要点（几个超时参数）</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#4-4-2-Scan-Filter-设置"><span class="toc_mobile_items-text">4.4.2 Scan Filter 设置</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#4-4-3-少量写和批量写"><span class="toc_mobile_items-text">4.4.3 少量写和批量写</span></a></li></ol></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#五、RegionServer的核心模块"><span class="toc_mobile_items-text">五、RegionServer的核心模块</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#5-1-HLog"><span class="toc_mobile_items-text">5.1 HLog</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#5-1-1-HLog文件结构"><span class="toc_mobile_items-text">5.1.1 HLog文件结构</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#5-1-2-HLog文件存储"><span class="toc_mobile_items-text">5.1.2 HLog文件存储</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#5-1-3-HLog生命周期"><span class="toc_mobile_items-text">5.1.3 HLog生命周期</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#5-2-MemStore"><span class="toc_mobile_items-text">5.2 MemStore</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#5-3-HFile"><span class="toc_mobile_items-text">5.3 HFile</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#5-3-1-逻辑结构-V2"><span class="toc_mobile_items-text">5.3.1 逻辑结构(V2)</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#5-3-2-物理结构"><span class="toc_mobile_items-text">5.3.2 物理结构</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#5-3-3-HFile基础Block"><span class="toc_mobile_items-text">5.3.3 HFile基础Block</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#1-Trailer-Block"><span class="toc_mobile_items-text">1) Trailer Block</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#2-Data-Block"><span class="toc_mobile_items-text">2) Data Block</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#3-布隆过滤器相关Block"><span class="toc_mobile_items-text">3) 布隆过滤器相关Block</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#4-索引相关Block"><span class="toc_mobile_items-text">4) 索引相关Block</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#5-3-4-HFile文件查看工具"><span class="toc_mobile_items-text">5.3.4 HFile文件查看工具</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#5-4-BlockCache"><span class="toc_mobile_items-text">5.4 BlockCache</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#六、HBase读写流程"><span class="toc_mobile_items-text">六、HBase读写流程</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#6-1-HBase写入流程"><span class="toc_mobile_items-text">6.1 HBase写入流程</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#6-1-1-客户端处理阶段"><span class="toc_mobile_items-text">6.1.1 客户端处理阶段</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#6-1-2-Region-写入阶段"><span class="toc_mobile_items-text">6.1.2 Region 写入阶段</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#6-1-3-MemStore-Flush-阶段"><span class="toc_mobile_items-text">6.1.3 MemStore Flush 阶段</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#1-触发条件"><span class="toc_mobile_items-text">1) 触发条件</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#2-执行流程"><span class="toc_mobile_items-text">2) 执行流程</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#3-HFile-文件构建流程"><span class="toc_mobile_items-text">3) HFile 文件构建流程</span></a></li></ol></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#6-2-BulkLoad-功能"><span class="toc_mobile_items-text">6.2 BulkLoad 功能</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#6-2-1-核心流程"><span class="toc_mobile_items-text">6.2.1 核心流程</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#6-2-2-基础案例"><span class="toc_mobile_items-text">6.2.2 基础案例</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#6-3-HBase读取流程"><span class="toc_mobile_items-text">6.3 HBase读取流程</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#6-3-1-Client-Server读取交互逻辑"><span class="toc_mobile_items-text">6.3.1 Client-Server读取交互逻辑</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#6-3-2-Server端Scan框架体系"><span class="toc_mobile_items-text">6.3.2 Server端Scan框架体系</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#1-构建Scanner-Iterator体系"><span class="toc_mobile_items-text">1) 构建Scanner Iterator体系</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#2-过滤淘汰部分部不满足查询条件的Scanner"><span class="toc_mobile_items-text">2) 过滤淘汰部分部不满足查询条件的Scanner</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#3-每个Scanner-seek-到-startKey"><span class="toc_mobile_items-text">3) 每个Scanner seek 到 startKey</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#4-KeyValueScanner合并构建最小堆"><span class="toc_mobile_items-text">4) KeyValueScanner合并构建最小堆</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-5"><a class="toc_mobile_items-link" href="#5-执行next函数获取KeyValue并对其进行条件过滤"><span class="toc_mobile_items-text">5) 执行next函数获取KeyValue并对其进行条件过滤</span></a></li></ol></li></ol></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#七、Compaction-实现"><span class="toc_mobile_items-text">七、Compaction 实现</span></a></li></ol></li></ol></div></div></div><div id="body-wrap"><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true">     </i><div class="auto_open" id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#《HBase原理与实践》学习笔记"><span class="toc-text">《HBase原理与实践》学习笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、HBase概述"><span class="toc-text">一、HBase概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-HBase数据模型"><span class="toc-text">1.1 HBase数据模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-1-逻辑视图"><span class="toc-text">1.1.1 逻辑视图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-2-物理视图"><span class="toc-text">1.1.2 物理视图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-HBase体系结构"><span class="toc-text">1.2 HBase体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-Master"><span class="toc-text">1.2.1 Master</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-RegionServer"><span class="toc-text">1.2.2 RegionServer</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-HBase系统特性"><span class="toc-text">1.3 HBase系统特性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1-HBase的优点"><span class="toc-text">1.3.1 HBase的优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-HBase的缺点"><span class="toc-text">1.3.2 HBase的缺点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、基础数据结构与算法"><span class="toc-text">二、基础数据结构与算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-跳跃表"><span class="toc-text">2.1 跳跃表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-LSM树"><span class="toc-text">2.2 LSM树</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-KeyValue存储格式"><span class="toc-text">2.2.1 KeyValue存储格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-多路并归"><span class="toc-text">2.2.2 多路并归</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-LSM树的索引结构"><span class="toc-text">2.2.3 LSM树的索引结构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3布隆过滤器"><span class="toc-text">2.3布隆过滤器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、HBase依赖服务"><span class="toc-text">三、HBase依赖服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-ZooKeeper"><span class="toc-text">3.1 ZooKeeper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-HDFS"><span class="toc-text">3.2 HDFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-HBase在HDFS中的文件布局"><span class="toc-text">3.3 HBase在HDFS中的文件布局</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、HBase客户端"><span class="toc-text">四、HBase客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-客户端与服务端交互流程"><span class="toc-text">4.1 客户端与服务端交互流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-定位Meta表"><span class="toc-text">4.2 定位Meta表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-Meta表构成"><span class="toc-text">4.2.1 Meta表构成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-热点Region问题"><span class="toc-text">4.2.2 热点Region问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-Scan-操作"><span class="toc-text">4.3 Scan 操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-1-客户端读取Result流程"><span class="toc-text">4.3.1 客户端读取Result流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-2-Scan的几个重要概念"><span class="toc-text">4.3.2 Scan的几个重要概念</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-HBase-客户端避坑指南"><span class="toc-text">4.4 HBase 客户端避坑指南</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-1-RPC重试配置要点（几个超时参数）"><span class="toc-text">4.4.1 RPC重试配置要点（几个超时参数）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-2-Scan-Filter-设置"><span class="toc-text">4.4.2 Scan Filter 设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-3-少量写和批量写"><span class="toc-text">4.4.3 少量写和批量写</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、RegionServer的核心模块"><span class="toc-text">五、RegionServer的核心模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-HLog"><span class="toc-text">5.1 HLog</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-1-HLog文件结构"><span class="toc-text">5.1.1 HLog文件结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-2-HLog文件存储"><span class="toc-text">5.1.2 HLog文件存储</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-3-HLog生命周期"><span class="toc-text">5.1.3 HLog生命周期</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-MemStore"><span class="toc-text">5.2 MemStore</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-HFile"><span class="toc-text">5.3 HFile</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-1-逻辑结构-V2"><span class="toc-text">5.3.1 逻辑结构(V2)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-2-物理结构"><span class="toc-text">5.3.2 物理结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-3-HFile基础Block"><span class="toc-text">5.3.3 HFile基础Block</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-Trailer-Block"><span class="toc-text">1) Trailer Block</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-Data-Block"><span class="toc-text">2) Data Block</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-布隆过滤器相关Block"><span class="toc-text">3) 布隆过滤器相关Block</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-索引相关Block"><span class="toc-text">4) 索引相关Block</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-4-HFile文件查看工具"><span class="toc-text">5.3.4 HFile文件查看工具</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-BlockCache"><span class="toc-text">5.4 BlockCache</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、HBase读写流程"><span class="toc-text">六、HBase读写流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-HBase写入流程"><span class="toc-text">6.1 HBase写入流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-1-客户端处理阶段"><span class="toc-text">6.1.1 客户端处理阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-2-Region-写入阶段"><span class="toc-text">6.1.2 Region 写入阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-3-MemStore-Flush-阶段"><span class="toc-text">6.1.3 MemStore Flush 阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-触发条件"><span class="toc-text">1) 触发条件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-执行流程"><span class="toc-text">2) 执行流程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-HFile-文件构建流程"><span class="toc-text">3) HFile 文件构建流程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-BulkLoad-功能"><span class="toc-text">6.2 BulkLoad 功能</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-1-核心流程"><span class="toc-text">6.2.1 核心流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-2-基础案例"><span class="toc-text">6.2.2 基础案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-HBase读取流程"><span class="toc-text">6.3 HBase读取流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-1-Client-Server读取交互逻辑"><span class="toc-text">6.3.1 Client-Server读取交互逻辑</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-2-Server端Scan框架体系"><span class="toc-text">6.3.2 Server端Scan框架体系</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-构建Scanner-Iterator体系"><span class="toc-text">1) 构建Scanner Iterator体系</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-过滤淘汰部分部不满足查询条件的Scanner"><span class="toc-text">2) 过滤淘汰部分部不满足查询条件的Scanner</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-每个Scanner-seek-到-startKey"><span class="toc-text">3) 每个Scanner seek 到 startKey</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-KeyValueScanner合并构建最小堆"><span class="toc-text">4) KeyValueScanner合并构建最小堆</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-执行next函数获取KeyValue并对其进行条件过滤"><span class="toc-text">5) 执行next函数获取KeyValue并对其进行条件过滤</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#七、Compaction-实现"><span class="toc-text">七、Compaction 实现</span></a></li></ol></li></ol></div></div></div><main id="content-outer"><div id="top-container" style="background-image: url(/postImages/HBaseCover.jpg)"><div id="post-info"><div id="post-title"><div class="posttitle">《HBase原理与实践》学习笔记</div></div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 发表于 2020-06-14<span class="post-meta__separator">|</span><i class="fa fa-history fa-fw" aria-hidden="true"></i> 更新于 2020-06-14</time><span class="post-meta__separator">|</span><span><i class="fa fa-inbox post-meta__icon fa-fw" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon fa-fw" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/HBase/">HBase</a></span><div class="post-meta-wordcount"><div class="post-meta-pv-cv"><span><i class="fa fa-eye post-meta__icon fa-fw" aria-hidden="true"> </i>阅读量:</span><span id="busuanzi_value_page_pv"></span></div></div></div></div></div><div class="layout layout_post" id="content-inner">   <article id="post"><div class="article-container" id="post-content"><h1 id="《HBase原理与实践》学习笔记"><a href="#《HBase原理与实践》学习笔记" class="headerlink" title="《HBase原理与实践》学习笔记"></a>《HBase原理与实践》学习笔记</h1><h2 id="一、HBase概述"><a href="#一、HBase概述" class="headerlink" title="一、HBase概述"></a>一、HBase概述</h2><h3 id="1-1-HBase数据模型"><a href="#1-1-HBase数据模型" class="headerlink" title="1.1 HBase数据模型"></a>1.1 HBase数据模型</h3><h4 id="1-1-1-逻辑视图"><a href="#1-1-1-逻辑视图" class="headerlink" title="1.1.1 逻辑视图"></a>1.1.1 逻辑视图</h4><ul>
+<li>table：表</li>
+<li>row：行</li>
+<li>column：列</li>
+<li>timestamp：时间戳</li>
+<li>cell：单元格</li>
+</ul>
+<h4 id="1-1-2-物理视图"><a href="#1-1-2-物理视图" class="headerlink" title="1.1.2 物理视图"></a>1.1.2 物理视图</h4><p>HBase中的数据是按照列族存储的，即将数据按照列族分别存储在不同目录中。</p>
+<h3 id="1-2-HBase体系结构"><a href="#1-2-HBase体系结构" class="headerlink" title="1.2 HBase体系结构"></a>1.2 HBase体系结构</h3><p><a href="/postImages/HBase%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HBase%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<h4 id="1-2-1-Master"><a href="#1-2-1-Master" class="headerlink" title="1.2.1 Master"></a>1.2.1 Master</h4><p>主要负责HBase系统的各种管理工作：</p>
+<ul>
+<li>处理用户的各种管理请求，包括建表、修改表、权限操作、切分表、合并数据等。</li>
+<li>管理集群中的RegionSerer，包括其中Region的负载均衡、迁移等。</li>
+<li>清理过期日志以及文件</li>
+</ul>
+<h4 id="1-2-2-RegionServer"><a href="#1-2-2-RegionServer" class="headerlink" title="1.2.2 RegionServer"></a>1.2.2 RegionServer</h4><p>主要用来相应用户IO请求，是HBase中最核心的模块：</p>
+<ul>
+<li><p><strong>WAL(HLog)</strong></p>
+<ol>
+<li>用于实现数据的高可靠性，HBase数据随机写入时，并非直接写入HFile数据文件，而是先写入缓存，再异步刷新落盘。为了防止缓存数据丢失，数据写入缓存之前需要首先顺序写入HLog。这样即使缓存数据丢失，也能够通过HLog日志恢复。</li>
+<li>用于实现HBase集群间的主从复制，通过回放主集群推送过来的HLog日志实现主从复制。</li>
+</ol>
+</li>
+<li><p><strong>BlockCache</strong></p>
+<p>HBase中的读缓存。客户端从磁盘上熟读数据后通常会将数据缓存在系统内存中，后续再次访问相同的一行数据，可以直接从内存中获取，对于大量热点读的业务来说，可以很大提高性能。</p>
+<blockquote>
+<p>BlockCache缓存对象是一系类Block块，默认64K。利用了空间局部性和时间局部性原理，来实现。</p>
+</blockquote>
+</li>
+<li><p><strong>Region</strong></p>
+<p>数据表的一个分片，当数据表大小超过一定阈值就会“水平切分”，分裂为两个Region。Region是集群负载均衡的基本单位。通常一张表的Region会分布在整个集群的多台RegionServer上，一个RegionServer会管理多个Region。</p>
+<blockquote>
+<p>一个Region由一个或者多个Store构成。Store的个数取决于表中列族的个数，多少个列族就有多少个Store。（每个列族的数据都集中存放在一起形成一个存储单元Store）</p>
+<p>每个Store由一个MemStore和多个HFile组成。MemStore成为写缓存，用户写入数据时，会先写到MemStore，当MemStore写满之后（阈值默认为128M），系统会异步将数据flush成一个HFile文件。显然，随着数据不断写入HFile文件越来越多，当HFile文件数超过一定阈值的时候，会执行Compact操作，将小文件通过一定策略合并成一个大文件。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="1-3-HBase系统特性"><a href="#1-3-HBase系统特性" class="headerlink" title="1.3 HBase系统特性"></a>1.3 HBase系统特性</h3><h4 id="1-3-1-HBase的优点"><a href="#1-3-1-HBase的优点" class="headerlink" title="1.3.1 HBase的优点"></a>1.3.1 HBase的优点</h4><ul>
+<li>容量巨大：单表支持千亿行、百万列的数据规模。</li>
+<li>良好的可扩展性：集群扩展容易，主要是数据存储节点的扩展以及读写服务节点扩展。（添加RegionServer节点）</li>
+<li>稀疏性：允许大量列值为空，并不占用任何存储空间。</li>
+<li>高性能：主要擅长OLTP场景，数据写操作性能强劲，对于 <strong>随机单点读</strong> 以及 <strong>小范围扫描读</strong> ，其性能也能得到保障。对于大范围的扫描读可以使用MR的API，以便实现更高效的并行扫描。</li>
+<li>多版本：时间戳，可以保留多个历史版本。</li>
+<li>支持过期：TTL过期特性，只要设置过期时间，就可以自动清理。</li>
+<li>Hadoop原生支持</li>
+</ul>
+<h4 id="1-3-2-HBase的缺点"><a href="#1-3-2-HBase的缺点" class="headerlink" title="1.3.2 HBase的缺点"></a>1.3.2 HBase的缺点</h4><ul>
+<li>HBase本身<strong>不支持很复杂的聚合运算</strong>（如，Join、GroupBy等）。如果业务中需要使用聚合运算，可以在HBase之上架设Phoenix组件（小规模OLTP）或者Spark组件（大规模聚合的OLTP）。</li>
+<li>HBase本身没有二级索引功能，不支持二级索引查找。好在针对HBase实现的第三方二级索引方案非常丰富，比如目前比较普遍的使用Phoenix提供的二级索引功能。</li>
+<li>HBase原生不支持全局跨行事务，只支持单行事务模型。同样，可以使用Phoenix提供的全局事务模型组件来弥补HBase的这个缺陷。</li>
+</ul>
+<h2 id="二、基础数据结构与算法"><a href="#二、基础数据结构与算法" class="headerlink" title="二、基础数据结构与算法"></a>二、基础数据结构与算法</h2><h3 id="2-1-跳跃表"><a href="#2-1-跳跃表" class="headerlink" title="2.1 跳跃表"></a>2.1 跳跃表</h3><p>跳跃表是一种能高效实现插入、删除、查找的内存数据结构，这些操作期望复杂度都是O(logN)。</p>
+<h3 id="2-2-LSM树"><a href="#2-2-LSM树" class="headerlink" title="2.2 LSM树"></a>2.2 LSM树</h3><p>LSM树（Log-Strucured Merge-Tree）本质上和B+树一样，是一种磁盘数据的索引结构。但和B+树不同的是，LSM树的索引对写入请求更友好。</p>
+<p>LSM树的索引一般由两部分组成：</p>
+<ul>
+<li>内存部分：采用跳跃表来维护一个有序的KeyValue集合。</li>
+<li>磁盘部分：由多个内部KeyValue有序的文件组成。</li>
+</ul>
+<h4 id="2-2-1-KeyValue存储格式"><a href="#2-2-1-KeyValue存储格式" class="headerlink" title="2.2.1 KeyValue存储格式"></a>2.2.1 KeyValue存储格式</h4><p>一般来说，LSM中存储的是多个KeyValue组成的集合，每一个KeyValue一般都会用一个字节数组来表示。</p>
+<p>HBase为例，其中，<strong>Rowkey</strong>、<strong>Family</strong>、<strong>Qualifier</strong>（列族下的列）、<strong>Timestamp</strong>、<strong>Type</strong>这5个字段组成KeyValue中的key部分（Key二进制内容，表示版本号64位long值，HBase中表现为timestamp，type三个必不可少）。Value部分直接存储这个KeyValue中Value的二进制内容。</p>
+<p><strong>其中type字段表示这个KeyValue操作的类型，这表明了LSM树内存储的不只是数据，而是每一次记录。</strong></p>
+<h4 id="2-2-2-多路并归"><a href="#2-2-2-多路并归" class="headerlink" title="2.2.2 多路并归"></a>2.2.2 多路并归</h4><p>类似归并排序算法一样，来合并多个有序文件成一个大文件。</p>
+<h4 id="2-2-3-LSM树的索引结构"><a href="#2-2-3-LSM树的索引结构" class="headerlink" title="2.2.3 LSM树的索引结构"></a>2.2.3 LSM树的索引结构</h4><p>分为内存部分和磁盘部分，本质是将写入操作全部转化成磁盘的顺序写入，极大地提高了写入操作的性能。但是对读取操作不友好，因为需要在读取的过程中，通过归并所有文件来读取所对应的KV，非常耗资源。因此HBase中设计了异步compaction来降低文件个数。</p>
+<h3 id="2-3布隆过滤器"><a href="#2-3布隆过滤器" class="headerlink" title="2.3布隆过滤器"></a>2.3布隆过滤器</h3><p><strong>场景</strong></p>
+<p>用来判断一个元素是否存在于一个集合中（当集合很大很大远远超出内存的时候）。</p>
+<p><strong>原理</strong></p>
+<p>布隆过滤器由一个长度为N的01数组组成。一开始全部初始化为0，然后对集合A中的每个元素进行K次Hash并对长度取模后获得K个下标索引，然后把这些下标对应的数组元素置为1。</p>
+<p>现在需要判断w是否存在于集合A中，只要把w用上述方法一样K次Hash，每次的结果去数组里面查找，只要有一个值为0就说明这个元素<strong>不存在</strong>。如果全部为1，只能说明<strong>可能存在</strong>（假设x经过3次hash后，下标为1、2、6；y为3、4、5，这时候w的hash结果是1、2、3。虽然都是为1，但是属于2个元素）</p>
+<blockquote>
+<p>N=K*|A|/ln2 ，使用这个公式可以保证最佳的误判率。N为数组长度，K为Hash次数，|A|为集合中元素个数。</p>
+</blockquote>
+<p><strong>HBase与布隆过滤器</strong></p>
+<p>在HBase 1.X中有3中类型：</p>
+<ul>
+<li>NONE：不启用</li>
+<li>ROW：按照rowkey来计算布隆过滤器的二进制串并存储。</li>
+<li>ROWCOL：按照rowkey+family+qualifier这3个字段拼出byte[]来计算布隆过滤器值并存储。如果在查询的时候，get能指定这3个字段，那么布隆过滤器肯定能提高性能。但是如果缺少任何一个，则无法提升性能。</li>
+</ul>
+<blockquote>
+<p>腾讯团队介绍了一种设计，他们游戏业务rowkey的设计：</p>
+<p>rowkey=&lt; userid&gt;#&lt; other-field&gt;</p>
+<p>即按照userid来做前缀扫描。（前缀固定，所以计算布隆过滤器的key值也就固定）</p>
+</blockquote>
+<p><strong>总结</strong></p>
+<p>布隆过滤器对Get和基于前缀扫描的Scan都非常友好。</p>
+<h2 id="三、HBase依赖服务"><a href="#三、HBase依赖服务" class="headerlink" title="三、HBase依赖服务"></a>三、HBase依赖服务</h2><h3 id="3-1-ZooKeeper"><a href="#3-1-ZooKeeper" class="headerlink" title="3.1 ZooKeeper"></a>3.1 ZooKeeper</h3><p>关于Zookeeper内容可以参考另一篇文章（ZooKeeper学习笔记）。现在来看一下HBase在ZK上创建的内容：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 1] ls &#x2F;hbase</span><br><span class="line">[meta-region-server, rs, splitWAL, backup-masters, flush-table-proc, master-maintenance, online-snapshot, switch, master, running, draining, namespace, hbaseid, table]</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><p>meta-region-server：存储HBase集群元数据hbase:meta元数据表所在的RegionServer访问地址。</p>
+</li>
+<li><p>master/backup-masters：主/备管理节点，防止单点故障。</p>
+</li>
+<li><p>table：集群中所有表信息。</p>
+</li>
+<li><p>splitWAL：分布式故障恢复。</p>
+</li>
+<li><p>rs：集群中所有运行的RegionServer。</p>
+</li>
+<li><p>等等。。。</p>
+</li>
+</ul>
+<h3 id="3-2-HDFS"><a href="#3-2-HDFS" class="headerlink" title="3.2 HDFS"></a>3.2 HDFS</h3><p>HDFS读写流程，具体详情参考文章（Hadoop学习笔记（二）HDFS）。</p>
+<p><strong>HDFS在HBase中扮演的角色</strong></p>
+<ul>
+<li>HBase本身不存储文件，它只规定文件格式以及文件内容，实际文存储件由HDFS实现。</li>
+<li>HBase不提供机制保证存储数据高可靠性，数据的高可靠性由HDFS多副本保证。</li>
+</ul>
+<h3 id="3-3-HBase在HDFS中的文件布局"><a href="#3-3-HBase在HDFS中的文件布局" class="headerlink" title="3.3 HBase在HDFS中的文件布局"></a>3.3 HBase在HDFS中的文件布局</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;.hbck</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 04:01 &#x2F;hbase&#x2F;.tmp</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-18 21:15 &#x2F;hbase&#x2F;MasterProcWALs</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 04:01 &#x2F;hbase&#x2F;WALs</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-03 17:31 &#x2F;hbase&#x2F;archive</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;corrupt</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;data</span><br><span class="line">-rw-r--r--   3 hadoop supergroup         42 2020-05-29 02:05 &#x2F;hbase&#x2F;hbase.id</span><br><span class="line">-rw-r--r--   3 hadoop supergroup          7 2020-05-29 02:05 &#x2F;hbase&#x2F;hbase.version</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;mobdir</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-18 21:15 &#x2F;hbase&#x2F;oldWALs</span><br><span class="line">drwx--x--x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;staging</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h2 id="四、HBase客户端"><a href="#四、HBase客户端" class="headerlink" title="四、HBase客户端"></a>四、HBase客户端</h2><h3 id="4-1-客户端与服务端交互流程"><a href="#4-1-客户端与服务端交互流程" class="headerlink" title="4.1 客户端与服务端交互流程"></a>4.1 客户端与服务端交互流程</h3><ol>
+<li><p><strong>获取Configuration对象</strong></p>
+<blockquote>
+<p>一般需要3个配置文件：hbase-size.xml、core-site.xml、hdfs-site.xml放到JVM可以加载到的地方</p>
+</blockquote>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Configuration conf = HBaseConfiguration.create();</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>通过Configuration初始化Connection</strong></p>
+<p>Connection是HBase客户端一切操作的基础，维持了客户端到整个HBase集群的连接。</p>
+<blockquote>
+<p>例如，集群里有2个Master、5个RegionServer。那么Connection会维持一个到Active Master的TCP和5个到RegionServer的TCP。</p>
+<p>通常，一个进程只需要为一个独立的集群建立一个Connection即可，<strong>并不需要连接池</strong>。</p>
+</blockquote>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Connection conn = ConnectionFactory.createConnection(conf);</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>通过Connection初始化Table</strong></p>
+<p>Table是一个非常轻量级的对象，实现了用户访问表的所有API操作，如：Put、Get、Delete、Scan等。本质上，它使用的连接资源、配置信息、线程池、Meta缓存等，都来自Connection对象，因此由同一个Connection创建的多个Table，都可以共享上述这些资源。</p>
+<blockquote>
+<p>注意：branch-1以及之前版本，Table不是线程安全的类，不建议共享一个Table实例。但是，HBase2.0.0之后的版本，Table已经实现为线程安全类。可以通过同一个Connection为每个请求创建一个Table，但是要记得关闭Table对象。</p>
+</blockquote>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">TableName tableName = TableName.valueOf(<span class="string">"ns1:t1"</span>);</span><br><span class="line">Table table = conn.getTable(tableName);</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>通过Table执行Put和Scan操作</strong></p>
+<p>put（这里注意到参数都是byte[]）:</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 通过bytes工具类创建字节数组(将字符串)</span></span><br><span class="line"><span class="keyword">byte</span>[] rowId = Bytes.toBytes(<span class="string">"row3"</span>);</span><br><span class="line"><span class="comment">// 创建put对象</span></span><br><span class="line">Put put = <span class="keyword">new</span> Put(rowId);</span><br><span class="line"><span class="keyword">byte</span>[] f1 = Bytes.toBytes(<span class="string">"f1"</span>);</span><br><span class="line"><span class="keyword">byte</span>[] id = Bytes.toBytes(<span class="string">"id"</span>);</span><br><span class="line"><span class="keyword">byte</span>[] value = Bytes.toBytes(<span class="number">102</span>);</span><br><span class="line">put.addColumn(f1, id, value);</span><br><span class="line"><span class="comment">// 执行插入</span></span><br><span class="line">table.put(put);</span><br></pre></td></tr></table></figure></div>
+
+<p>scan:</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Configuration conf = HBaseConfiguration.create();</span><br><span class="line"><span class="keyword">try</span> (Connection connection = ConnectionFactory.createConnection(conf)) &#123;</span><br><span class="line">    <span class="keyword">try</span> (Table table = connection.getTable(TableName.valueOf(<span class="string">"ns1:t1"</span>))) &#123;</span><br><span class="line">        <span class="comment">// scan设置</span></span><br><span class="line">        Scan scan = <span class="keyword">new</span> Scan();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">try</span> (ResultScanner scanner = table.getScanner(scan)) &#123;</span><br><span class="line">            <span class="comment">// 每次scanner.next()返回一个结果</span></span><br><span class="line">            <span class="keyword">for</span> (Result result : scanner) &#123;</span><br><span class="line">                <span class="comment">// 这里可以看出每一个result中的cell都是相同的rowKey</span></span><br><span class="line">                <span class="keyword">final</span> String rowKey = Bytes.toString(result.getRow());</span><br><span class="line">                System.out.println(rowKey);</span><br><span class="line">                <span class="comment">// 1个result结果包含N个cells</span></span><br><span class="line">                <span class="keyword">for</span> (Cell cell : result.listCells()) &#123;</span><br><span class="line">                    System.out.print(<span class="string">"["</span> +</span><br><span class="line">                                     Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength()) + <span class="string">":"</span> +</span><br><span class="line">                                     Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()) + <span class="string">"]"</span> + <span class="string">"\t"</span></span><br><span class="line">                                    );</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">"------------------------------------------"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h3 id="4-2-定位Meta表"><a href="#4-2-定位Meta表" class="headerlink" title="4.2 定位Meta表"></a>4.2 定位Meta表</h3><p>HBase一张表由多个Region构成，这些Region分布在不同RegionServer上。客户端在做任何操作的时候，要先确定数据在哪个Region上，然后根据Region的RegionServer信息，去对应的RegionServer上读取数据。因此，有一张特殊的表（<strong>hbase:meta</strong>），来存放整个集群所有Region的信息。</p>
+<blockquote>
+<p>hbase:meta表始终只有一个Region，这是为了确保meta表多次操作的原子性，因为hbase只支持Region级别的事务。</p>
+</blockquote>
+<h4 id="4-2-1-Meta表构成"><a href="#4-2-1-Meta表构成" class="headerlink" title="4.2.1 Meta表构成"></a>4.2.1 Meta表构成</h4><p>总体来说hbase:meta的一个rowkey就对应一个Region。</p>
+<ul>
+<li><p><strong>rowkey</strong> 主要由4部分组成</p>
+<ul>
+<li>TableName（业务表明，带命名空间）</li>
+<li>StarRow（业务表Region区间的起始rowkey）</li>
+<li>Timestamp（Region创建的时间戳）</li>
+<li>EncodedName（上面3个字段的MD5 Hex值）</li>
+</ul>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ns1:t1,,1592659846948.9c7ccaa30b993abc7d60a2d790289e51.</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>每一行数据又主要分为4列</p>
+<ul>
+<li><p>info:regioninfo：对应的Value存储4个信息</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">column&#x3D;info:regioninfo, timestamp&#x3D;1592659847921, value&#x3D;&#123;</span><br><span class="line">	&#x2F;&#x2F; EncodedName</span><br><span class="line">    ENCODED &#x3D;&gt; 9c7ccaa30b993abc7d60a2d790289e51, </span><br><span class="line">    &#x2F;&#x2F; RegionName</span><br><span class="line">    NAME &#x3D;&gt; &#39;ns1:t1,,1592659846948.9c7ccaa30b993abc7d60a2d790289e51.&#39;, </span><br><span class="line">    &#x2F;&#x2F; Region的StarRow和StopRow</span><br><span class="line">    STARTKEY &#x3D;&gt; &#39;&#39;, </span><br><span class="line">    ENDKEY &#x3D;&gt; &#39;&#39;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>info:seqnumDuringOpen：存储Region打开时的sequenceId</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">column&#x3D;info:seqnumDuringOpen, timestamp&#x3D;1592659847921, value&#x3D;\x00\x00\x00\x00\x00\x00\x00\x02</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>info:server：存储Region落在哪个RegionServer上</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">column&#x3D;info:server, timestamp&#x3D;1592659847921, value&#x3D;hadoop001:16020</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>info:serverstartcode：所在RegionServer的启动时间戳</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">column&#x3D;info:serverstartcode, timestamp&#x3D;1592659847921, value&#x3D;1592658086718</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-2-2-热点Region问题"><a href="#4-2-2-热点Region问题" class="headerlink" title="4.2.2 热点Region问题"></a>4.2.2 热点Region问题</h4><p>之前说到所有的操作要确定Region的位置，而这些位置信息都在hbase:meta表上。所有请求都访问这个表，那么会产生热点问题。<strong>解决方案就是将Region信息缓存在客户端。</strong></p>
+<p><a href="/postImages/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9A%E4%BD%8DRegion.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9A%E4%BD%8DRegion.png" class="lazyload"></a></p>
+<p>以上就是<strong>客户端定位Region示意图</strong>，在客户端有一个<strong>MetaCache</strong>的缓存，客户端调用API时，会先去缓存中找业务rowkey所在的Region，情况可能如下：</p>
+<ul>
+<li><strong>Region信息为空</strong>：即缓存中没有这个Region信息，那么要去hbase:meta中查找（当然首次查找，需要到ZK集群获取hbase:meta所在的RegionServer）。然后返回一个二元组（regionStartRow, region）放到MetaCache中。</li>
+<li><strong>Region信息不为空，但是RPC请求对应的RegionServer上并没有该Region信息</strong>：说明缓存信息过期了，可能是Region迁移了，这时候就要重新去hbase:meta表找了。</li>
+<li><strong>Region信息不为空，且RPC请求对应的RegionServer上存在该Region信息</strong>：这就是大部分情况。</li>
+</ul>
+<h3 id="4-3-Scan-操作"><a href="#4-3-Scan-操作" class="headerlink" title="4.3 Scan 操作"></a>4.3 Scan 操作</h3><p>常用的有：startRow、endRow、Filter、caching、batch、reversed、maxResultSize、version、timeRange等。</p>
+<p>我们已经知道可以通过 table.getScanner(scan) 可以拿到一个scanner，然后不断执行scanner.next()就能拿到一个Result。</p>
+<blockquote>
+<p>通常一个Result内部有多个cell，这些cell的rowkey一样，就相当于一行完整的数据。如果设置了setBatch那么就有可能是一行的一部分数据，即有batch个cell。</p>
+</blockquote>
+<h4 id="4-3-1-客户端读取Result流程"><a href="#4-3-1-客户端读取Result流程" class="headerlink" title="4.3.1 客户端读取Result流程"></a>4.3.1 客户端读取Result流程</h4><p><a href="/postImages/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%BB%E5%8F%96Result%E6%B5%81%E7%A8%8B.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%BB%E5%8F%96Result%E6%B5%81%E7%A8%8B.png" class="lazyload"></a></p>
+<ol>
+<li><p>每次执行scanner.next()都会去cache队列中<strong>拿一个result</strong>（步骤4）</p>
+</li>
+<li><p>如果cache队列为空，那么发起RPC请求当前scanner后续的result数据（步骤1）</p>
+</li>
+<li><p>客户端收到result列表后（步骤2）</p>
+</li>
+<li><p>通过scanResultCache把这些result内的多个cell进行重组，最终组成用户需要的result放入cache中（步骤3）</p>
+<blockquote>
+<p>为什么要重组？因为RPC请求有限制，达到某个资源阈值就会立即返回当前获取到的cell，即可能无法一次拿那么多数据，那么这时候从服务器返回的result就有可能是一行中的部分数据，而我们需要的result是一行完整的数据。这时候就需要对result进行重组，来获得我们期望的数据。</p>
+</blockquote>
+</li>
+</ol>
+<p>以上步骤1+2+3，称为loadCache。</p>
+<h4 id="4-3-2-Scan的几个重要概念"><a href="#4-3-2-Scan的几个重要概念" class="headerlink" title="4.3.2 Scan的几个重要概念"></a>4.3.2 Scan的几个重要概念</h4><ul>
+<li><strong>caching</strong>：每次loadCache操作最多存放caching个result到cache队列中。控制caching也就可以控制每次loadCache向服务器请求的数据量，避免出现某一次next()操作耗时极长。</li>
+<li><strong>batch</strong>：用户拿到的result中最多含有一行数据中的batch个cell。</li>
+<li><strong>allowPartial</strong>：跳过重组过程，直接把收到的服务端result返回给用户。</li>
+<li><strong>maxResultSize</strong>：loadCache单次RPC操作最多拿到maxResultSize字节的结果集。</li>
+</ul>
+<h3 id="4-4-HBase-客户端避坑指南"><a href="#4-4-HBase-客户端避坑指南" class="headerlink" title="4.4 HBase 客户端避坑指南"></a>4.4 HBase 客户端避坑指南</h3><h4 id="4-4-1-RPC重试配置要点（几个超时参数）"><a href="#4-4-1-RPC重试配置要点（几个超时参数）" class="headerlink" title="4.4.1 RPC重试配置要点（几个超时参数）"></a>4.4.1 RPC重试配置要点（几个超时参数）</h4><ul>
+<li>hbase.rpc.timeout：单次RPC请求的超时时间（默认60 000ms）</li>
+<li>hbase.client.retries.number：调用API时最多容许多生多少次RPC重试操作（默认35次）</li>
+<li>hbase.client.pause：连续两次RPC重试之间的休眠时间（默认100ms。注意采用的是退避算法，也就是说重试次数越多，则休眠时间越长）</li>
+<li>hbase.client.operation.timeout：单次API（即get/put/delete等操作）的超时时间（默认1 200 000ms）</li>
+</ul>
+<h4 id="4-4-2-Scan-Filter-设置"><a href="#4-4-2-Scan-Filter-设置" class="headerlink" title="4.4.2 Scan Filter 设置"></a>4.4.2 Scan Filter 设置</h4><ul>
+<li><p><strong>PrefixFilter（前缀过滤器）</strong></p>
+<p>会返回前缀为指定内容的rowkey，但是不高效，因为会对(-∞,rowkey)区间的内容全部扫描。解决方法是可以设置一个setStartRow()，RegionServer发现有这个属性会首先寻址定位到这个startRow，然后从这个位置开始扫描数据，这样就跳过了大量数据。</p>
+<p>不过，更简单的是<strong>直接设置setStartRow和setStopRow，即区间直接定位。这样效率最高</strong>。</p>
+</li>
+<li><p><strong>PageFilter（分页过滤器）</strong></p>
+<p>用来限制返回的数据数量的。</p>
+<p>注意，HBase里Filter状态全部都是Region内部有效的。如果扫描的数据，一旦从一个Region切换到另一个Region那么之前那个Filter的内部状态就无效了（即计数器清0）。新的Region内部用的是一个新的Filter。</p>
+<p>当然，如果<strong>想实现分页功能，可以直接通过limit实现：setLimit(1000);</strong></p>
+</li>
+</ul>
+<h4 id="4-4-3-少量写和批量写"><a href="#4-4-3-少量写和批量写" class="headerlink" title="4.4.3 少量写和批量写"></a>4.4.3 少量写和批量写</h4><ul>
+<li><strong>table.put(put)：单行数据写入</strong>，在服务端先写WAL，然后邪写到MenStore，一旦写满flush到磁盘上。吞吐量受限于磁盘带宽、网络带宽、flush速度。但是保证不会丢数据，保证put的原子性。</li>
+<li><strong>table.put(List&lt; Put&gt; puts)：批量写入</strong>，在客户端缓存put，凑足一批后打包成一次RPC发送到服务端，一次性写WAL，和MenStore。耗时会长一点，另外如果put分布在多个Region内，可能有一部分会失败（HBase不提供跨Region的多行事务），失败的会重试。</li>
+<li><strong>bulk load：直接将带写入数据生成HFile，直接加载到对应的Region下的CF内</strong>。在HBase服务器端没有任何RPC只有load HFile时会调用，是一种完全离线的快速写入方式。</li>
+</ul>
+<h2 id="五、RegionServer的核心模块"><a href="#五、RegionServer的核心模块" class="headerlink" title="五、RegionServer的核心模块"></a>五、RegionServer的核心模块</h2><p>RegionServer的内部结构，在之前已经了解过了。现在我们来逐个解析。</p>
+<h3 id="5-1-HLog"><a href="#5-1-HLog" class="headerlink" title="5.1 HLog"></a>5.1 HLog</h3><p>HBase中系统故障恢复及主从复制都基于HLog实现。</p>
+<h4 id="5-1-1-HLog文件结构"><a href="#5-1-1-HLog文件结构" class="headerlink" title="5.1.1 HLog文件结构"></a>5.1.1 HLog文件结构</h4><p><a href="/postImages/HLog%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HLog%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<p>每个RegionServer拥有一个或多个HLog（默认1个，1.1以后允许多个）。每个HLog是多个Region共享的。</p>
+<h4 id="5-1-2-HLog文件存储"><a href="#5-1-2-HLog文件存储" class="headerlink" title="5.1.2 HLog文件存储"></a>5.1.2 HLog文件存储</h4><p>在HDFS上的目录：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;hbase&#x2F;WALs&#x2F;hadoop001,16020,1592727464395&#x2F;hadoop001%2C16020%2C1592727464395.1592727473513</span><br></pre></td></tr></table></figure></div>
+
+<p>有3个部分：hadoop001是RegionServer域名，16020端口号，1592727464395目录生成时间戳。</p>
+<p>可以使用命令查看内容：<code>hbase hlog</code> （但是我这个版本好像没有hlog，而是wal）</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[hadoop@hadoop002 &#x2F;home&#x2F;hadoop&#x2F;app&#x2F;hbase-2.2.4&#x2F;logs]$hbase wal &#x2F;hbase&#x2F;WALs&#x2F;hadoop002,16020,1592729053980&#x2F;hadoop002%2C16020%2C1592729053980.1592729063117</span><br><span class="line">Writer Classes: ProtobufLogWriter AsyncProtobufLogWriter</span><br><span class="line">Cell Codec Class: org.apache.hadoop.hbase.regionserver.wal.WALCellCodec</span><br><span class="line">Sequence&#x3D;34, table&#x3D;ns1:t1, region&#x3D;9c7ccaa30b993abc7d60a2d790289e51, at write timestamp&#x3D;Sun Jun 21 16:44:25 CST 2020</span><br><span class="line">row&#x3D;\x00, column&#x3D;METAFAMILY:HBASE::REGION_EVENT::REGION_OPEN</span><br><span class="line">cell total size sum: 320</span><br><span class="line">edit heap size: 360</span><br><span class="line">position: 408</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="5-1-3-HLog生命周期"><a href="#5-1-3-HLog生命周期" class="headerlink" title="5.1.3 HLog生命周期"></a>5.1.3 HLog生命周期</h4><ol>
+<li><p>HLog构建：HBase任何写入（更新、删除）操作都会先把记录追加写入HLog文件中。</p>
+</li>
+<li><p>HLog滚动：HBase后台启动一个线程，每隔一段时间（’<strong>hbase.regionserver.logroll.period</strong>‘决定，默认1小时）进行日志滚动。滚动的主要目的是方便过期日志以文件形式删除。</p>
+</li>
+<li><p>HLog失效：写入数据一旦从MemStore落盘，那么对应的日志数据就失效了。只要日志文件中所有日志记录都已经落盘，那么该文件失效。一旦失效，被移动到oldWALs文件夹。（注意此时HLog还没有被删除）</p>
+</li>
+<li><p>HLog删除：Mater后台会启动一个线程，每隔一段时间（’<strong>hbase.master.cleaner.interval</strong>‘，默认1分钟）检查一次oldWALs文件夹下的所有失效日志文件，确定可以删除后执行删除：（确认条件主要有2个）</p>
+<ul>
+<li><p>该HLog文件是否还在参与主从复制</p>
+</li>
+<li><p>该HLog文件是否已经在oldWALs目录中存在10分钟（可以通过’<strong>hbase.master.logcleaner.ttl</strong>‘设置，默认10分钟）</p>
+<blockquote>
+<p>有个奇怪的地方，我的集群内，oldWALs并不会自动清理！？查阅资料后添加参数也没有效果。即，存在一大堆 /hbase/oldWALs/pv2-00000000000000000596.log 这样的文件，它们生成的时间间隔是1小时，可以看出是HLog滚动的1小时。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-2-MemStore"><a href="#5-2-MemStore" class="headerlink" title="5.2 MemStore"></a>5.2 MemStore</h3><p>HBase没有直接使用原始的跳跃表，而是用了JDK自带的ConcurrentSkipListMap，此外这是线程安全的。</p>
+<p>MemStore由两个ConcurrentSkipListMap实现，写入操作会先写入A，当A中数据量达到阈值之后，会创建B来接受用户新的请求，而已经写满的A，会执行异步flush落盘形成HFile。</p>
+<p><strong>MemStore的GC问题</strong></p>
+<p>既然是缓存，那么就会涉及到GC问题。MemStore本身会占用大量内存，因此GC问题不可避免。而且MemStore的工作模式会引起严重的内存碎片问题。</p>
+<p>一个RegionServer有多个Region构成，一个Region有多个MemStore。而这些所有的MemStore会共享内存，即数据混合在一起。因此如果有一个Region执行落盘操作，那么会产生大量内存碎片。</p>
+<p><strong>MSLAB内存管理方式</strong></p>
+<p>为了解决上述内存碎片可能导致的Full GC。借鉴了线程本地分配缓存的内存管理方式：</p>
+<ol>
+<li>每个MemStore会实例化得到一个MemStoreLAB对象</li>
+<li>MemStoreLAB会申请一个2M大小的Chunk数组，同时维护一个Chunk偏移量，初始为0</li>
+<li>当一个KeyValue值插入MemStore后，MemStoreLAB会把data数组复制到Chunk数组中，然后移动偏移量</li>
+<li>当前Chunk满了之后，再申请一个新的Chunk</li>
+</ol>
+<p>这样通过整块的方案即将一个Region的数据放到一起，可以很大程度减少内存碎片。但是这还存在一些小问题。</p>
+<p><strong>MemStore Chunk Pool</strong></p>
+<p>当Chunk写满之后，系统会重新申请一个新的Chunk，新建Chunk对象会再JVM的新生代申请内存，如果申请比较频繁会导致JVM的新生代Eden区满掉，触发YGC。</p>
+<p>MemStore Chunk Pool 的思路：</p>
+<ol>
+<li>系统创建一个Chunk Pool来管理所有未被引用的Chunk，这些Chunk就不会再被JVM当作垃圾回收。</li>
+<li>如果一个Chunk没有再被引用，将其放入Chunk Pool</li>
+<li>如果当前Chunk Pool已经达到容量最大值，就不会再接纳新的Chunk</li>
+<li>如果需要申请新的Chunk来存储KeyValue，首先从Chunk Pool中获取，如果有就重复利用，没有就申请一个新的Chunk。</li>
+</ol>
+<h3 id="5-3-HFile"><a href="#5-3-HFile" class="headerlink" title="5.3 HFile"></a>5.3 HFile</h3><h4 id="5-3-1-逻辑结构-V2"><a href="#5-3-1-逻辑结构-V2" class="headerlink" title="5.3.1 逻辑结构(V2)"></a>5.3.1 逻辑结构(V2)</h4><p><a href="/postImages/HFile%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HFile%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<p>HFile文件主要有4个部分：</p>
+<ul>
+<li><p><strong>Scanned Block</strong> 部分：表示顺序扫描的时候数据块将会被读取。</p>
+<blockquote>
+<p>这个部分包含3个数据块：</p>
+<ol>
+<li>Data Block：存储用户KeyValue数据</li>
+<li>Leaf Index Block：存储索引树的叶子节点数据（索引树有3层，这是最后一层）</li>
+<li>Bloom Block：存储布隆过滤器相关数据</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>Non-scanned  Block</strong> 部分：再HFile顺序扫描时候数据不会被读取</p>
+<blockquote>
+<p>主要包括两部分：</p>
+<ol>
+<li>Meta Block</li>
+<li>Intermediate Level Data Index Blocks（索引树第二层）</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>Load-on-open</strong> 部分：这部分数据会在RegionServer打开HFile时直接加载到内存中</p>
+<blockquote>
+<p>包括：</p>
+<ol>
+<li>FlieInfo：固定长度数据块，主要记录文件的一些统计元信息，比较重要的是AVG_KEY_LEN和AVG_VALUE_LEN分别表示平均Key和Value的长度</li>
+<li>布隆过滤器MetaBlock：记录布隆过滤器相关元数据信息</li>
+<li>RootDataIndex（索引树第一层，即索引树根节点信息）</li>
+<li>Meta Index Block</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>Trailer</strong> 部分：主要记录了HFile的版本信息、<strong>其他各个部分</strong>的偏移值和寻址信息。</p>
+</li>
+</ul>
+<h4 id="5-3-2-物理结构"><a href="#5-3-2-物理结构" class="headerlink" title="5.3.2 物理结构"></a>5.3.2 物理结构</h4><p><a href="/postImages/HFile%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HFile%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<p>HFile文件由各种不同类型的Block（数据块）构成，虽然这些<strong>Block的类型不一样，但是数据结构相同</strong>。</p>
+<p>Block的大小可以创建列族的时候加上参数 blocksize=&gt;’65535’ 指定，默认是64K。大号Block有利于大规模顺序扫描，而小号Block有利于随机查找。</p>
+<p><strong>HFileBlock 结构</strong></p>
+<p><a href="/postImages/HFileBlock%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HFileBlock%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<p>HFileBlock主要包含两部分：</p>
+<ul>
+<li><p>BlockHeader：存储相关元数据</p>
+<ul>
+<li><p>BlockType：最核心字段，表示Block的类型。HBase定义了8种BlockType类型，核心如下：</p>
+<p><a href="/postImages/%E6%A0%B8%E5%BF%83BlockType.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E6%A0%B8%E5%BF%83BlockType.png" class="lazyload"></a></p>
+</li>
+</ul>
+</li>
+<li><p>BlockData：存储具体数据</p>
+</li>
+</ul>
+<h4 id="5-3-3-HFile基础Block"><a href="#5-3-3-HFile基础Block" class="headerlink" title="5.3.3 HFile基础Block"></a>5.3.3 HFile基础Block</h4><h5 id="1-Trailer-Block"><a href="#1-Trailer-Block" class="headerlink" title="1) Trailer Block"></a>1) Trailer Block</h5><p>主要记录了HFile的版本信息、各个部分的偏移量和寻址地址信息。</p>
+<p><a href="/postImages/TrailerBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/TrailerBlock.png" class="lazyload"></a></p>
+<p>RegionServer在打开HFile时，会加载所有HFile的<strong>Trailer部分</strong>以及<strong>load-on-open部分</strong>到内存中。实际加载过程首先会解析Trailer Block，然后进一布加载load-on-open。具体步骤如下：</p>
+<ol>
+<li>加载 HFile version 版本信息，包含majorVersion和minorVersion（主版本V1、V2还是V3，次版本信息），不同版本使用不同的文件解析器对HFile进行读取解析。</li>
+<li>HBase根据version信息计算Trailer Block大小，加载整个HFile Trailer Block到内存中。其中有很多信息，如上图。</li>
+<li>然后根据其中两个重要字段：LoadOnOpenDataOffset和LoadOnOpenDataSize，前者表示偏移量，后者表示大小。HBase会在启动后讲load-on-open部分的数据全部加载到内存中。</li>
+</ol>
+<h5 id="2-Data-Block"><a href="#2-Data-Block" class="headerlink" title="2) Data Block"></a>2) Data Block</h5><p>Bata Block 是 HBase中文件读取的最小单元。Data Block中存储用户的KeyValue（HBase存储的核心），HBase中所有数据都是以KeyValue结构存储在HBase中。</p>
+<p><a href="/postImages/DataBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/DataBlock.png" class="lazyload"></a></p>
+<p><strong>KeyValue结构</strong>：</p>
+<p>其中key length 和 value length 是两个固定长度的数值。value是实际写入的数据。</p>
+<p>key由多个部分组成，从上图可以看出有各个部分。其中<strong>KeyType类型有4种：Put、Delete、DeleteColumn、DeleteFamily</strong></p>
+<p>从这里可以看出，每个KeyValue都包含rowkey、column family、column qulifier。因此在表结构设计时，这些字段尽可能设置短的原因。</p>
+<h5 id="3-布隆过滤器相关Block"><a href="#3-布隆过滤器相关Block" class="headerlink" title="3) 布隆过滤器相关Block"></a>3) 布隆过滤器相关Block</h5><p>布隆过滤器之前说过了。可以想象HFile文件越大，里面KeyValue存储的越多，那么位数组就相应越大，太大就不适合加载到内存了。因此HFile V2 在设计上将位数组进行拆分成多个独立的位数组（根据Key拆分，一部分连续JKey使用一个位数组）。这样根据Key查询的时候，只要加载相应的位数组，减少内存开销。</p>
+<p>在文件结构上多个位数组对应多个Bloom Block（数组+firstkey），为了方便定位对应的位数组，V2又设计了Bloom Index Block：</p>
+<p><a href="/postImages/BloomIndexBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/BloomIndexBlock.png" class="lazyload"></a></p>
+<p><strong>HFile种仅有一个Bloom Index Block数据块，位于load-on-open部分。</strong>如上图，从大方向上可以分为2部分：一个是HFile种布隆过滤器元数据基本信息（绿色），以及指向Bloom Block的索引项（红色）。</p>
+<p>其中<strong>Block Key（图上显示FirstKey）</strong>是个非常关键的字段，表示该Index Entry指向的Bloom Block种第一个KV的Key值。<strong>BlockOffset</strong>表示对应Bloom Block在HFile中的偏移量。</p>
+<p><strong>get请求根据布隆过滤器查找流程：</strong></p>
+<ol>
+<li>首先根据带查找Key在Bloom Index Block所有的索引项中根据BlockKey进行二分查找。定位到对应的Bloom Index Entry。</li>
+<li>再根据Bloom Index Entry中BlockOffset以及BlockOndiskSize加载该Key对应的位数组</li>
+<li>对Key进行Hash映射，根据映射结果再位数组中查看是否都是1，如果不是，表示不存在Key，否则有可能存在。</li>
+</ol>
+<h5 id="4-索引相关Block"><a href="#4-索引相关Block" class="headerlink" title="4) 索引相关Block"></a>4) 索引相关Block</h5><p>根据索引层级不同，HFile中索引结构分为两种：single-level和mutil-level，前者表示单层索引，后者表示多级索引，一般为两级或者三级。</p>
+<p>V2版本的Index Block有两类：</p>
+<ol>
+<li><p><strong>Root Index Block</strong>（索引数根节点，属于load-on-open部分）</p>
+<p> <a href="/postImages/RootIndexBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/RootIndexBlock.png" class="lazyload"></a></p>
+<p>如图为多层索引的结构（单层索引，仅仅缺少mid的3个字段）。其中Index Entry为具体的索引对象。由3个字段组成：<strong>索引指向的DataBlock偏移量</strong>、<strong>DataBlock在磁盘上的大小</strong>、<strong>索引指向DataBlock中第一个的Key</strong>。</p>
+<p>除此之外的MidKey相关信息，用于在对HFile进行split操作时，快速定位HFile的切分点位置。</p>
+</li>
+<li><p>NonRoot Index Block</p>
+<ul>
+<li><strong>Intermediate Index Block</strong>（中间节点，属于Non-Scanned block 部分）</li>
+<li><strong>Leaf Index Block</strong>（叶子节点，直接指向实际DataBlock。属于scanned block部分）</li>
+</ul>
+<p><a href="/postImages/HFile%E6%96%87%E4%BB%B6%E7%B4%A2%E5%BC%95.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HFile%E6%96%87%E4%BB%B6%E7%B4%A2%E5%BC%95.png" class="lazyload"></a></p>
+<p>一开始，由于HFile刚开始数量小，索引采用单层索引，只有Root Index一层索引，直接指向Data Block。当数据变大的时候，Root Index Block大小超过阈值后，索引分裂为多级结构，由一层索引变为两层，根节点指向叶子节点，叶子节点指向实际Data Block。如果数据更大，索引层变为三层。</p>
+</li>
+</ol>
+<p>   <strong>NonRootIndexBlock 结构</strong></p>
+<p>   <a href="/postImages/NonRootIndexBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/NonRootIndexBlock.png" class="lazyload"></a></p>
+<p>   不管是中间还是叶子节点，结构都是一样的。和根索引块不同的是多了一个内部索引（entry offset），表示index Entry相对于第一个Index Entry的偏移量。用于实现二分查找，加快速度。</p>
+<h4 id="5-3-4-HFile文件查看工具"><a href="#5-3-4-HFile文件查看工具" class="headerlink" title="5.3.4 HFile文件查看工具"></a>5.3.4 HFile文件查看工具</h4><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hbase hfile</span><br><span class="line">usage: hfile [-a] [-b] [-e] [-f &lt;arg&gt; | -r &lt;arg&gt;] [-h] [-i] [-k] [-m] [-p]</span><br><span class="line">       [-s] [-v] [-w &lt;arg&gt;]</span><br><span class="line"> -a,--checkfamily         Enable family check</span><br><span class="line"> -b,--printblocks         Print block index meta data</span><br><span class="line"> -e,--printkey            Print keys</span><br><span class="line"> -f,--file &lt;arg&gt;          File to scan. Pass full-path; e.g.</span><br><span class="line">                          hdfs:&#x2F;&#x2F;a:9000&#x2F;hbase&#x2F;hbase:meta&#x2F;12&#x2F;34</span><br><span class="line"> -h,--printblockheaders   Print block headers for each block.</span><br><span class="line"> -i,--checkMobIntegrity   Print all cells whose mob files are missing</span><br><span class="line"> -k,--checkrow            Enable row order check; looks for out-of-order</span><br><span class="line">                          keys</span><br><span class="line"> -m,--printmeta           Print meta data of file</span><br><span class="line"> -p,--printkv             Print key&#x2F;value pairs(这个可以直接打印KV内容)</span><br><span class="line"> -r,--region &lt;arg&gt;        Region to scan. Pass region name; e.g.</span><br><span class="line">                          &#39;hbase:meta,,1&#39;</span><br><span class="line"> -s,--stats               Print statistics</span><br><span class="line"> -v,--verbose             Verbose output; emits file and meta data</span><br><span class="line">                          delimiters</span><br><span class="line"> -w,--seekToRow &lt;arg&gt;     Seek to this row and print all the kvs for this</span><br><span class="line">                          row only</span><br></pre></td></tr></table></figure></div>
+
+<p>示例：通过shell命令来查看内容，这里引用6.2.2生成的HFile来进行查看：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hbase hfile -m -f hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData&#x2F;out&#x2F;f1&#x2F;5314cd3465004280a7ad779dbcbe6a2f</span><br><span class="line"></span><br><span class="line">2020-06-22 23:57:39,198 INFO  [main] metrics.MetricRegistries: Loaded MetricRegistries class org.apache.hadoop.hbase.metrics.impl.MetricRegistriesImpl</span><br><span class="line">Block index size as per heapsize: 320</span><br><span class="line">reader&#x3D;hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData&#x2F;out&#x2F;f1&#x2F;5314cd3465004280a7ad779dbcbe6a2f,</span><br><span class="line">    compression&#x3D;none,</span><br><span class="line">    cacheConf&#x3D;cacheDataOnRead&#x3D;false,</span><br><span class="line">    cacheDataOnWrite&#x3D;false,</span><br><span class="line">    cacheIndexesOnWrite&#x3D;false,</span><br><span class="line">    cacheBloomsOnWrite&#x3D;false,</span><br><span class="line">    cacheEvictOnClose&#x3D;false,</span><br><span class="line">    cacheDataCompressed&#x3D;false,</span><br><span class="line">    prefetchOnOpen&#x3D;false,</span><br><span class="line">    firstKey&#x3D;Optional[row100&#x2F;f1:age&#x2F;1592841003333&#x2F;Put&#x2F;seqid&#x3D;0],</span><br><span class="line">    lastKey&#x3D;Optional[row102&#x2F;f1:name&#x2F;1592841003333&#x2F;Put&#x2F;seqid&#x3D;0],</span><br><span class="line">    avgKeyLen&#x3D;23,</span><br><span class="line">    avgValueLen&#x3D;3,</span><br><span class="line">    entries&#x3D;9,</span><br><span class="line">    length&#x3D;5319</span><br><span class="line">Trailer:</span><br><span class="line">    fileinfoOffset&#x3D;531,</span><br><span class="line">    loadOnOpenDataOffset&#x3D;421,</span><br><span class="line">    dataIndexCount&#x3D;1,</span><br><span class="line">    metaIndexCount&#x3D;0,</span><br><span class="line">    totalUncomressedBytes&#x3D;5226,</span><br><span class="line">    entryCount&#x3D;9,</span><br><span class="line">    compressionCodec&#x3D;NONE,</span><br><span class="line">    uncompressedDataIndexSize&#x3D;36,</span><br><span class="line">    numDataIndexLevels&#x3D;1,</span><br><span class="line">    firstDataBlockOffset&#x3D;0,</span><br><span class="line">    lastDataBlockOffset&#x3D;0,</span><br><span class="line">    comparatorClassName&#x3D;org.apache.hadoop.hbase.CellComparatorImpl,</span><br><span class="line">    encryptionKey&#x3D;NONE,</span><br><span class="line">    majorVersion&#x3D;3,</span><br><span class="line">    minorVersion&#x3D;3</span><br><span class="line">Fileinfo:</span><br><span class="line">    BLOOM_FILTER_TYPE &#x3D; ROW</span><br><span class="line">    BULKLOAD_SOURCE_TASK &#x3D; attempt_1592722718442_0004_r_000000_0</span><br><span class="line">    BULKLOAD_TIMESTAMP &#x3D; 1592841004789</span><br><span class="line">    DELETE_FAMILY_COUNT &#x3D; 0</span><br><span class="line">    EARLIEST_PUT_TS &#x3D; 1592841003333</span><br><span class="line">    EXCLUDE_FROM_MINOR_COMPACTION &#x3D; false</span><br><span class="line">    KEY_VALUE_VERSION &#x3D; 1</span><br><span class="line">    LAST_BLOOM_KEY &#x3D; row102</span><br><span class="line">    MAJOR_COMPACTION_KEY &#x3D; true</span><br><span class="line">    MAX_MEMSTORE_TS_KEY &#x3D; 0</span><br><span class="line">    TIMERANGE &#x3D; 1592841003333....1592841003333</span><br><span class="line">    hfile.AVG_KEY_LEN &#x3D; 23</span><br><span class="line">    hfile.AVG_VALUE_LEN &#x3D; 3</span><br><span class="line">    hfile.CREATE_TIME_TS &#x3D; 0</span><br><span class="line">    hfile.LASTKEY &#x3D; row102&#x2F;f1:name&#x2F;1592841003333&#x2F;Put&#x2F;vlen&#x3D;0&#x2F;mvcc&#x3D;0</span><br><span class="line">    hfile.MAX_TAGS_LEN &#x3D; 0</span><br><span class="line">    hfile.TAGS_COMPRESSED &#x3D; false</span><br><span class="line">Mid-key: Optional[row100&#x2F;f1:age&#x2F;1592841003333&#x2F;Put&#x2F;seqid&#x3D;0]</span><br><span class="line">Bloom filter:</span><br><span class="line">    BloomSize: 8</span><br><span class="line">    No of Keys in bloom: 3</span><br><span class="line">    Max Keys for bloom: 6</span><br><span class="line">    Percentage filled: 50%</span><br><span class="line">    Number of chunks: 1</span><br><span class="line">    Comparator: ByteArrayComparator</span><br><span class="line">Delete Family Bloom filter:</span><br><span class="line">    Not present</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="5-4-BlockCache"><a href="#5-4-BlockCache" class="headerlink" title="5.4 BlockCache"></a>5.4 BlockCache</h3><p>BlockCache是RegionServer级别的，一个RegionServer只有一个BlockCache，在RegionServer启动的时候完成初始化工作。目前为止有3种实现方案：</p>
+<ul>
+<li><strong>LRUBlockCache（默认）</strong>：将数据放入JVM Heap中</li>
+<li><strong>SlabCache</strong>：部分数据存放在堆外，可以缓解系统长事件GC</li>
+<li><strong>BucketCache</strong>：同上</li>
+</ul>
+<h2 id="六、HBase读写流程"><a href="#六、HBase读写流程" class="headerlink" title="六、HBase读写流程"></a>六、HBase读写流程</h2><h3 id="6-1-HBase写入流程"><a href="#6-1-HBase写入流程" class="headerlink" title="6.1 HBase写入流程"></a>6.1 HBase写入流程</h3><p><a href="/postImages/HBase%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HBase%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B.png" class="lazyload"></a></p>
+<h4 id="6-1-1-客户端处理阶段"><a href="#6-1-1-客户端处理阶段" class="headerlink" title="6.1.1 客户端处理阶段"></a>6.1.1 客户端处理阶段</h4><ol>
+<li><p>用户提交put请求后，HBase客户端会将写入的数据添加到本地缓冲区中，符合一定条件（阈值大小默认2M）就会通过AsyncProcess异步批量提交。</p>
+<blockquote>
+<p><strong>注意！HBase默认设置autoflush为true，表示put请求会直接提交给服务器处理</strong>。将autoflush设置成false后，可以极大提升写入吞吐量，但是没有保护机制，如果客户端崩溃，会导致已经提交的数据丢失。</p>
+</blockquote>
+</li>
+<li><p>在提交前，HBase会在元数据表hbase:meta中根据rowkey找到它们归属的RegionServer。如果是批量请求，还会把这些rowkey按照HRegionLocation分组，不同分组的请求意味着发送到不同的RegionServer，因此每个分组对应一次RPC请求。</p>
+<p><a href="/postImages/%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B%E5%90%84%E7%BB%84%E4%BB%B6%E4%BA%A4%E4%BA%92.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B%E5%90%84%E7%BB%84%E4%BB%B6%E4%BA%A4%E4%BA%92.png" class="lazyload"></a></p>
+<ul>
+<li>首先客户端根据rowkey在元数据缓存中查找，如果能找到该rowkey所在的RegionServer和Region，就可以直接发送写入请求（携带Region信息）到目标RegionServer</li>
+<li>如果客户端缓存没有找到对应信息，那么就要去ZK集群获取hbase:mate表所在的RegionServer，然后向该RegionServer发送查询请求，在hbase:meta表中查找rowkey所在的RegionServer以及Region信息，并将结果缓存在客户端。</li>
+<li>客户端根据获得的相关元数据信息将写入请求发送给目标RegionServer。</li>
+</ul>
+</li>
+</ol>
+<h4 id="6-1-2-Region-写入阶段"><a href="#6-1-2-Region-写入阶段" class="headerlink" title="6.1.2 Region 写入阶段"></a>6.1.2 Region 写入阶段</h4><p>服务端RegionServer接受到客户端的写入请求后，首先会反序列化为put对象，然后执行各种检查。检查后，执行一系列核心操作：</p>
+<ol>
+<li><p><strong>Acquire locks</strong>：HBase中使用行锁保证对同一行数据的更新原子性。</p>
+</li>
+<li><p><strong>Update LATEST_TIMESTAMP timestamp</strong>：更新所有待写入（更新）KeyValue的时间戳为当前系统时间。</p>
+</li>
+<li><p><strong>Build WAL edit</strong>：在内存中构建WALEdit对象。（<strong>注意！这时候还没有写到HLog</strong>）</p>
+</li>
+<li><p><strong>Append WALEdit To WAL</strong>：将步骤3中构造的在内存中的WALEdit记录顺序写入HLog中，此时不需要sync（同步到HDFS）操作。</p>
+<blockquote>
+<p><strong>1. HLog持久化等级</strong></p>
+<ul>
+<li>SKIP_WAL：只写缓存，不写HLog。有数据丢失风险。</li>
+<li>ASYNC_WAL：异步将数据写入HLog日志中。</li>
+<li>SYNC_WAL：同步将数据写入日志文件中，注意数据只是写入文件系统，并没有真正落盘。还要看HDFS Flush策略。</li>
+<li>FSYNC_WAL：同步将数据写入日志文件并强制落盘。</li>
+<li>USER_DEFAULT：默认使用SYNC_WAL</li>
+</ul>
+<p><strong>2. HLog写入模型</strong></p>
+<p>HLog写入都要经过3个阶段：<strong>首先将数据写入本地缓存，然后将本地缓存写入文件系统，最后执行sync操作同步到磁盘</strong>。</p>
+<p>当前版本使用了LMAX Disruptor框架实现了无锁有界队列操作。</p>
+</blockquote>
+</li>
+<li><p><strong>Write back to MemStore</strong>：写入WAL之后，再将数据写入MemStore。</p>
+<blockquote>
+<p>MemStore使用数据结构ConcurrentSkipListMap来实际存储KeyValue。</p>
+<p>根据之前的知识可以知道HBase使用了MSLAB机制，预先申请一个大的（2M）Chunk内存，避免严重的内存碎片问题而触发的Full GC。写入的KeyValue会进行一次封装，顺序拷贝到这个Chunk中。因此MemStore写入过程可以归为3步：</p>
+<ol>
+<li>检查当前Chunk是否写满，如果写满，重新申请一个2M的Chunk</li>
+<li>将当前KeyValue在内存中重新构建，在可用Chunk的指定offset处申请内存创建一个新的KeyValue</li>
+<li>将新创建的KeyValue对象写入ConcurrentSkipListMap中。</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>Release row locks</strong>：释放行锁。</p>
+</li>
+<li><p><strong>Sync wal</strong>：HLog真正sync到HDFS，再释放行锁之后执行sync操作是为了尽量减少持锁时间，提升写性能。<strong>如果sync失败，执行回滚操作将MemStore中已经写入的数据移除</strong>。</p>
+</li>
+<li><p><strong>结束写事务</strong>：此时该线程的更新操作才会对其他读请求可见，更新才实际生效。</p>
+</li>
+</ol>
+<h4 id="6-1-3-MemStore-Flush-阶段"><a href="#6-1-3-MemStore-Flush-阶段" class="headerlink" title="6.1.3 MemStore Flush 阶段"></a>6.1.3 MemStore Flush 阶段</h4><p>当MemStore越来越大，达到一定的条件的时候，就会触发flush操作：</p>
+<h5 id="1-触发条件"><a href="#1-触发条件" class="headerlink" title="1) 触发条件"></a>1) 触发条件</h5><ul>
+<li><p>MemStore级别限制：Region中任意一个MemStore大小达到上限（hbase.hregion.memstore.flush.size，默认128MB）</p>
+</li>
+<li><p>Region级别限制：当Region中所有MemStore的大小总和达到上限（hbase.hregion.memstore.block.multiplier * hbase.hregion.memstore.flush.size）</p>
+</li>
+<li><p>RegionServer级别限制：当RegionServer中MemStore的大小总和超过低水位阈值（hbase.regionserver.global.memstore.size.lower.limit * hbase.regionserver.global.memstore.size）开始强制执行flush，先flush MemStore最大的Region，再flush次大的。</p>
+<blockquote>
+<p>如果此时写入吞吐量依然很高，导致总MemStore大小超过高水位阈值hbase.regionserver.global.memstore.size，<strong>RegionServer会阻塞更新并强制执行flush，直至总MemStore大小下降到低水位阈值</strong>。</p>
+</blockquote>
+</li>
+<li><p>当一个RegionServer中HLog数量达到上限（hbase.regionserver.maxlogs）</p>
+</li>
+<li><p>HBase定期刷新MemStore（默认周期1小时，确保MemStore不会长时间没有持久化）</p>
+</li>
+<li><p>手动执行flush（可以通过shell命令：flush ‘tablename’ 或者 flush ‘regionname’分别对表和Region进行flush）</p>
+</li>
+</ul>
+<blockquote>
+<p>一般情况下flush不会对系统有太大的影响，只有RegionServe级别的会阻塞所有落在该RegionServer上的写入操作。直到MemStore数据量降低到配置阈值内。</p>
+</blockquote>
+<h5 id="2-执行流程"><a href="#2-执行流程" class="headerlink" title="2) 执行流程"></a>2) 执行流程</h5><p>为了减少flush过程对读写的影响（写数据的时候会写到MemStore，而再flush的时候数据不能改变），HBase采用了类似于两个阶段提交的方式，将flush过程分为3个阶段：</p>
+<ol>
+<li><p><strong>prepare阶段</strong>：遍历当前Region中所有的MemStore，将MemStore中当前数据集CellSkipListSet（内部实现采用ConcurrentSkipListMap）做一个快照snapshot，然后再新建一个CellSkipListSet接受新的数据写入（即5.2中说的AB两个跳跃表）。</p>
+</li>
+<li><p><strong>flush阶段</strong>：遍历所有MemStore，将prepare阶段生成的snapshot持久化为临时文件（<strong>第3点介绍具体流程</strong>），这个过程涉及磁盘IO操作，因此相对耗时。</p>
+</li>
+<li><p><strong>commit阶段</strong>：遍历所有的MemStore，将flush阶段生成的临时文件移到指定的ColumnFamily目录下（应该就是HDFS目录 /hbase/data/命名空间/表名/region名/列族名 下），针对HFile生成对应的storeflie(实际上StoreFile就是对HFile做了轻量级包装，即StoreFile底层就是HFile)和Reader，把storefile添加到Store的storefiles列表中，最后再清空prepare阶段生成的snapshot。</p>
+</li>
+</ol>
+<h5 id="3-HFile-文件构建流程"><a href="#3-HFile-文件构建流程" class="headerlink" title="3) HFile 文件构建流程"></a>3) HFile 文件构建流程</h5><p>HBase执行flush操作之后将内存中的数据按照特定格式写成HFile文件，<strong>HFile文件中各个Block部分的构建流程</strong>如下：（文件结构在5.3中已经说明）</p>
+<ol>
+<li><p><strong>构建“Scanned Block”部分</strong></p>
+<ol>
+<li><p>MemStore执行flush，首先新建一个Scanner，这个Scanner从存储KV数据的CellSkipListSet中<strong>依次从小到大读出每个cell（KeyValue）</strong>。</p>
+</li>
+<li><p>appendGrneralBloomFilter：在内存中使用布隆过滤器算法构建Bloom Block，下文也称为（Bloom Chunk）。</p>
+</li>
+<li><p>appendDeleteFamilyBloomFilter：针对标记为”DeleteFamily”或者”DeleteFamilyVersion”的cell，在内存中使用布隆过滤器算法构建Bloom Block，基本流程和appendGrneralBloomFilter相同。</p>
+</li>
+<li><p>（HFile.Write）writer.append：将cell写入Data Block中，这是<strong>HFile构建的核心</strong>。</p>
+</li>
+</ol>
+</li>
+<li><p><strong>构建 Bloom Block</strong></p>
+<p>布隆过滤器内存中维护了多个称为chunk（即Block，具体实现叫Chunk）的数据结构，一个chunk的组成：</p>
+<ul>
+<li><strong>一块连续的内存区域</strong>，主要存储一个特定的数组。默认数组中所有位都是0。对于row类型的布隆过滤器，cell进来之后会对其rowkey执行hash映射，将其映射到位数组某一位，并修改值为1。</li>
+<li><strong>fistkey</strong>，第一个写入该chunk的cell的rowkey，用来构建Bloom Index Block（可以看5.3.3第3点图中左边红色部分）。</li>
+</ul>
+<blockquote>
+<p>cell写进来之后，首先判断当前chunk是否已经写满（chunk个数是否超过阈值）。如果超过阈值，会重新申请一个新的chunk，并将当前chunk加入ready chunks集合中。如果没有写满，则根据布隆过滤器算法使用多个hash函数分别对cell的rowkey进行映射，并修改值为1。</p>
+</blockquote>
+</li>
+<li><p><strong>构建 Data Block</strong></p>
+<p>一个cell在内存中生成对应的布隆过滤器信息（即，位数组置1）之后就会写入DataBlock，写入过程分两步：</p>
+<ol>
+<li><p><strong>Encoding Key Value：使用特定编码对cell进行编码处理。</strong></p>
+<blockquote>
+<p>编码思路：根据上一个KeyValue和当前KeyValue比较之后取delta（即，分别对rowkey、column family、 column进行比较然后取delta）。假如前后两个前后两个KeyValue的rowkey相同，当前rowkey就可以用一个特定的flag标记，不需要完整地存储整个rowkey。这样在某些场景下可以极大减少存储空间。</p>
+</blockquote>
+</li>
+<li><p><strong>将编码后的KeyValue写入DataOutputStream</strong></p>
+<blockquote>
+<p>随着cell不断写入，当前Data Block会因为大小超过阈值（默认64KB）而写满。写满后Data Block会将DataOutputStream的数据flush到文件，该Data Block此时完成落盘。</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><p><strong>构建 Leaf Index Block</strong></p>
+<p>Data Block落盘之后会立刻在内存中构建一个Leaf Index Entry对象，并加入到当前Leaf Index Block中。Leaf Index Entry对象有三个重要字段：</p>
+<ul>
+<li><strong>firstKey</strong>：落盘Data Block的第一个key。用来作为索引节点的实际内容。</li>
+<li><strong>blockOffset</strong>：落盘Data Block在HFile文件中的偏移量。用于定位Data Block。</li>
+<li><strong>blockDataSize</strong>：落盘Data Block的大小。用于定位之后加载数据。</li>
+</ul>
+<blockquote>
+<p>同样的，Leaf Index Block随着Entry的不断写入慢慢变大，一旦超过阈值（64KB），就要flush到文件执行落盘。需要注意的是，Leaf Index Block落盘是追加写入文件的，所以会形成HFile中Data Block和Leaf Index Block交叉出现的原因。</p>
+<p>和Data Block一样，在Leaf Index Block落盘之后，还需要往上构建Root Index Entry并写入Root Index Block，形成索引树的根节点。但是根节点没有追加写入到”Scanned block”部分，而是最后写入”load-on-open”。</p>
+</blockquote>
+</li>
+<li><p><strong>构建 Bloom Block Index</strong></p>
+<p>完成Data Block落盘还有一件非常重要的事情：检查是否有已经写满的Bloom Block。如果有，将该Bloom Block追加写入文件（在第二步中只是把chunk加到一个集合中），在内存中构建一个Bloom Index Entry并写入Bloom Index Block。</p>
+</li>
+<li><p><strong>基本流程总结</strong></p>
+<p>flush阶段生成的HFile和Compaction阶段生成的HFile流程完全相同，不同的是flush读取的MemStore中的KeyValue，而Compaction读取的是多个HFile中的KeyValue写成一个大的HFile，即KeyValue来源不同。</p>
+<p>首先<strong>从MemStore中获取KeyValue</strong>，然后根据KeyValue通过布隆过滤器算法<strong>生成Bloom Block</strong>加到ready chunks集合中，然后<strong>写入Data Block</strong>。一旦Data Block写满，就要将其<strong>落盘</strong>，同时构造一个索引<strong>Leaf Index Entry</strong> 加到 <strong>Leaf Index Block</strong>中，直到写满<strong>落盘</strong>（追加到Data Block之后）时，再构造一个索引<strong>Root Index Entry</strong> 加到 <strong>Root Index Block</strong>（后期写入”load-on-open”）。紧接着Data Block落盘，在raedy chunks中的chunk也要落盘（即，<strong>Bloom Block落盘</strong>），也是追加写入的。然后构建该Bloom Block的索引 <strong>Bloom Index Entry</strong> 加到 <strong>Bloom Index Block</strong>。 </p>
+<p>实际上，每写入一个KeyValue就会动态的去构建“Scanned Block”部分，等所有KeyValue都写入完成之后再再静态地构建“Non-scanned Block”部分、“Load on open”部分以及“Trailer”部分。</p>
+</li>
+</ol>
+<h3 id="6-2-BulkLoad-功能"><a href="#6-2-BulkLoad-功能" class="headerlink" title="6.2 BulkLoad 功能"></a>6.2 BulkLoad 功能</h3><p>有这么一个场景：</p>
+<p>用户数据位于HDFS中，业务需要定期将这部分数据海量导入HBase系统，以执行随机查询更新操作。这种场景如果调用API操作的话，会给RegionServer带来极大的压力。</p>
+<ul>
+<li>RegionServer频繁flush，不断compact、split。影响稳定性。</li>
+<li>RegionServer频繁GC。</li>
+<li>消耗大量CPU、带宽、内存、IO资源，与其他资源产生竞争。</li>
+<li>某些场景下，比如平均KV大小比较大，会耗尽RegionServer的处理线程，导致集群阻塞。</li>
+</ul>
+<p>在4.4.3中提到过。bulk load：直接将带写入数据生成HFile，直接加载到对应的Region下的CF内。在HBase服务器端没有任何RPC只有load HFile时会调用，是一种完全离线的快速写入方式。</p>
+<h4 id="6-2-1-核心流程"><a href="#6-2-1-核心流程" class="headerlink" title="6.2.1 核心流程"></a>6.2.1 核心流程</h4><ol>
+<li><p>HFile生成阶段</p>
+<p>这个阶段会运行一个MapReduce任务，mapper需要自己来实现。将HDFS文件中的数据读出来组装成一个复合KV，其中Key是rorkey，Value可以是KeyValue对象、Put对象甚至是Delete对象；reducer由HBase负责，通过HFileOutputFormat2.configureIncrementalLoad()进行配置，这个方法负责：</p>
+<ul>
+<li>根据表信息配置一个全局有序的partitioner</li>
+<li>将partitioner文件上传到HDFS集群并写入DistributedCache</li>
+<li>设置 reduce task 的个数为目标Region的个数</li>
+<li>设置输出key/value类满足HFileOutputFormat所规定的格式要求</li>
+<li>根据类型设置reducer执行相应的排序（KeyValueSortReducer或者PutSortReducer）</li>
+</ul>
+<p><strong>这个阶段会为每个Region生成一个对应的HFile文件</strong></p>
+</li>
+<li><p>HFile导入阶段</p>
+<p>在HFile准备就绪后，就可以使用工具completebulkload将HFile加载到在线HBase集群。completebulkload工具负责：</p>
+<ul>
+<li>依次检查第一步生成的所有HFile文件，将每个文件映射到对应的Region</li>
+<li>将HFile文件移动到对应Region所在的HDFS文件目录下</li>
+<li>告知Region对应的RegionServer，加载HFile文件对外提供服务</li>
+</ul>
+</li>
+</ol>
+<p><a href="/postImages/Bulkload%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/Bulkload%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.png" class="lazyload"></a></p>
+<h4 id="6-2-2-基础案例"><a href="#6-2-2-基础案例" class="headerlink" title="6.2.2 基础案例"></a>6.2.2 基础案例</h4><ol>
+<li><p><strong>生成HDFS上的数据源</strong></p>
+<p>BulkLoad的数据源一定是在HDFS上的文件！如果是其他地方的数据要转换成HDFS上的文件。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 首先我们创建一个文件上传到HDFS中</span><br><span class="line">[BulkLoadData.txt]</span><br><span class="line">100 zhangsan 16</span><br><span class="line">101 wangwu 11</span><br><span class="line">102 lisi 30</span><br><span class="line"></span><br><span class="line">$hdfs dfs -mkdir &#x2F;MRData</span><br><span class="line">$hdfs dfs -put BulkLoadData.txt &#x2F;MRData&#x2F;BulkLoadData.txt</span><br><span class="line">$hdfs dfs -ls &#x2F;MRData&#x2F;</span><br><span class="line">Found 1 items</span><br><span class="line">-rw-r--r--   3 hadoop supergroup         42 2020-06-22 22:08 &#x2F;MRData&#x2F;BulkLoadData.txt</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>使用MR Job Driver程序将源文件转化为HFile</strong></p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.TableName;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Connection;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Put;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Table;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.io.ImmutableBytesWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.LongWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.TextInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.util.GenericOptionsParser;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * BulkLoadDemo class</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> BoWenWang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020/6/22 22:12</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BulkLoadDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="comment">// 获取运行参数(其中至少一个输入路径以及一个输出路径)</span></span><br><span class="line">        Configuration conf = HBaseConfiguration.create();</span><br><span class="line">        String[] remainingArgs = (<span class="keyword">new</span> GenericOptionsParser(conf, args)).getRemainingArgs();</span><br><span class="line">        <span class="keyword">if</span> (remainingArgs.length &lt; <span class="number">2</span>) &#123;</span><br><span class="line">            System.err.println(<span class="string">"Usage: BulkLoadDemo &lt;in&gt; &lt;out&gt;"</span>);</span><br><span class="line">            System.exit(<span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// HBase</span></span><br><span class="line">        Connection connection = ConnectionFactory.createConnection(conf);</span><br><span class="line">        Table table = connection.getTable(TableName.valueOf(<span class="string">"ns1:t1"</span>));</span><br><span class="line">        <span class="comment">// 创建Job任务</span></span><br><span class="line">        Job job = Job.getInstance(conf, <span class="string">"BulkLoadDemo"</span>);</span><br><span class="line">        <span class="comment">// 设置Jar包运行的类</span></span><br><span class="line">        job.setJarByClass(BulkLoadDemo<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="comment">// （核心）设置Map</span></span><br><span class="line">        job.setMapperClass(BulkLoadMapper<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setMapOutputKeyClass(ImmutableBytesWritable<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setMapOutputValueClass(Put<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="comment">// （核心）通过HFileOutputFormat2.configureIncrementalLoad对Reduce进行配置</span></span><br><span class="line">        HFileOutputFormat2.configureIncrementalLoad(job, table, connection.getRegionLocator(TableName.valueOf(<span class="string">"ns1:t1"</span>)));</span><br><span class="line">        <span class="comment">// 设置输入输出数据类型</span></span><br><span class="line">        job.setInputFormatClass(TextInputFormat<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setOutputFormatClass(HFileOutputFormat2<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="comment">// 指定数据输入、输出路径</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; remainingArgs.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">            FileInputFormat.addInputPath(job, <span class="keyword">new</span> Path(remainingArgs[i]));</span><br><span class="line">        &#125;</span><br><span class="line">        FileOutputFormat.setOutputPath(job, <span class="keyword">new</span> Path(remainingArgs[remainingArgs.length - <span class="number">1</span>]));</span><br><span class="line">        <span class="comment">// 将job提交给集群运行</span></span><br><span class="line">        System.exit(job.waitForCompletion(<span class="keyword">true</span>) ? <span class="number">0</span> : <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Mapper程序</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BulkLoadMapper</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">LongWritable</span>, <span class="title">Text</span>, <span class="title">ImmutableBytesWritable</span>, <span class="title">Put</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] ID_QUALIFIER = <span class="string">"id"</span>.getBytes();</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] NAME_QUALIFIER = <span class="string">"name"</span>.getBytes();</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] AGE_QUALIFIER = <span class="string">"age"</span>.getBytes();</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] COLUMN_FAMILY = <span class="string">"f1"</span>.getBytes();</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(LongWritable key, Text value, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            String line = value.toString();</span><br><span class="line">            String[] fields = line.split(<span class="string">" "</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">byte</span>[] rowKey = (<span class="string">"row"</span> + fields[<span class="number">0</span>]).getBytes();</span><br><span class="line">            <span class="keyword">byte</span>[] id = fields[<span class="number">0</span>].getBytes();</span><br><span class="line">            <span class="keyword">byte</span>[] name = fields[<span class="number">1</span>].getBytes();</span><br><span class="line">            <span class="keyword">byte</span>[] age = fields[<span class="number">2</span>].getBytes();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 存储的数据</span></span><br><span class="line">            <span class="keyword">final</span> ImmutableBytesWritable putRowKey = <span class="keyword">new</span> ImmutableBytesWritable(rowKey);</span><br><span class="line">            Put put = <span class="keyword">new</span> Put(rowKey).addColumn(COLUMN_FAMILY, ID_QUALIFIER, id)</span><br><span class="line">                    .addColumn(COLUMN_FAMILY, NAME_QUALIFIER, name)</span><br><span class="line">                    .addColumn(COLUMN_FAMILY, AGE_QUALIFIER, age);</span><br><span class="line"></span><br><span class="line">            context.write(putRowKey, put);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>然后打包jar到集群上运行：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hadoop jar HBase2-1.0-SNAPSHOT.jar BulkLoadDemo hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData&#x2F;out</span><br></pre></td></tr></table></figure></div>
+
+<p>然后查看结果：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hdfs dfs -ls -R &#x2F;MRData</span><br><span class="line">-rw-r--r--   3 hadoop supergroup         42 2020-06-22 22:08 &#x2F;MRData&#x2F;BulkLoadData.txt</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-22 23:50 &#x2F;MRData&#x2F;out</span><br><span class="line">-rw-r--r--   3 hadoop supergroup          0 2020-06-22 23:50 &#x2F;MRData&#x2F;out&#x2F;_SUCCESS</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-22 23:50 &#x2F;MRData&#x2F;out&#x2F;f1</span><br><span class="line">-rw-r--r--   3 hadoop supergroup       5319 2020-06-22 23:50 &#x2F;MRData&#x2F;out&#x2F;f1&#x2F;5314cd3465004280a7ad779dbcbe6a2f</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<blockquote>
+<p><strong>注意！可能会报错NoClassDefFoundError: org/apache/hadoop/hbase/HBaseConfiguration，原因是没有导入hbase相关的包。因此要在hadoop-env.sh中添加如下内容：</strong></p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 改成你自己对应的hbase目录</span><br><span class="line">export HADOOP_CLASSPATH&#x3D;$HADOOP_CLASSPATH:&#x2F;home&#x2F;hadoop&#x2F;apps&#x2F;hbase&#x2F;lib&#x2F;*</span><br></pre></td></tr></table></figure></div>
+</blockquote>
+<ol start="3">
+<li><p><strong>将生成的HFile加载到HBase</strong></p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hadoop jar hbase-mapreduce-2.2.4.jar completebulkload hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData&#x2F;out ns1:t1</span><br></pre></td></tr></table></figure></div>
+
+<blockquote>
+<p>这里要注意！可能是书上使用的HBase和我使用的不一样，导致命令失效，这个是采用HBase官网上找的命令。为此写了一篇博文：<a href="https://blog.csdn.net/weixin_42167895/article/details/106913686" target="_blank" rel="noopener">https://blog.csdn.net/weixin_42167895/article/details/106913686</a></p>
+<p>原书上命令如下：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ bin&#x2F;hbase org.apache.hadoop.hbase.tool.LoadIncrementalHFiles &lt;hdfs:&#x2F;&#x2F;storefileoutput&gt; &lt;tablename&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>另一种是</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HADOOP_CLASSPATH&#x3D;&#39;$&#123;HBASE_HOME&#125;&#x2F;bin&#x2F;hbase classpath&#39; $&#123;HADOOP_HOME&#125;&#x2F;bin&#x2F;hadoop jar $&#123;HBASE_HOME&#125;&#x2F;hbase-server-VERSION.jar completebulkload &lt;hdfs:&#x2F;&#x2F;storefileoutput&gt; &lt;tablename&gt;</span><br></pre></td></tr></table></figure></div>
+</blockquote>
+</li>
+<li><p>scan 查看表内容确实导入成功</p>
+</li>
+</ol>
+<h3 id="6-3-HBase读取流程"><a href="#6-3-HBase读取流程" class="headerlink" title="6.3 HBase读取流程"></a>6.3 HBase读取流程</h3><h4 id="6-3-1-Client-Server读取交互逻辑"><a href="#6-3-1-Client-Server读取交互逻辑" class="headerlink" title="6.3.1 Client-Server读取交互逻辑"></a>6.3.1 Client-Server读取交互逻辑</h4><p>和6.1写入阶段客户端处理方式一样。Client会首先从ZooKeeper中获取元数据hbase:meta表所在的RegionServer，然后根据待读写rowkey发送请求到元数据所在RegionServer，获取数据所在的目标RegionServer和Region（并存储到本地缓存），最后将请求进行封装发送到目标RegionServer进行处理。<strong>（参考6.1.1和4.3.1 Scan流程）</strong></p>
+<h4 id="6-3-2-Server端Scan框架体系"><a href="#6-3-2-Server端Scan框架体系" class="headerlink" title="6.3.2 Server端Scan框架体系"></a>6.3.2 Server端Scan框架体系</h4><p>从宏观角度看，依次Scan可以能会扫描一张表的多个Region，对于这种扫描，<strong>客户端</strong>会根据hbase:meta元数据将扫描的起始区间进行划分，切分成多个相互独立的查询子区间，每个子区间对应一个Regin。</p>
+<blockquote>
+<p>比如：当前表有3个Region，区间分别为[“a”, “c”)，[“c”, “e”)，[“e”, “g”)，客户端设置的scan扫描区间为[“b”, “f”)。因为扫描跨越了多个Region，所以需要进行切分，切分后的区间[“b”, “c”)，[“c”, “e”)，[“e”, “f”)</p>
+</blockquote>
+<p>HBase种每个Region都是一个独立的存储引擎，因此客户端可以将每个子区间请求分别发送给对应的Region进行处理。</p>
+<p>RegionServer接收到客户端的get/scan请求后：</p>
+<p><a href="/postImages/Scanner%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/Scanner%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png" class="lazyload"></a></p>
+<h5 id="1-构建Scanner-Iterator体系"><a href="#1-构建Scanner-Iterator体系" class="headerlink" title="1) 构建Scanner Iterator体系"></a>1) 构建Scanner Iterator体系</h5><ul>
+<li><strong>一个RegionScanner由多个StoreScanner构成</strong>。一张表由多少个列族组成，就有多少个StoreScanner，每个StoreScanner负责对应Store的数据查找。（即图上步骤1）</li>
+<li><strong>一个StoreScanner由MemStore和StoreFileScanner构成</strong>。每个Store的数据由内存中的MemStore和磁盘上的StoreFile文件组成。因此分别为两者创建Scanner。（步骤2）</li>
+</ul>
+<blockquote>
+<p>注意！RegionScanner和StoreScanner并不负责实际查找操作，他们更多是承当组织调度任务，负责KeyValue最终查找的操作的StoreFileScanner和MemStoreScanner。</p>
+</blockquote>
+<h5 id="2-过滤淘汰部分部不满足查询条件的Scanner"><a href="#2-过滤淘汰部分部不满足查询条件的Scanner" class="headerlink" title="2) 过滤淘汰部分部不满足查询条件的Scanner"></a>2) 过滤淘汰部分部不满足查询条件的Scanner</h5><p>StoreCanner为每一个HFile构建一个对应的StoreFileScanner，需要注意的是，并不是每一个HFile都包含用户想要查找的KeyValue。相反，可以用过一些查询条件过滤掉很多肯定不存在待查找KeyValue的HFile（步骤3，其中StoreFile3检查不通过而被过滤）。主要过滤策略有：</p>
+<ul>
+<li><p><strong>Rowkey Range过滤</strong></p>
+<p>因为StoreFile中所有KeyValue数据都是有序排列的，所以如果待检索范围[startkey, stopkey]与文件起始key范围[firstkey, lastkey]没有交集，如stoprow&lt;firstkey或者startkey&gt;lastkey，就可以过滤掉该StoreFile。</p>
+</li>
+<li><p><strong>Time Range过滤</strong></p>
+<p>StoreFile中元数据有一个关于该File的TimeRange属性，和上面一样，如果范围没有交集，过滤。</p>
+</li>
+<li><p><strong>布隆过滤器</strong></p>
+<p>在5.3.3第三点和6.1.3第三点中已经知道了结构。系统根据待检索的rowkey获取对应的Bloom Block并加载到内存（通常情况下热点Bloom Block会常驻内存），再用hash函数对待检索rowkey进行hash，根据hash后的结果再布隆过滤器数据中进行寻址，即可确定待检索rowkey是否一定不存在于该HFile中。</p>
+</li>
+</ul>
+<h5 id="3-每个Scanner-seek-到-startKey"><a href="#3-每个Scanner-seek-到-startKey" class="headerlink" title="3) 每个Scanner seek 到 startKey"></a>3) 每个Scanner seek 到 startKey</h5><p>在每个HFile文件（或MemStoer）中seek扫描起始点startKey。如果没有HFile中没有找到startKey，则seek下一个KeyValue地址。（步骤4）</p>
+<p>在一个HFile文件中seek待查找的key，该过程可以分解为4步操作：</p>
+<ol>
+<li><p><strong>根据HFile索引树定位目标Block</strong></p>
+<p>HRegionServer打开HFile时会将所有HFile的<strong>Trailer部分和Load-on-open部分加载到内存</strong>。其中Load-on-open部分有一个非常重要的Root Index Block，索引树的根节点。</p>
+<p><a href="/postImages/IndexEntry.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/IndexEntry.png" class="lazyload"></a></p>
+<p>BlockKey是整个Block的第一个rowkey。（索引树流程图在5.3.3 第4点，红虚线箭头表示一次查询索引过程。第一次根据rowkey二分查找，找到区间的第一个rowkey，这个root index block常驻内存所以很快，然后根据偏移量和大小，把对应中间节点索引Block载到内存。然后在该Block中通过二分查找定位范围，指向叶子节点索引Block加载到内存，同样的再进行定位，最后指向<strong>Data Block，加载到内存</strong>。而Data Block中存放的都是KeyValue，所以通过遍历的方式找到对应的KeyValue，完成seek。）</p>
+<blockquote>
+<p>这里我有一个理解（重点）：就是在上面过滤完Scanenr后，每一个Scanner对应一个HFile。首先它会吧HFile的Trailer部分和Load-on-open部分加载到内存，以便获取到索引树。然后根据索引树去查找rowkey所在的Data Block，获取对应的BlockOffset和BlockDataSize。然后利用这些信息先去BlockCache里面看有没有DataBlock的缓存，如果有直接用（即下面的第二点）。如果没有就要去HDFS文件中找（即下面的第三点，因为数据都是放在HDFS上的），找到后加载到内存并缓存到BlockCache里。然后从Block中遍历KeyValue（即下面第四点）。<strong>因此第一点是主流程，剩下的3点只是条件分支，下面第3点有一个总体的流程，和这个描述差不多。</strong></p>
+</blockquote>
+</li>
+<li><p><strong>BlockCache 中检索目标Block</strong></p>
+<p><strong>Block缓存到BlockCache之后会构建一个Map，Map的Key是BlockKey,Value是Block在内存中的地址</strong>。其中BlockKey由两部分构成——HFile名称以及Block在HFile中的偏移量。很显然，BlockKey是全局唯一的。根据BlockKey可以获取该Block在BlockCache中内存位置（即通过Map），然后直接加载出该Block对象。如果Block在BlockCache中没有找到待查Block，就需要去HDFS文件中查找（即，缓存中没有就要去磁盘上找）。</p>
+</li>
+<li><p><strong>HDFS文件中检索目标Block</strong></p>
+<p>在上文中说到根据文件索引提供的BlockOffset以及BlockDataSize这两个元素可以在HDSF上读取到对应的DataBlock内容。这个阶段HBase下发命令给HDFS，HDFS执行真正的Data Block查找工作。</p>
+<p><strong>HBase阶段</strong></p>
+<ol>
+<li>根据HFile中Block索引信息定位给定KV所在的DataBlock的基本信息：BlockOffset和BlockDataSize</li>
+<li>根据HFile以及BlockOffset和BlockDataSize在BlockCache中查找是否存在，如果在直接返回，否则在HDFS中进行文件查找</li>
+<li>调用FSDataInputStream(HFile文件打开后HBase就会为该文件建议一个输入流，后续该文件的所有读操作都会使用这个全局的FSDataInputStream)，返回该文件偏移量为BlcokOffset，数据量为BlockDataSize大小的数据</li>
+</ol>
+<p><strong>HDFS-NameNode阶段</strong></p>
+<ol>
+<li><p>NameNode根据文件返回属于该文件的所有HDFS Block列表，客户端（这里的客户端是指HBase客户端，调用HDFS的API进行读取数据）可以将HDFSBlock列表进行缓存。</p>
+<blockquote>
+<p>这里要说明一下，在HDFS中，文件被切分为多个Block（这里可以理解为一个HFile被分割成很多个Block存在磁盘上）。这里的HDFSBlock列表，也就相当于是多个HDFSBlock组合成一个HFile。</p>
+</blockquote>
+</li>
+<li><p>遍历HDFSBlock列表，根据HDFSBlock元数据以及HBaseBlockOffset、HBaseBlockDataSize确定待查找HBase Block所属的HDFSBlock。</p>
+<blockquote>
+<p>因为HFile中的Block存在于HDFSBlock列表中的部分HDFSBlock上，并不是所有HDFSBlock都有需要的数据。</p>
+<p>NameNode上会存储数据文件与这些HDFSBlock的对应关系。</p>
+</blockquote>
+</li>
+<li><p>定位到HDFSBlock之后，再在NameNode中查找HDFSBlock都在哪些DateNode上，根据一定的规则选择最优的DateNode（本地DN最优）</p>
+<blockquote>
+<p>NameNode存放的只是元数据信息，真正的数据是放在DataNode上的。</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>HDFS-DataNode阶段</strong></p>
+<ol>
+<li><p>同选定DN建立通信，传进HDFSBlockId、数据在该Block中偏移量以及数据量大小</p>
+</li>
+<li><p>DN会在该HDFSBlock中seek到指定偏移量，并从磁盘读取指定大小的数据返回。</p>
+<blockquote>
+<p>注意：ND不会加载出整个HDFSBlock数据（128M）</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>磁盘阶段</strong></p>
+<p>HDFS读取磁盘数据是按照磁盘最小IO单位（4K）进行读取，直至读取出完整的64K数据。</p>
+</li>
+<li><p><strong>从Block中读取待查找KeyValue</strong></p>
+<p>HFile Block由KeyValue（由小到大依次存储）构成，但这些KeyValue并不是固定长度的，只能遍历扫描查找。</p>
+</li>
+</ol>
+<h5 id="4-KeyValueScanner合并构建最小堆"><a href="#4-KeyValueScanner合并构建最小堆" class="headerlink" title="4) KeyValueScanner合并构建最小堆"></a>4) KeyValueScanner合并构建最小堆</h5><p>将该Store中的所有StoreFileScanner和MemStoreScanner合并形成一个heap（最小堆）。最小堆管理Scanner可以保证取出来的KeyValue都是最小的，保证有序。（步骤5）</p>
+<h5 id="5-执行next函数获取KeyValue并对其进行条件过滤"><a href="#5-执行next函数获取KeyValue并对其进行条件过滤" class="headerlink" title="5) 执行next函数获取KeyValue并对其进行条件过滤"></a>5) 执行next函数获取KeyValue并对其进行条件过滤</h5><p>经过上述Scanner体系的构建后，此时从小到大的KeyValue已经可以由KeyValueScanner获得，但是还要进一步检查，以及是否满足用户设定的过滤条件：</p>
+<ol>
+<li>检查该KeyValue的<strong>KeyType</strong>是否是Deleted/DeletedColumn/DeletedFamily等，如果是，则直接忽略该列所有其他版本，跳到下一列（列族）。</li>
+<li>检查该KeyValue的<strong>Timastamp</strong>是否在用户设定的Timestamp Range范围。</li>
+<li>检查该KeyValue是否满足用户设置的各种<strong>filer过滤器</strong>。</li>
+<li>检查该KeyValue是否满足用户查询中设定的<strong>版本数</strong></li>
+</ol>
+<p>过滤完之后，返回给用户数据。每次返回多少数据还要看用户设置的参数。可以看4.3.1的内容。</p>
+<h2 id="七、Compaction-实现"><a href="#七、Compaction-实现" class="headerlink" title="七、Compaction 实现"></a>七、Compaction 实现</h2><p>待续。。。</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">IT小王</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://wangbowen.cn/2020/06/14/%E3%80%8AHBase%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">https://wangbowen.cn/2020/06/14/%E3%80%8AHBase%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wangbowen.cn">IT小王</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HBase/">HBase    </a></div><div class="post_share"><div class="social-share" data-image="/postImages/HBaseCover.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination_post" id="pagination"><div class="next-post pull-full"><a href="/2020/06/10/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89Yarn/"><img class="next_cover lazyload" data-src="/postImages/HadoopCover.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="label">下一篇</div><div class="next_info"><span>Hadoop学习笔记（六）Yarn</span></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/03/29/HBase学习笔记/" title="HBase学习笔记"><img class="relatedPosts_cover lazyload"data-src="/postImages/HBaseCover.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-03-29</div><div class="relatedPosts_title">HBase学习笔记</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var notify = false == true ? true : false;
+var verify = false == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'iYYoev4NDSyr3HqlY1VVCTIV-gzGzoHsz',
+  appKey:'Hli8dWTFUKrXj9FnhnSQUvRe',
+  placeholder:'快来评论吖！ヾﾉ≧∀≦)o',
+  avatar:'monsterid',
+  guest_info:guest_info,
+  pageSize:'10',
+  lang:'en',
+  recordIP: true
+});</script></div></div></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2020 By IT小王</div><div class="framework-info"><span>驱动 </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="icp"><a href="http://www.beian.miit.gov.cn" target="_blank" rel="noopener"><img class="icp-icon" src="/img/icp.png"><span>闽ICP备18027071号-1</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script id="ribbon" src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/js/canvas-ribbon.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script id="canvas_nest" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/js/canvas-nest.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script><div class="search-dialog" id="algolia-search"><div class="search-dialog__title" id="algolia-search-title">Algolia</div><div id="algolia-input-panel"><div id="algolia-search-input"></div></div><hr><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-stats"></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

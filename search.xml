@@ -658,6 +658,107 @@
       </tags>
   </entry>
   <entry>
+    <title>Git使用指南</title>
+    <url>/2020/06/08/Git%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h1 id="Git使用指南"><a href="#Git使用指南" class="headerlink" title="Git使用指南"></a>Git使用指南</h1><h2 id="一、简介与安装"><a href="#一、简介与安装" class="headerlink" title="一、简介与安装"></a>一、简介与安装</h2><p>这个先不写了，网上一大堆，等下次安装的时候再说把。</p>
+<h2 id="二、快速入门"><a href="#二、快速入门" class="headerlink" title="二、快速入门"></a>二、快速入门</h2><ol>
+<li><p><strong>创建Git仓库</strong></p>
+<p>在电脑上创建一个工程文件夹，然后进入该目录。打开git-bash窗口，运行如下命令，即完成创建：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">bash</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure></div>
+
+<p>这时会看到一个隐藏文件夹 <code>.git</code> ，这个目录就不要去动它拉。</p>
+</li>
+<li><p><strong>创建一个文件</strong></p>
+<p>在该工程文件夹中创建一个<code>README.md</code>的文件，然后随便输入一些内容到文件中。</p>
+</li>
+<li><p><strong>将文件添加到Git仓库中</strong></p>
+<p>将刚才的文件，交由git托管。只需要运行以下命令（<strong>注意文件路径</strong>）：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">bash</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add README.md</span><br></pre></td></tr></table></figure></div>
+
+<p>如果有很多个文件，可以批量添加。命令如下：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">bash</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>提交文件到Git仓库</strong></p>
+<p>将文件添加到Git仓库后，就可以提交了。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">bash</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git commit -m <span class="string">"提交文件时的备注信息，可以自定义内容"</span></span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>这样一个快速入门的操作就完成了。</p>
+</li>
+<li><p>可能还有一个操作，第一次的时候：会让你填一些信息</p>
+<p><a href="/postImages/GIT.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/GIT.png" class="lazyload"></a></p>
+<p>根据提示输入2条命令来设置信息（为了知道这个是谁改的，邮箱是多少）</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">bash</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git config --global user.email <span class="string">"改成你的邮箱"</span></span><br><span class="line">$ git config --global user.name <span class="string">"改成你的名称"</span></span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h2 id="三、远程仓库（GitHub）"><a href="#三、远程仓库（GitHub）" class="headerlink" title="三、远程仓库（GitHub）"></a>三、远程仓库（GitHub）</h2><p>我们写玩一些代码之后，可以提交到远程仓库。这样不论在什么地方都可以使用这个仓库，也可以共享。</p>
+<h3 id="3-1-添加公钥（可选）"><a href="#3-1-添加公钥（可选）" class="headerlink" title="3.1 添加公钥（可选）"></a>3.1 添加公钥（可选）</h3><p>如果不添加公钥的话，每次提交都要用户名密码，添加后就可以免密直接提交了。</p>
+<ol>
+<li><p><strong>创建 SSH Key</strong></p>
+<p>在windows下查看[c盘-&gt;用户-&gt;自己的用户名-&gt;.ssh]下是否有id_rsa、id_rsa.pub文件，如果没有需要手动生成。<br>打开git bash，在控制台中输入以下命令，后面改成你的邮箱：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">bash</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">"youremail@example.com"</span></span><br></pre></td></tr></table></figure></div>
+
+<blockquote>
+<p>在密钥中有一个注释字段，用-C来指定所指定的注释，可以方便用户标识这个密钥，指出密钥的用途或其他有用的信息。所以在这里输入自己的邮箱或者其他都行。</p>
+</blockquote>
+<p>然后一直回车就行了。</p>
+<p><a href="/postImages/SSH.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/SSH.png" class="lazyload"></a></p>
+</li>
+<li><p><strong>用记事本打开生成的文件，复制密钥</strong></p>
+<p><a href="/postImages/SSH2.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/SSH2.png" class="lazyload"></a></p>
+<p><a href="/postImages/SSH3.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/SSH3.png" class="lazyload"></a></p>
+</li>
+<li><p><strong>登陆GitHub，设置SSH</strong></p>
+<p><a href="/postImages/SSH4.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/SSH4.png" class="lazyload"></a></p>
+<p><a href="/postImages/SSH5.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/SSH5.png" class="lazyload"></a></p>
+<p><a href="/postImages/SSH6.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/SSH6.png" class="lazyload"></a></p>
+<p>这里Title建议取一个比较识别的名字，可以知道是哪一台电脑的。</p>
+</li>
+<li><p><strong>验证是否添加成功</strong></p>
+<p>打开命令行，输入以下命令，如果看到成功信息，说明添加成功：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br><span class="line">Hi wangbowen1024! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h3 id="3-2-创建远程仓库"><a href="#3-2-创建远程仓库" class="headerlink" title="3.2 创建远程仓库"></a>3.2 创建远程仓库</h3><ol>
+<li><p><strong>远程创建仓库</strong></p>
+<p><a href="/postImages/GITHUB.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/GITHUB.png" class="lazyload"></a></p>
+<p><a href="/postImages/GITHUB2.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/GITHUB2.png" class="lazyload"></a></p>
+</li>
+<li><p><strong>添加远程源</strong></p>
+<p><a href="/postImages/GITHUB3.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/GITHUB3.png" class="lazyload"></a></p>
+<p>然后到工程目录中，打开刚才的git-bash，输入命令（<strong>后面地址记得改成你自己的</strong>）：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">bash</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add origin git@github.com:XXXX/XXXX.git</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>将本地仓库推到远程仓库</strong></p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">bash</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; git push -u origin master</span><br><span class="line"></span><br><span class="line">Counting objects: 8, <span class="keyword">done</span>.</span><br><span class="line">Delta compression using up to 4 threads.</span><br><span class="line">Compressing objects: 100% (7/7), <span class="keyword">done</span>.</span><br><span class="line">Writing objects: 100% (8/8), 916 bytes | 183.00 KiB/s, <span class="keyword">done</span>.</span><br><span class="line">Total 8 (delta 4), reused 0 (delta 0)</span><br><span class="line">remote: Resolving deltas: 100% (4/4), <span class="keyword">done</span>.</span><br><span class="line">To github.com:wangbowen1024/train.git</span><br><span class="line"> * [new branch]      master -&gt; master</span><br><span class="line">Branch <span class="string">'master'</span> <span class="built_in">set</span> up to track remote branch <span class="string">'master'</span> from <span class="string">'origin'</span>.</span><br></pre></td></tr></table></figure></div>
+
+<p>这里就完成了，刷新GITHUB页面，可以看到项目已经上传到GITHUB了。</p>
+</li>
+</ol>
+<h3 id="3-3-克隆到本地"><a href="#3-3-克隆到本地" class="headerlink" title="3.3 克隆到本地"></a>3.3 克隆到本地</h3><ol>
+<li><p>复制地址</p>
+<p><a href="/postImages/GITHUB4.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/GITHUB4.png" class="lazyload"></a></p>
+</li>
+<li><p>打开你想要的存放的目录下，输入克隆命令，就可以将项目下到本地了：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">bash</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:XXXX/XXXX.git</span><br></pre></td></tr></table></figure></div>
+
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>服务器</category>
+        <category>Git</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HBase学习笔记</title>
     <url>/2020/03/29/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="HBase学习笔记"><a href="#HBase学习笔记" class="headerlink" title="HBase学习笔记"></a>HBase学习笔记</h1><h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><ul>
@@ -747,7 +848,7 @@ Support for exporting metrics via the Hadoop metrics subsystem to files or Gangl
 <p><a href="/postImages/HbaseWEBUI2.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HbaseWEBUI2.png" class="lazyload"></a></p>
 </li>
 </ol>
-<h2 id="三、HBase-Shell"><a href="#三、HBase-Shell" class="headerlink" title="三、HBase Shell"></a>三、HBase Shell</h2><p>shell命令后面如果有参数都要加上单引号。</p>
+<h2 id="三、HBase-Shell"><a href="#三、HBase-Shell" class="headerlink" title="三、HBase Shell"></a>三、HBase Shell</h2><p><strong>shell命令后面如果有参数都要加上单引号。</strong></p>
 <h3 id="3-1-进入shell、帮助"><a href="#3-1-进入shell、帮助" class="headerlink" title="3.1 进入shell、帮助"></a>3.1 进入shell、帮助</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hbase shell		&#x2F;&#x2F;进入shell</span><br><span class="line">$hbase&gt;help			&#x2F;&#x2F;帮助</span><br><span class="line"></span><br><span class="line">COMMAND GROUPS:</span><br><span class="line">  Group name: general</span><br><span class="line">  Commands: processlist, status, table_help, version, whoami</span><br><span class="line"></span><br><span class="line">  Group name: ddl</span><br><span class="line">  Commands: alter, alter_async, alter_status, create, describe, disable, disable_all, drop, drop_all, enable, enable_all, exists, get_table, is_disabled, is_enabled, list, list_regions, locate_region, show_filters</span><br><span class="line"></span><br><span class="line">  Group name: namespace</span><br><span class="line">  Commands: alter_namespace, create_namespace, describe_namespace, drop_namespace, list_namespace, list_namespace_tables</span><br></pre></td></tr></table></figure></div>
 
 <p>可以看到有很多命令分组。</p>
@@ -1491,7 +1592,8 @@ Support for exporting metrics via the Hadoop metrics subsystem to files or Gangl
 <li><p>OutputFormat模块会验证输出目录是否已经存在以及输出结果类型是否符合配置文件中的配置类型。都满足就会输出结果到分布式文件系统</p>
 </li>
 </ol>
-<h3 id="3-2-job提交流程解析"><a href="#3-2-job提交流程解析" class="headerlink" title="3.2 job提交流程解析"></a>3.2 job提交流程解析</h3><h4 id="本地模式"><a href="#本地模式" class="headerlink" title="本地模式"></a>本地模式</h4><p>这里我们对2.2中的代码进行断点追踪来分析一下本地运行流程：</p>
+<h3 id="3-2-Job提交流程详解"><a href="#3-2-Job提交流程详解" class="headerlink" title="3.2 Job提交流程详解"></a>3.2 Job提交流程详解</h3><p>参考另一篇文章Yarn</p>
+<h3 id="3-3-job提交流程源码解析"><a href="#3-3-job提交流程源码解析" class="headerlink" title="3.3 job提交流程源码解析"></a>3.3 job提交流程源码解析</h3><h4 id="本地模式"><a href="#本地模式" class="headerlink" title="本地模式"></a>本地模式</h4><p>这里我们对2.2中的代码进行断点追踪来分析一下本地运行流程：</p>
 <ol>
 <li><p>创建外部Job(mapreduce.Job),设置配置信息</p>
 <p>即为2.2中main方法里面的内容。</p>
@@ -1570,63 +1672,39 @@ Support for exporting metrics via the Hadoop metrics subsystem to files or Gangl
 <p>至此程序就结束了，然后输出结果。</p>
 </li>
 </ol>
-<h4 id="YARN框架简介"><a href="#YARN框架简介" class="headerlink" title="YARN框架简介"></a>YARN框架简介</h4><p>用于资源调度，包含ResourceManager和NodeManager。</p>
-<p>意义：让Hadoop变得更加通用，让很多的运算框架都能够在YARN集群上跑起来。只要让他们实现AppMaster接口就可以了。</p>
-<p><a href="/postImages/yarn%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E7%AE%80%E5%9B%BE.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/yarn%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E7%AE%80%E5%9B%BE.png" class="lazyload"></a></p>
-<h4 id="集群模式-1"><a href="#集群模式-1" class="headerlink" title="集群模式"></a>集群模式</h4><p>这里提供一份他人的详解，感觉讲的挺详细的（<a href="https://github.com/heibaiying/BigData-Notes/blob/master/notes/Hadoop-YARN.md）" target="_blank" rel="noopener">https://github.com/heibaiying/BigData-Notes/blob/master/notes/Hadoop-YARN.md）</a></p>
-<p>job提交流程图：</p>
-<a href="/postImages/JOB提交1.png" data-fancybox="group" data-caption="undefined" class="fancybox"><img data-src="/postImages/JOB提交1.png" class="lazyload"></a>
-
-<p>job提交流程解析：</p>
-<ol>
-<li><p>当我们编写好MapReduce程序打成一个jar包，运行Main方法，其中有个job.waitforcompletion()会创建一个客户端实例RunJar。</p>
-</li>
-<li><p>这个RunJar会找ResourceManager通信，申请执行一个application应用（这里在客户端叫job，在yarn里叫application）。ResourceManager返回application相关资源提交的路径starting-dir（还记得本地模式下那个tmp开头的临时目录吗，就是这个）和为本application产生的applicationID（这步的主要目的就是拿到这个ID）。</p>
-</li>
-<li><p>RunJar把相应的jar包和配置文件提交到HDFS临时目录下（还记得本地模式下那个/tmp/…/job.xml还有切片信息等吗）。为什么要放在HDFS中？因为HDFS是共享系统，每个节点都能访问到里面的内容。</p>
-<p><a href="/postImages/JOB%E6%8F%90%E4%BA%A42.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/JOB%E6%8F%90%E4%BA%A42.png" class="lazyload"></a></p>
-<p>因为之前运行过一个MR程序，可以查看HDFS文件列表，发现确实有/tmp/…开头目录的文件信息。</p>
-</li>
-<li><p>最后, 通过调用 submitApplication() 来提交作业到ResourceManager。</p>
-</li>
-<li><p>ResourceManager会找到集群中一台NodeManager在其容器（container）中启动程序主进程（MRAppMaster）。并向ResourceManager注册，当程序运行完成后，会向ResourceManager注销自己，回收资源。</p>
-</li>
-<li><p>然后MRAppMaster会先去HDFS中检索资源。为什么要检索?HDFS中有切片信息，这代表了需要多少个并发执行的Map任务。</p>
-</li>
-<li><p>然后向ResourceManager询问分配资源列表（即，哪些节点可用。比如需要30个节点，那么ResourceManager就会给你这30个节点的信息）,接着就可以去联系这些节点的NodeManager。</p>
-</li>
-<li><p>然后这些NodeManager就会启动yarn子进程，yarn子进程因为拿到了切片信息，就可以去HDFS检索对应的资源。</p>
-</li>
-<li><p>拿到资源后就可以开启MapTask或者ReduceTask。</p>
-</li>
-</ol>
 <h2 id="四、Shuffle机制（map后reduce前）"><a href="#四、Shuffle机制（map后reduce前）" class="headerlink" title="四、Shuffle机制（map后reduce前）"></a>四、Shuffle机制（map后reduce前）</h2><h3 id="4-1流程简介"><a href="#4-1流程简介" class="headerlink" title="4.1流程简介"></a>4.1流程简介</h3><p><a href="/postImages/shuffle.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/shuffle.png" class="lazyload"></a></p>
 <h4 id="MapTask阶段"><a href="#MapTask阶段" class="headerlink" title="MapTask阶段"></a>MapTask阶段</h4><ol>
-<li><p>输入数据和执行Map任务。</p>
-<p>Map任务接受&lt;key,value&gt;作为输入，按一定规则以&lt;key,value&gt;输出。</p>
+<li><p><strong>输入数据和执行Map任务</strong></p>
+<p>Map任务接受&lt;key,value&gt;作为输入，按一定规则以&lt;key,value&gt;输出。但不会直接输出到磁盘上，而是先写入一个环形缓冲区中。</p>
 </li>
-<li><p>写入缓存。</p>
-<p>每个Map任务都会分配一个缓存，Map输出结果先写到缓存中，当缓存中积累一定数量的结果后才一次性写入磁盘。</p>
+<li><p><strong>溢写（分区、排序、可选combiner）</strong></p>
+<p>每个Map任务都会分配一个环形缓冲区（默认100M，可以在io.sort.mb属性修改），随着任务的进行，缓存不断增大，当达到溢写比例0.8（io.sort.spill.percent属性）后，先将80M写入磁盘（即，一个后台线程把内容溢出（spill）硬盘的指定目录（mapred.local.dir）下的新建的一个溢出写文件），20M空间继续提供Map结果写入。【如果缓冲区满了，那么会被阻塞，直到写入磁盘过程完成】</p>
+<p>但是，在溢写到磁盘前，缓存中的数据会先被分区（partition）。默认采用Hash函数对key哈希后再用Reduce任务数量进行取模。这样就可以把Map结果均匀分配给R个Reduce任务并行处理。</p>
+<p>对于每个分区内的所有键值对，会根据key在内存中排序。然后对于排序的输出结果进行<strong>可选</strong>的合并（combiner，如：两个&lt;”test”,1&gt;就会合并成&lt;”test”,2&gt;。一般用于累加、最大值等场景。可以减少写到磁盘的数据和传递给reduce的数据）</p>
+<p>经过以上步骤，就会新建一个溢出文件（spill file）写入磁盘了。</p>
 </li>
-<li><p>溢写（分区、排序、合并）</p>
-<p>缓存容量默认是100M（可以在io.sort.mb属性修改），随着任务的进行，缓存不断增大，当达到溢写比例0.8（io.sort.spill.percent属性）后，先将80M写入磁盘（即，一个后台线程把内容写到（spill）硬盘的指定目录（mapred.local.dir）下的新建的一个溢出写文件），20M空间继续提供Map结果写入。</p>
-<p>但是，在溢写到磁盘前，缓存中的数据会先被分区。默认采用Hash函数对key哈希后再用Reduce任务数量进行取模。这样就可以把Map结果均匀分配给R个Reduce任务并行处理。</p>
-<p>对于每个分区内的所有键值对，会根据key在内存中排序。然后进行可选的合并（如：两个&lt;”test”,1&gt;就会合并成&lt;”test”,2&gt;。一般用于累加、最大值等场景）</p>
-<p>经过以上步骤，就可以写入磁盘了。</p>
-</li>
-<li><p>文件归并</p>
+<li><p><strong>文件归并 + 可选combiner</strong></p>
 <p>每次溢写都会产生一个新的溢写文件，最终在Map任务全部结束之前，会对所有溢写文件中的数据进行归并成一个大的溢写文件（归并：两个&lt;”test”,1&gt;就会合并成&lt;”test”,{1,1}&gt;）    </p>
+<p>如果至少存在3个溢出文件（可以设置）那么会再次调用combiner函数。（combiner函数可以在输入上反复运行而不影响最终结果，但如果map输出规模很小，那么不值得使用combiner带来的开销）</p>
+</li>
+<li><p><strong>可选压缩</strong></p>
+<p>压缩map输出到磁盘的过程中对它进行压缩往往是个很好的注意，默认不进行，可以设置。</p>
 </li>
 </ol>
-<p><a href="/postImages/mapTask.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/mapTask.png" class="lazyload"></a></p>
 <h4 id="ReduceTask阶段"><a href="#ReduceTask阶段" class="headerlink" title="ReduceTask阶段"></a>ReduceTask阶段</h4><ol>
-<li><p>“领取”数据</p>
-<p>Map端的Shuffle过程结束后，数据在Map的机器上，所以Map任务完成后会通知Reduce来领取数据到Reduce端（Reduce会从多个Map机器领回属于自己分区的数据，一个分区可能有多个不同的key）。</p>
+<li><p>数据复制阶段</p>
+<p>由于map任务完成的时间可能不同，因此在每个任务完成时，reduce任务就开始复制其输出。</p>
+<blockquote>
+<p>reduce怎么知道去哪里取数据？map任务完成后会利用心跳机制通知application master，因此其知道map输出和主机之间的映射关系。reduce中的一个线程定期询问master来获取位置信息，直到获得所有的输出位置。由于reduce可能会失败，所以map输出不会立即删除，而是等application master来告之</p>
+</blockquote>
+<p>如果map输出相当小，则直接复制到缓冲区中。如果map输出非常大，则复制到磁盘。当内存缓冲区达到阈值大小后，则合并后写到磁盘中。如果有combiner，则在合并期间运行它。以降低写入磁盘的数据量。</p>
 </li>
 <li><p>归并数据</p>
-<p>归并发生在Reduce任务执行前，在领回的数据中，具有相同key的键值对会进行归并。</p>
+<p>随着磁盘上的副本增多，后台线程会将他们合并为更大的、排好序的N个文件。（注意，为了合并，压缩的map输出，要在内存中被解压。）</p>
 </li>
-<li><p>把数据输入给Reduce任务，并产生最终结果。</p>
+<li><p>在数据进入reduce方法之前，还可以对数据进行分组，即相同key会被分到一组</p>
+</li>
+<li><p>把排好序的数据输入给Reduce函数，并产生最终结果，写入HDFS。</p>
 </li>
 </ol>
 <h3 id="4-2-Partitioner分区"><a href="#4-2-Partitioner分区" class="headerlink" title="4.2 Partitioner分区"></a>4.2 Partitioner分区</h3><h4 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h4><p>我们知道，Map处理完数据，会往分区里面放，分区中不同区传给不同的reduce。而分区的个数是由reduce任务数决定的。Hadoop中自带了一个默认的分区类HashPartitioner，它继承了Partitioner类，提供了一个getPartition的方法：</p>
@@ -1644,8 +1722,14 @@ Support for exporting metrics via the Hadoop metrics subsystem to files or Gangl
 
 </li>
 </ol>
-<h3 id="4-3-Combiner-合成（可选组件）"><a href="#4-3-Combiner-合成（可选组件）" class="headerlink" title="4.3 Combiner 合成（可选组件）"></a>4.3 Combiner 合成（可选组件）</h3><h4 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h4><p>继承了Reducer 任何的Reducer类都能被他使用，它并不是类，只有一个setCombinerClass方法。</p>
-<p>作用相当于Map端的Reducer ，预先化简。为了减少网络带宽将Map端发出的的数据进行聚合 并不是所有的都可以用combiner </p>
+<h3 id="4-3-Combiner-合成（可选组件）"><a href="#4-3-Combiner-合成（可选组件）" class="headerlink" title="4.3 Combiner 合成（可选组件）"></a>4.3 Combiner 合成（可选组件）</h3><h4 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h4><p>map的输出作为combiner的输入，combiner的输出作为reduce的输入。</p>
+<p>不管调用多少次combiner，最终reduce的输出结果都是一样的。</p>
+<p>combiner函数，可以理解为是一个小型reduce。<strong>combiner是一个优化方案</strong>。举一个例子来说：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 统计某年的最高气温</span><br><span class="line">假设现在有个Map任务</span><br><span class="line">第一个Map输出：</span><br><span class="line">	(1950, 0)</span><br><span class="line">	(1950, 20)</span><br><span class="line">	(1950, 10)</span><br><span class="line">第二个Map输出：</span><br><span class="line">	(1950, 25)</span><br><span class="line">	(1950, 15)</span><br><span class="line"></span><br><span class="line">1.按照传统方式的话，当运行到reduce的时候，输入如下：</span><br><span class="line">	(1950, [0,20,10,25,15])</span><br><span class="line">2.使用combiner的话，会在Map段先进行一次处理，即找出每个Map的最大值，然后再传给reduce：</span><br><span class="line">	(1950, [20,25])</span><br></pre></td></tr></table></figure></div>
+
+<p>这样的好处是<strong>减少了Map和Reduce任务之间数据的传输量，提高速度</strong>。</p>
+<p>但是，<strong>combiner不能代替reduce</strong>。其使用场景是有限的，如统计最大值等。如果是求平均值的场景，那么每个Map的输出结果会先进行一次平均值计算，最后reduce再次计算两个结果的平均值，这会使结果出错。</p>
+<p>其在Java中的使用，和reduce创建方式一样，唯一区别就是在Job类中设置combiner类 <code>job.setCombinerClass(XXXX.class)</code> 。</p>
 <div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCombinerClass</span><span class="params">(Class&lt;? extends Reducer&gt; cls)</span> <span class="keyword">throws</span> IllegalStateException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.ensureState(Job.JobState.DEFINE);</span><br><span class="line">    <span class="keyword">this</span>.conf.setClass(<span class="string">"mapreduce.job.combine.class"</span>, cls, Reducer<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 
@@ -1761,21 +1845,25 @@ Support for exporting metrics via the Hadoop metrics subsystem to files or Gangl
   <entry>
     <title>Hadoop学习笔记（二）HDFS</title>
     <url>/2020/02/13/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89HDFS/</url>
-    <content><![CDATA[<h1 id="Hadoop学习笔记（二）HDFS"><a href="#Hadoop学习笔记（二）HDFS" class="headerlink" title="Hadoop学习笔记（二）HDFS"></a>Hadoop学习笔记（二）HDFS</h1><a id="more"></a>
-
-<h2 id="一、HDFS相关概念"><a href="#一、HDFS相关概念" class="headerlink" title="一、HDFS相关概念"></a>一、HDFS相关概念</h2><h3 id="1-1-块"><a href="#1-1-块" class="headerlink" title="1.1 块"></a>1.1 块</h3><p>在HDFS中文件的储存是以块为单位存储，默认大小为128M。在DHFS中，文件的上传后将文件切块分别存储在不同的DataNode上。</p>
-<p>【因此HDFS不适合存放大量的小文件】</p>
+    <content><![CDATA[<h1 id="Hadoop学习笔记（二）HDFS"><a href="#Hadoop学习笔记（二）HDFS" class="headerlink" title="Hadoop学习笔记（二）HDFS"></a>Hadoop学习笔记（二）HDFS</h1><h2 id="一、HDFS相关概念"><a href="#一、HDFS相关概念" class="headerlink" title="一、HDFS相关概念"></a>一、HDFS相关概念</h2><h3 id="1-1-数据块"><a href="#1-1-数据块" class="headerlink" title="1.1 数据块"></a>1.1 数据块</h3><p>在HDFS中文件的储存是以块为单位存储，默认大小为128M。在DHFS中，文件的上传后将文件切块分别存储在不同的DataNode上。</p>
+<p>但是，如果存储一个1MB的文件在一个128MB的块中，实际占用的空间是1MB。</p>
 <h3 id="1-2-元数据"><a href="#1-2-元数据" class="headerlink" title="1.2 元数据"></a>1.2 元数据</h3><p>数据格式：FileName（文件路径，只是逻辑地址，实际不存在）,replicas（副本数量）,clock-ids（文件块的ID以及分布在哪些DataNode上）,id2host（对应DataNode的地址）…</p>
-<h3 id="1-3-名称节点（NameNode）"><a href="#1-3-名称节点（NameNode）" class="headerlink" title="1.3 名称节点（NameNode）"></a>1.3 名称节点（NameNode）</h3><p> NameNode负责管理分布式文件系统的命名空间，不参与数据的存储和读取，只记录元数据信息。</p>
-<p>在NameNode中有两个核心的数据结构：FsImage（镜像，用来维护文件系统树以及元数据信息）和Editlog（日志，用来记录文件的一些操作）。</p>
-<p>工作原理：当DHFS启动的时候，会先将FsImage的内容加载到内存中然后将EditLog的内容合并后内存中的元数据就保持最新的状态，同时将EditLog清空。</p>
+<h3 id="1-3-名称节点（NameNode）"><a href="#1-3-名称节点（NameNode）" class="headerlink" title="1.3 名称节点（NameNode）"></a>1.3 名称节点（NameNode）</h3><p>NameNode负责管理分布式文件系统的命名空间，不参与数据的存储和读取，只记录元数据信息。是唯一存储元数据到数据块映射的地方。</p>
+<p>在NameNode中有两个核心的数据结构：FsImage（<strong>镜像文件</strong>，用来维护文件系统树以及元数据信息）和Editlog（<strong>编辑日志文件</strong>，用来记录文件的一些操作）。</p>
+<p>工作原理：当DHFS启动的时候，会先将FsImage的内容加载到内存中然后将EditLog的内容合并后内存中的元数据就保持最新的状态。（映射信息是放在内存中的）</p>
+<p>注意：<strong>不适合存放大量小文件</strong>。由于元数据存储在内存中，因此该文件系统所能存储的文件总数受限于namenode的内存容量。每个数据块、文件、目录的存储信息都会占用字节。</p>
 <h3 id="1-4-数据节点（DataNode）"><a href="#1-4-数据节点（DataNode）" class="headerlink" title="1.4 数据节点（DataNode）"></a>1.4 数据节点（DataNode）</h3><p>DataNode是分布式文件系统HDFS的工作节点，负责数据的存储和读取。</p>
 <h3 id="1-5-第二名称节点（SecondaryNameNode）"><a href="#1-5-第二名称节点（SecondaryNameNode）" class="headerlink" title="1.5 第二名称节点（SecondaryNameNode）"></a>1.5 第二名称节点（SecondaryNameNode）</h3><p>在NameNode运行期间，HDFS会在不断的发生更新操作。这些操作会直接写入到EditLog中，因此该文件会逐渐变大，在重启名称节点的时候，合并操作就会变慢，影响启动速度。因此每隔一段时间（默认是3600秒）或者EditLog达到一定大小的时候（默认是64M），会通知NameNode进行合并操作。同时，该机制也可以当作故障恢复的”检查点“。</p>
 <p>工作原理：首先FsImage会暂时将日志写入一个新建的EditLog.new中，然后第二名称节点将名称节点中的FsImage和EditLog文件拉到本地后载入内存中进行合并操作，然后将合并后最新的FsImage发送给名称节点，名称节点用新的FsImage替换旧的FsImage，最后将EditLog.new重命名为EditLog</p>
 <p>单独配置第二名称节点的位置：进入hdfs-site.xml修改字段值dfs.namenode.secondary.http-address为相应主机:端口。</p>
-<h2 id="二、HDFS存储原理"><a href="#二、HDFS存储原理" class="headerlink" title="二、HDFS存储原理"></a>二、HDFS存储原理</h2><h3 id="2-1-数据的冗余"><a href="#2-1-数据的冗余" class="headerlink" title="2.1 数据的冗余"></a>2.1 数据的冗余</h3><p>为了保证系统的容错性和可用性，HDFS采用了多副本方式来存储。</p>
-<h3 id="2-2-数据存储机制"><a href="#2-2-数据存储机制" class="headerlink" title="2.2 数据存储机制"></a>2.2 数据存储机制</h3><h4 id="数据的存放（机架感知）"><a href="#数据的存放（机架感知）" class="headerlink" title="数据的存放（机架感知）"></a>数据的存放（机架感知）</h4><p>一个HDFS集群通常有多个机架，机架间的通信通过交换机和路由器，而机架内部间的通信不需要。HDFS默认冗余复制因子是3。文件写入操作的时候，如果在集群内部，则把第一个副本放在发起写操作请求的数据节点上，如果是在集群外部，则从集群内部选一个最优状态的数据节点来存放。第二个副本放在与第一个副本不同的机架上。第三个副本放在和第一个副本相同的机架上。如果还有更多的副本，随机选择数据节点进行存储。</p>
-<h4 id="数据的复制"><a href="#数据的复制" class="headerlink" title="数据的复制"></a>数据的复制</h4><p>HDFS的数据采用了流水线复制的策略。用户向HDFS中写入一个文件的时候，会先把文件写入到本地，并被分割成若干个块，每个块依次进行复制（假设第一个块写入完成后，会向第二个数据节点写入，接着向第三个数据节点写入。当第三个数据节点写入完成后，返回成功信息给第二个数据节点，第二个数据节点返回成功信息给第一个数据节点，第一个数据节点返回成功信息给NameNode，至此复制完成。！如果中途某数据节点写入失败，会另找一个数据节点进行写入），全部块完成后，文件写入完成。</p>
+<h2 id="二、数据流"><a href="#二、数据流" class="headerlink" title="二、数据流"></a>二、数据流</h2><h3 id="2-1-文件写入过程"><a href="#2-1-文件写入过程" class="headerlink" title="2.1 文件写入过程"></a>2.1 文件写入过程</h3><h4 id="2-1-1-数据的冗余"><a href="#2-1-1-数据的冗余" class="headerlink" title="2.1.1 数据的冗余"></a>2.1.1 数据的冗余</h4><p>为了保证系统的容错性和可用性，HDFS采用了多副本方式来存储。</p>
+<h4 id="2-1-2-数据存储机制"><a href="#2-1-2-数据存储机制" class="headerlink" title="2.1.2 数据存储机制"></a>2.1.2 数据存储机制</h4><p><a href="/postImages/HDFS%E5%86%99%E5%85%A5%E8%BF%87%E7%A8%8B.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HDFS%E5%86%99%E5%85%A5%E8%BF%87%E7%A8%8B.png" class="lazyload"></a></p>
+<p>首先namenode接受到创建文件的请求的时候，会先去检查数据是否存在，用户权限等，通过后去安排要存放数据的datanode（返回一个datanode列表按网络结构远近排序），如何选取，如下：</p>
+<h5 id="数据的存放（机架感知）"><a href="#数据的存放（机架感知）" class="headerlink" title="数据的存放（机架感知）"></a>数据的存放（机架感知）</h5><p>一个HDFS集群通常有多个机架，机架间的通信通过交换机和路由器，而机架内部间的通信不需要。HDFS默认冗余复制因子是3。文件写入操作的时候，如果在集群内部，则把第一个副本放在发起写操作请求的数据节点上（如果是在集群外部，则从集群内部随机选一个数据节点来存放）。第二个副本放在与第一个副本不同的机架上。第三个副本放在和第一个副本相同的机架上，且随机选另一个节点。如果还有更多的副本，随机选择数据节点进行存储。</p>
+<p>一旦选定复本的存放位置，就会根据网络拓扑创建一个管线。紧接着：</p>
+<h5 id="数据的复制"><a href="#数据的复制" class="headerlink" title="数据的复制"></a>数据的复制</h5><p>HDFS的数据采用了流水线复制的策略。用户向HDFS中写入一个文件的时候，会先把文件写入到本地，并被分割成若干个块，每个块依次进行复制（第一个块写入的同时将数据发送给第二个节点，第二个数据节点写入的同时发给第三个节点，当第三个数据节点写入完成后，返回成功信息给第二个数据节点，第二个数据节点返回成功信息给第一个数据节点，第一个数据节点返回成功信息给NameNode，至此复制完成。！如果中途某数据节点写入失败，会另找一个数据节点进行写入），全部块完成后，文件写入完成。</p>
+<h3 id="2-2-文件读取过程"><a href="#2-2-文件读取过程" class="headerlink" title="2.2 文件读取过程"></a>2.2 文件读取过程</h3><p><a href="/postImages/HDFS%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HDFS%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B.png" class="lazyload"></a></p>
+<p>客户端发送请求，分布式文件系统通过RPC请求调用namenode，以确定文件起始块的位置。对于每一个块，返回该存有该块副本的datanode地址（返回目标文件的元数据）。然后去对应的datanode上读取数据。</p>
 <h3 id="2-3-数据错误与恢复"><a href="#2-3-数据错误与恢复" class="headerlink" title="2.3 数据错误与恢复"></a>2.3 数据错误与恢复</h3><ol>
 <li><p>名称节点出错</p>
 <p>名称节点存储的是元数据，而其中的FsImage或者EditLog文件损坏，那么整个HDFS将不可用。Hadoop采用两种有两种机制来确保名称节点安全：第一种，同步名称节点上的信息到其他文件系统；第二种，运行第二名称节点，进行补救。但是可能会有数据丢失。</p>
@@ -1816,7 +1904,7 @@ Support for exporting metrics via the Hadoop metrics subsystem to files or Gangl
 </ul>
 <ul>
 <li><p>HdfsUtils.java</p>
-<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * HdfsUtils class</span></span><br><span class="line"><span class="comment"> * HDFS常用操作工具类</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> BoWenWang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020/2/14 22:23</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HdfsUtils</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String HDFS_PATH = <span class="string">"hdfs://192.168.174.201:8020"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String HDFS_USER = <span class="string">"wbw"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> FileSystem fileSystem;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 第三个参数是用户权限</span></span><br><span class="line">            fileSystem = FileSystem.get(URI.create(HDFS_PATH), conf, HDFS_USER);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException | InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  目录路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>      是否创建成功</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">mkdir</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> fileSystem.mkdirs(<span class="keyword">new</span> Path(path));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 上传文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> src   源路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dst   目标路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">copyFromLocalFile</span><span class="params">(String src, String dst)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        fileSystem.copyFromLocalFile(<span class="keyword">new</span> Path(src), <span class="keyword">new</span> Path(dst));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 文件下载</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> src</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dst</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">copyToLocalFile</span><span class="params">(String src, String dst)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        fileSystem.copyToLocalFile(<span class="keyword">new</span> Path(src), <span class="keyword">new</span> Path(dst));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 删除文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  文件路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> b     是否递归删除</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>      是否删除文件成功</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">delete</span><span class="params">(String path, <span class="keyword">boolean</span> b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> fileSystem.delete(<span class="keyword">new</span> Path(path), b);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断文件或目录是否存在</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  文件或目录路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>      是否存在</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">exists</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> fileSystem.exists(<span class="keyword">new</span> Path(path));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查看文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  文件路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>      文件内容</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">open</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        FSDataInputStream fis = fileSystem.open(<span class="keyword">new</span> Path(path));</span><br><span class="line">        ByteArrayOutputStream bout = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">        IOUtils.copy(fis, bout, <span class="number">1024</span>);</span><br><span class="line">        fis.close();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String(bout.toByteArray());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 文件重命名(移动)</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> oldPath   旧路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> newPath   新路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>          是否操作成功</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">rename</span><span class="params">(String oldPath, String newPath)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> fileSystem.rename(<span class="keyword">new</span> Path(oldPath), <span class="keyword">new</span> Path(newPath));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查看目录下的所有文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  文件目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> b     是否递归查看</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listFiles</span><span class="params">(String path, Boolean b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        RemoteIterator&lt;LocatedFileStatus&gt; iterator = fileSystem.listFiles(<span class="keyword">new</span> Path(path), b);</span><br><span class="line">        <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">            System.out.println(iterator.next());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listFiles</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        listFiles(path, <span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * HdfsUtils class</span></span><br><span class="line"><span class="comment"> * HDFS常用操作工具类</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> BoWenWang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020/2/14 22:23</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HdfsUtils</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String HDFS_PATH = <span class="string">"hdfs://192.168.174.201:8020"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String HDFS_USER = <span class="string">"wbw"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> FileSystem fileSystem;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 第三个参数是用户权限</span></span><br><span class="line">            fileSystem = FileSystem.get(URI.create(HDFS_PATH), conf, HDFS_USER);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException | InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  目录路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>      是否创建成功</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">mkdir</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> fileSystem.mkdirs(<span class="keyword">new</span> Path(path));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 上传文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> src   源路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dst   目标路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">copyFromLocalFile</span><span class="params">(String src, String dst)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        fileSystem.copyFromLocalFile(<span class="keyword">new</span> Path(src), <span class="keyword">new</span> Path(dst)); </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 文件下载</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> src</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dst</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">copyToLocalFile</span><span class="params">(String src, String dst)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        fileSystem.copyToLocalFile(<span class="keyword">new</span> Path(src), <span class="keyword">new</span> Path(dst));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 删除文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  文件路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> b     是否递归删除</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>      是否删除文件成功</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">delete</span><span class="params">(String path, <span class="keyword">boolean</span> b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> fileSystem.delete(<span class="keyword">new</span> Path(path), b);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断文件或目录是否存在</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  文件或目录路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>      是否存在</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">exists</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> fileSystem.exists(<span class="keyword">new</span> Path(path));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查看文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  文件路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>      文件内容</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">open</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        FSDataInputStream fis = fileSystem.open(<span class="keyword">new</span> Path(path));</span><br><span class="line">        ByteArrayOutputStream bout = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">        IOUtils.copy(fis, bout, <span class="number">1024</span>);</span><br><span class="line">        fis.close();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String(bout.toByteArray());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 文件重命名(移动)</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> oldPath   旧路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> newPath   新路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>          是否操作成功</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">rename</span><span class="params">(String oldPath, String newPath)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> fileSystem.rename(<span class="keyword">new</span> Path(oldPath), <span class="keyword">new</span> Path(newPath));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查看目录下的所有文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path  文件目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> b     是否递归查看</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listFiles</span><span class="params">(String path, Boolean b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        RemoteIterator&lt;LocatedFileStatus&gt; iterator = fileSystem.listFiles(<span class="keyword">new</span> Path(path), b);</span><br><span class="line">        <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">            System.out.println(iterator.next());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">listFiles</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        listFiles(path, <span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 
 
@@ -2159,6 +2247,84 @@ Support for exporting metrics via the Hadoop metrics subsystem to files or Gangl
       </tags>
   </entry>
   <entry>
+    <title>Hadoop学习笔记（六）Yarn</title>
+    <url>/2020/06/10/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89Yarn/</url>
+    <content><![CDATA[<h1 id="Hadoop学习笔记（六）Yarn"><a href="#Hadoop学习笔记（六）Yarn" class="headerlink" title="Hadoop学习笔记（六）Yarn"></a>Hadoop学习笔记（六）Yarn</h1><p>【这个写的很好】<a href="https://github.com/heibaiying/BigData-Notes/blob/master/notes/Hadoop-YARN.md" target="_blank" rel="noopener">https://github.com/heibaiying/BigData-Notes/blob/master/notes/Hadoop-YARN.md</a></p>
+<p><strong>Apache YARN</strong> (Yet Another Resource Negotiator) 是 hadoop 2.0 引入的集群资源管理系统。用户可以将各种服务框架部署在 YARN 上，由 YARN 进行统一地管理和资源分配。</p>
+<h2 id="一、架构"><a href="#一、架构" class="headerlink" title="一、架构"></a>一、架构</h2><h3 id="1-1-ResourceManager"><a href="#1-1-ResourceManager" class="headerlink" title="1.1 ResourceManager"></a>1.1 ResourceManager</h3><p><code>ResourceManager</code> 通常在独立的机器上以后台进程的形式运行，它是整个集群资源的主要协调者和管理者。<code>ResourceManager</code> 负责给用户提交的所有应用程序分配资源，它根据应用程序优先级、队列容量、ACLs、数据位置等信息，做出决策，然后以共享的、安全的、多租户的方式制定分配策略，调度集群资源。</p>
+<h3 id="1-2-NodeManager"><a href="#1-2-NodeManager" class="headerlink" title="1.2 NodeManager"></a>1.2 NodeManager</h3><p><code>NodeManager</code> 是 YARN 集群中的每个具体节点的管理者。主要负责该节点内所有容器的生命周期的管理，监视资源和跟踪节点健康。具体如下：</p>
+<ul>
+<li>启动时向 <code>ResourceManager</code> 注册并定时发送心跳消息，等待 <code>ResourceManager</code> 的指令；</li>
+<li>维护 <code>Container</code> 的生命周期，监控 <code>Container</code> 的资源使用情况；</li>
+<li>管理任务运行时的相关依赖，根据 <code>ApplicationMaster</code> 的需要，在启动 <code>Container</code> 之前将需要的程序及其依赖拷贝到本地。</li>
+</ul>
+<h3 id="1-3-ApplicationMaster"><a href="#1-3-ApplicationMaster" class="headerlink" title="1.3 ApplicationMaster"></a>1.3 ApplicationMaster</h3><p>在用户提交一个应用程序时，YARN 会启动一个轻量级的进程 <code>ApplicationMaster</code>。<code>ApplicationMaster</code> 负责协调来自 <code>ResourceManager</code> 的资源，并通过 <code>NodeManager</code> 监视容器内资源的使用情况，同时还负责任务的监控与容错。具体如下：</p>
+<ul>
+<li>根据应用的运行状态来决定动态计算资源需求；</li>
+<li>向 <code>ResourceManager</code> 申请资源，监控申请的资源的使用情况；</li>
+<li>跟踪任务状态和进度，报告资源的使用情况和应用的进度信息；</li>
+<li>负责任务的容错。</li>
+</ul>
+<h3 id="1-4-Container"><a href="#1-4-Container" class="headerlink" title="1.4 Container"></a>1.4 Container</h3><p><code>Container</code> 是 YARN 中的资源抽象，它封装了某个节点上的多维度资源，如内存、CPU、磁盘、网络等。当 AM 向 RM 申请资源时，RM 为 AM 返回的资源是用 <code>Container</code> 表示的。YARN 会为每个任务分配一个 <code>Container</code>，该任务只能使用该 <code>Container</code> 中描述的资源。<code>ApplicationMaster</code> 可在 <code>Container</code> 内运行任何类型的任务。例如，<code>MapReduce ApplicationMaster</code> 请求一个容器来启动 map 或 reduce 任务，而 <code>Giraph ApplicationMaster</code> 请求一个容器来运行 Giraph 任务。</p>
+<h2 id="二、YARN工作原理简介"><a href="#二、YARN工作原理简介" class="headerlink" title="二、YARN工作原理简介"></a>二、YARN工作原理简介</h2><p>用于资源调度，包含ResourceManager和NodeManager。</p>
+<p>意义：让Hadoop变得更加通用，让很多的运算框架都能够在YARN集群上跑起来。只要让他们实现AppMaster接口就可以了。</p>
+<p><a href="/postImages/yarn%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E7%AE%80%E5%9B%BE.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/yarn%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E7%AE%80%E5%9B%BE.png" class="lazyload"></a></p>
+<h2 id="三、job提交流程"><a href="#三、job提交流程" class="headerlink" title="三、job提交流程"></a>三、job提交流程</h2><p>job提交流程图：</p>
+<a href="/postImages/JOB提交1.png" data-fancybox="group" data-caption="undefined" class="fancybox"><img data-src="/postImages/JOB提交1.png" class="lazyload"></a>
+
+<h3 id="3-1-job提交流程解析"><a href="#3-1-job提交流程解析" class="headerlink" title="3.1 job提交流程解析"></a>3.1 job提交流程解析</h3><p><strong>作业的提交</strong></p>
+<ol>
+<li><p>当我们编写好MapReduce程序打成一个jar包，运行Main方法，其中有个job.waitforcompletion()会创建一个客户端实例RunJar。</p>
+</li>
+<li><p>这个RunJar会找ResourceManager通信，申请执行一个application应用（这里在客户端叫job，在yarn里叫application）。ResourceManager返回application相关<strong>资源提交的路径</strong>starting-dir（还记得本地模式下那个tmp开头的临时目录吗，就是这个）和为本application产生的<strong>applicationID</strong>（这步的主要目的就是拿到这个ID）。</p>
+</li>
+<li><p>RunJar把相应的jar包和配置文件提交到HDFS临时目录下（还记得本地模式下那个/tmp/…/job.xml还有切片信息等吗）。为什么要放在HDFS中？因为HDFS是共享系统，每个节点都能访问到里面的内容。</p>
+<p><a href="/postImages/JOB%E6%8F%90%E4%BA%A42.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/JOB%E6%8F%90%E4%BA%A42.png" class="lazyload"></a></p>
+<p>因为之前运行过一个MR程序，可以查看HDFS文件列表，发现确实有/tmp/…开头目录的文件信息。</p>
+</li>
+<li><p>最后, 通过调用 submitApplication() 来提交作业到ResourceManager。当资源管理器收到submitApplciation() 的请求时, 就将该请求发给YARN调度器 (scheduler), 让调度器分配一个container。</p>
+</li>
+</ol>
+<p><strong>作业的初始化</strong></p>
+<ol>
+<li>ResourceManager会找到集群中一台NodeManager在其容器（container）中启动程序主进程（MRAppMaster） 由节点管理器监控 (第 5 步)。并向ResourceManager注册，当程序运行完成后，会向ResourceManager注销自己，回收资源。</li>
+<li>然后MRAppMaster会先去HDFS中检索输入分片。对每一个分片创建一个map任务对象以及通过setNumReduceTasks()方法确定的多个reduce任务对象。（HDFS中有切片信息，这代表了需要多少个并发执行的Map任务。）任务ID在此时分配。</li>
+</ol>
+<p><strong>任务的分配</strong></p>
+<ol>
+<li>如果是小作业，会在自己的JVM上运行。如果是大作业会为该作业中的所有map任务和reduce任务向ResourceManager请求容器（map任务的请求有着数据本地化局限，这也是调度器关注的，着意味着分片和任务在同一节点上运行）</li>
+</ol>
+<p><strong>任务的执行</strong></p>
+<ol>
+<li>一旦ResourceManager的调度器为任务分配了一个特定节点上的容器，MRAppMaster就通过联系节点管理器通信来启动 container(第 9 步)。</li>
+<li>然后这些NodeManager就会启动yarn子进程（任务由主类为YarnChlid的一个JAVA应用程序执行），但是在运行任务之前，首先要将任务需要的资源本地化，包括作业的配置，jar文件和所有来自分布式缓存的文件。（yarn子进程因为拿到了切片信息，就可以去HDFS检索对应的资源。）</li>
+<li>拿到资源后就可以开启MapTask或者ReduceTask。</li>
+</ol>
+<p><strong>Streaming</strong></p>
+<p><a href="/postImages/Streaming.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/Streaming.png" class="lazyload"></a></p>
+<p>Streaming运行特殊的map任务和reduce任务，目的是运行用户提供的可执行程序（就是自己写的MR函数，接受K-V输出K-V），并与之通信。</p>
+<h3 id="3-2-YARN工作机制流程图（详细）"><a href="#3-2-YARN工作机制流程图（详细）" class="headerlink" title="3.2 YARN工作机制流程图（详细）"></a>3.2 YARN工作机制流程图（详细）</h3><p><a href="/postImages/YARN%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/YARN%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6.png" class="lazyload"></a></p>
+<p>YARN应用可以在运行中的任意时刻提出资源申请。比如spark在最开始提出所有的请求，而MapReduce采用动态的方式：在最开始时申请map任务容器，reduce任务容器的启用则放在后期。</p>
+<h2 id="四、调度器"><a href="#四、调度器" class="headerlink" title="四、调度器"></a>四、调度器</h2><h3 id="4-1-FIFO调度器"><a href="#4-1-FIFO调度器" class="headerlink" title="4.1 FIFO调度器"></a>4.1 FIFO调度器</h3><p>有点：简单易懂，不需要任何配置</p>
+<p>缺点：不适合共享集群。大的应用会占用集群中所有资源，所以每个应用必须等待直到轮到自己运行（即一个时刻只能有一个任务在运行）</p>
+<p><a href="/postImages/FIFO%E8%B0%83%E5%BA%A6%E5%99%A8.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/FIFO%E8%B0%83%E5%BA%A6%E5%99%A8.png" class="lazyload"></a></p>
+<h3 id="4-2-容量调度器（默认）"><a href="#4-2-容量调度器（默认）" class="headerlink" title="4.2 容量调度器（默认）"></a>4.2 容量调度器（默认）</h3><p>hadoop2.7默认使用的是Capacity Scheduler容量调度器。</p>
+<p>对于Capacity调度器，有一个专门的队列用来运行小任务,在一个列队里FIFO，但是为小任务专门设置一个队列会预先占用一定的集群资源，这就导致大任务的执行时间会落后于使用FIFO调度器时的时间。（即牺牲整个集群的利用率为代价。因为有一部分被分配给小任务了，不论这里小队列是否有任务在执行，大队列中的任务都不能用到小队列中的资源。如图下job1到job2之间B队列的空闲部分。当然有可能会超出队列容量分配资源，这叫做“弹性队列”）</p>
+<p><a href="/postImages/%E5%AE%B9%E9%87%8F%E8%B0%83%E5%BA%A6%E5%99%A8.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E5%AE%B9%E9%87%8F%E8%B0%83%E5%BA%A6%E5%99%A8.png" class="lazyload"></a></p>
+<h3 id="4-3-公平调度器"><a href="#4-3-公平调度器" class="headerlink" title="4.3 公平调度器"></a>4.3 公平调度器</h3><p>不需要预留一定量的资源，因为调度器会在所有运行的作业之间动态平衡资源。举个例子，假设有两个用户A和B，他们分别拥有一个队列。当A启动一个job而B没有任务时，A会获得全部集群资源；当B启动一个job后，A的job会继续运行，不过一会儿之后两个任务会各自获得一半的集群资源。如果此时B再启动第二个job并且其它job还在运行，则它将会和B的第一个job共享B这个队列的资源，也就是B的两个job会用于四分之一的集群资源，而A的job仍然用于集群一半的资源，结果就是资源最终在两个用户之间平等的共享。在Fair调度器中，我们不需要预先占用一定的系统资源，Fair调度器会为所有运行的job动态的调整系统资源。当第一个大job提交时，只有这一个job在运行，此时它获得了所有集群资源；当第二个小任务提交后，Fair调度器会分配一半资源给这个小任务，让这两个任务公平的共享集群资源。</p>
+<p><strong>注意，从第二个作业的启动到获得公平共享资源之间会有时间滞后，因为它必须等待第一个作业使用的容器用完并释放出资源。当小作业结束后，不再申请资源，这时候大作业将回去再次使用全部集群资源。</strong></p>
+<p><a href="/postImages/%E5%85%AC%E5%B9%B3%E8%B0%83%E5%BA%A6%E5%99%A8.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E5%85%AC%E5%B9%B3%E8%B0%83%E5%BA%A6%E5%99%A8.png" class="lazyload"></a></p>
+]]></content>
+      <categories>
+        <category>大数据</category>
+        <category>Hadoop</category>
+      </categories>
+      <tags>
+        <tag>Hadoop</tag>
+        <tag>Yarn</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hadoop学习笔记（四）数据的输入与输出</title>
     <url>/2020/02/24/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%E6%95%B0%E6%8D%AE%E7%9A%84%E8%BE%93%E5%85%A5%E4%B8%8E%E8%BE%93%E5%87%BA/</url>
     <content><![CDATA[<h1 id="Hadoop学习笔记（四）数据的输入与输出"><a href="#Hadoop学习笔记（四）数据的输入与输出" class="headerlink" title="Hadoop学习笔记（四）数据的输入与输出"></a>Hadoop学习笔记（四）数据的输入与输出</h1><p>先来看一张流程图：</p>
@@ -2343,7 +2509,8 @@ openssl: true /lib64/libcrypto.so
 <li><p>设置IO路径</p>
 </li>
 </ol>
-<h3 id="5-2-Split切片"><a href="#5-2-Split切片" class="headerlink" title="5.2 Split切片"></a>5.2 Split切片</h3><ol>
+<h3 id="5-2-Split切片"><a href="#5-2-Split切片" class="headerlink" title="5.2 Split切片"></a>5.2 Split切片</h3><p>分片不包含数据本身，而是指向数据的引用。</p>
+<ol>
 <li><p>我们根据上次的JOB提交分析，可以留意到在job提交过程中有一个方法：</p>
 <div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> maps = <span class="keyword">this</span>.writeSplits(job, submitJobDir);</span><br></pre></td></tr></table></figure></div>
 </li>
@@ -6506,9 +6673,8 @@ openssl: true /lib64/libcrypto.so
 <p>不能在SQL语句中被调用。</p>
 <h3 id="11-1-创建-存储过程"><a href="#11-1-创建-存储过程" class="headerlink" title="11.1 创建 存储过程"></a>11.1 创建 存储过程</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create [or replace] procedure 存储过程名[(参数列表...)] is | as</span><br><span class="line">begin</span><br><span class="line">	plsql语句;</span><br><span class="line">[exception]</span><br><span class="line">	...</span><br><span class="line">end [存储过程名];</span><br></pre></td></tr></table></figure></div>
 
-
-
-<h3 id="11-2-调用-存储过程"><a href="#11-2-调用-存储过程" class="headerlink" title="11.2 调用 存储过程"></a>11.2 调用 存储过程</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">execute 存储过程名;</span><br></pre></td></tr></table></figure></div>
+<p><strong>定义时候空参不需要（），但是调用的时候要加（）</strong></p>
+<h3 id="11-2-调用-存储过程"><a href="#11-2-调用-存储过程" class="headerlink" title="11.2 调用 存储过程"></a>11.2 调用 存储过程</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">call 存储过程名;</span><br></pre></td></tr></table></figure></div>
 
 <p>也可以在PL/SQL块中使用：</p>
 <div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">begin</span><br><span class="line">	存储过程名;</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
@@ -6520,14 +6686,16 @@ openssl: true /lib64/libcrypto.so
 
 
 <h2 id="十二、触发器"><a href="#十二、触发器" class="headerlink" title="十二、触发器"></a>十二、触发器</h2><p>就是在指定对象上执行某操作的前后进行一些自己的操作，或者用自己的操作直接替换掉该操作。</p>
-<h3 id="12-1-创建-触发器"><a href="#12-1-创建-触发器" class="headerlink" title="12.1 创建 触发器"></a>12.1 创建 触发器</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create [or replace] trigger 触发器名</span><br><span class="line">	[before | after | instead of] 触发事件（如：insert、update、create等）</span><br><span class="line">	on 表名 | 视图名 | 用户模式名 | 数据库名</span><br><span class="line">	[for each row [when 条件]]</span><br><span class="line">begin</span><br><span class="line">	plsql语句;</span><br><span class="line">end 触发器名;</span><br></pre></td></tr></table></figure></div>
+<h3 id="12-1-创建-触发器"><a href="#12-1-创建-触发器" class="headerlink" title="12.1 创建 触发器"></a>12.1 创建 触发器</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create [or replace] trigger 触发器名</span><br><span class="line">	[before | after | instead of] 触发事件（如：insert、update、create等,多个用or连接）</span><br><span class="line">	on 表名 | 视图名 | 用户模式名 | 数据库名</span><br><span class="line">	[for each row [when 条件]]</span><br><span class="line">begin</span><br><span class="line">	plsql语句;</span><br><span class="line">end 触发器名;</span><br></pre></td></tr></table></figure></div>
 
 <p><strong>解释：</strong>在（表 | 视图 | 用户模式 | 数据库）上进行insert、update、create等操作时，在执行该操作的前（before）、后（after）执行的plsql，或者用plsql语句代替该操作。如果设置了行级触发器（for each row）那么对于每一行的操作都会触发一次，还可以增加条件，使符合条件的执行触发器。如果米有指定行级触发器那么不管操作了多少行数据，都只会触发一次。</p>
-<h3 id="12-2-启用-禁用-触发器"><a href="#12-2-启用-禁用-触发器" class="headerlink" title="12.2 启用/禁用 触发器"></a>12.2 启用/禁用 触发器</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alter trigger [schema.]触发器名 DISABLE | ENABLE;</span><br></pre></td></tr></table></figure></div>
+<h3 id="12-2-new-和-old"><a href="#12-2-new-和-old" class="headerlink" title="12.2 :new 和 :old"></a>12.2 :new 和 :old</h3><p>可以通过<code>:new.字段名</code>获取更新后的值。</p>
+<p>通过<code>:old.字段名</code>获取更新前的值。</p>
+<h3 id="12-3-启用-禁用-触发器"><a href="#12-3-启用-禁用-触发器" class="headerlink" title="12.3 启用/禁用 触发器"></a>12.3 启用/禁用 触发器</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alter trigger [schema.]触发器名 DISABLE | ENABLE;</span><br></pre></td></tr></table></figure></div>
 
 
 
-<h3 id="12-3-删除-触发器"><a href="#12-3-删除-触发器" class="headerlink" title="12.3 删除 触发器"></a>12.3 删除 触发器</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">drop trigger 触发器名;</span><br></pre></td></tr></table></figure></div>
+<h3 id="12-4-删除-触发器"><a href="#12-4-删除-触发器" class="headerlink" title="12.4 删除 触发器"></a>12.4 删除 触发器</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">drop trigger 触发器名;</span><br></pre></td></tr></table></figure></div>
 
 ]]></content>
       <categories>
@@ -7489,7 +7657,7 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
   </entry>
   <entry>
     <title>SparkStreaming项目实战（一）</title>
-    <url>/2020/05/27/SparkStreaming%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98(%E6%9C%AA%E5%AE%8C)/</url>
+    <url>/2020/05/27/SparkStreaming%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/</url>
     <content><![CDATA[<h1 id="SparkStreaming项目实战（一）"><a href="#SparkStreaming项目实战（一）" class="headerlink" title="SparkStreaming项目实战（一）"></a>SparkStreaming项目实战（一）</h1><h2 id="一、项目介绍"><a href="#一、项目介绍" class="headerlink" title="一、项目介绍"></a>一、项目介绍</h2><p>整合Hadoop各组件。</p>
 <h2 id="二、环境准备"><a href="#二、环境准备" class="headerlink" title="二、环境准备"></a>二、环境准备</h2><h3 id="2-1-创建机器"><a href="#2-1-创建机器" class="headerlink" title="2.1 创建机器"></a>2.1 创建机器</h3><p>这里采用3台阿里云ECS【建议内存2-4G】（当然也可以用本地的虚拟机来模拟）：</p>
 <p><strong>修改主机名</strong> </p>
@@ -8469,7 +8637,7 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
   <entry>
     <title>ZooKeeper学习笔记</title>
     <url>/2020/03/07/ZooKeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<h1 id="ZooKeeper学习笔记"><a href="#ZooKeeper学习笔记" class="headerlink" title="ZooKeeper学习笔记"></a>ZooKeeper学习笔记</h1><h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><ol>
+    <content><![CDATA[<h1 id="ZooKeeper学习笔记"><a href="#ZooKeeper学习笔记" class="headerlink" title="ZooKeeper学习笔记"></a>ZooKeeper学习笔记</h1><h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><h3 id="1-1-概括"><a href="#1-1-概括" class="headerlink" title="1.1 概括"></a>1.1 概括</h3><ol>
 <li>管理大量主机的协同服务。</li>
 <li>分布式应用，实现分布式读写技术。</li>
 <li>zookeeper提供的服务<ul>
@@ -8481,6 +8649,16 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 <li>Highly reliable data registry：节点宕机数据也是可用的</li>
 </ul>
 </li>
+</ol>
+<h3 id="1-2-工作机制"><a href="#1-2-工作机制" class="headerlink" title="1.2 工作机制"></a>1.2 工作机制</h3><p>Zookeeper从设计模式角度来看：是一个基于观察者模式的设计的分布式管理框架，它负责存储和管理大家大家都关心的数据，然后接受观察者的注册，一旦这些数据的状态发生变化，zookeeper就将负责通知已经在zookeeper注册的那些观察者做出相应的反应。</p>
+<p><a href="/postImages/%E9%9B%86%E7%BE%A4.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E9%9B%86%E7%BE%A4.png" class="lazyload"></a></p>
+<ol>
+<li>一个领导者（leader）多个跟随着（follower）组成的集群</li>
+<li>集群中只要有半数以上节点存活，zookeeper集群就能正常服务</li>
+<li>全局数据一致：每个server保存一份相同的数据副本，client无论连接到哪一个server，数据都是一致的</li>
+<li>更新请求顺序进行，来自用一个client的更新请求按其发送的顺序依次执行</li>
+<li>数据更新原子性，依次数据更新要么成功，要么失败</li>
+<li>实时性在一定时间范围内，client能读取到最新消息（数据量少，主要放配置信息，同步速度快）</li>
 </ol>
 <h2 id="二、安装"><a href="#二、安装" class="headerlink" title="二、安装"></a>二、安装</h2><h3 id="2-1-单机版"><a href="#2-1-单机版" class="headerlink" title="2.1 单机版"></a>2.1 单机版</h3><ol>
 <li><p>jdk安装</p>
@@ -8584,10 +8762,11 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 <h3 id="4-4-Leader"><a href="#4-4-Leader" class="headerlink" title="4.4 Leader"></a>4.4 Leader</h3><p>如果连接的节点失败，自定恢复，zk服务启动时，完成leader选举。</p>
 <h3 id="4-5-Follower"><a href="#4-5-Follower" class="headerlink" title="4.5 Follower"></a>4.5 Follower</h3><p>追寻leader指令的节点。</p>
 <h2 id="五、节点"><a href="#五、节点" class="headerlink" title="五、节点"></a>五、节点</h2><h3 id="5-1-znode"><a href="#5-1-znode" class="headerlink" title="5.1 znode"></a>5.1 znode</h3><p>zk中的节点，维护了stat，由Version number, Action control list (ACL), Timestamp,Data length.构成。</p>
+<p>每一个ZNode默认能够存储1MB数据，每个ZNode都可以通过其路径唯一标识（zookeeper数据模型结构和Unix文件系统类似）</p>
 <h3 id="5-2-节点类型"><a href="#5-2-节点类型" class="headerlink" title="5.2 节点类型"></a>5.2 节点类型</h3><ol>
-<li><p>持久节点：client结束，还存在。使用create创建的就是。</p>
+<li><p><strong>持久节点</strong>：client结束，还存在。使用create创建的就是。</p>
 </li>
-<li><p>临时节点：在client活动时有效，断开自动删除。临时节点不能有子节点。leader推选时使用。</p>
+<li><p><strong>临时节点</strong>：在client活动时有效，断开自动删除。临时节点不能有子节点。leader推选时使用。</p>
 <div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 26] create -e &#x2F;c haha</span><br><span class="line">Created &#x2F;c</span><br><span class="line">[zk: localhost:2181(CONNECTED) 27] ls &#x2F;</span><br><span class="line">[b0000000003, a, c, zookeeper]</span><br><span class="line">[zk: localhost:2181(CONNECTED) 28] quit</span><br><span class="line">$zkCli.sh</span><br><span class="line">[zk: localhost:2181(CONNECTED) 1] ls &#x2F;</span><br><span class="line">[b0000000003, a, zookeeper]</span><br></pre></td></tr></table></figure></div>
 
 <div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建临时节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testEphemeral</span><span class="params">()</span> <span class="keyword">throws</span> IOException, KeeperException, InterruptedException </span>&#123;</span><br><span class="line">    ZooKeeper zk = <span class="keyword">new</span> ZooKeeper(<span class="string">"192.168.174.201:2181"</span>, <span class="number">5000</span>, <span class="keyword">null</span>);</span><br><span class="line">    zk.create(<span class="string">"/c"</span>, <span class="string">"haha"</span>.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);</span><br><span class="line">    <span class="comment">// 断点！</span></span><br><span class="line">    System.out.println(<span class="string">"Debug"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
@@ -8597,7 +8776,7 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 </li>
 </ol>
 <ol start="3">
-<li><p>序列节点：在节点名之后附加10个数字，主要用于同步和锁。</p>
+<li><p><strong>（持久/临时）序列节点</strong>：在节点名之后附加10个数字，主要用于同步和锁。</p>
 <div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 21] create -s &#x2F;b heihei</span><br><span class="line">Created &#x2F;b0000000003</span><br></pre></td></tr></table></figure></div>
 
 
@@ -8606,11 +8785,20 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 </ol>
 <h2 id="六、Session-会话"><a href="#六、Session-会话" class="headerlink" title="六、Session 会话"></a>六、Session 会话</h2><p>Session中的请求以FIFO执行，一旦client连接到server，session就建立了。sessionid分配client。</p>
 <p>client以固定间隔向server发送心跳，表示session是valid的，zk集群如果在超时时候，没有收到心跳，判定为client挂了，与此同时，临时节点被删除。</p>
-<h2 id="七、Watches-观察者"><a href="#七、Watches-观察者" class="headerlink" title="七、Watches 观察者"></a>七、Watches 观察者</h2><p>client能够通过watch机制在数据发生变化时收到通知。</p>
+<p><strong>注意：网络连接断开和Session过期是两种机制。网络连接断开，客户端会尝试到集群重连，但是Seesion并不会消失。只有重连时间超过Seesion的超时时间才会被清理。</strong></p>
+<h2 id="七、Watches-观察者"><a href="#七、Watches-观察者" class="headerlink" title="七、Watches 观察者"></a>七、Watches 观察者</h2><h3 id="7-1-监听器原理"><a href="#7-1-监听器原理" class="headerlink" title="7.1 监听器原理"></a>7.1 监听器原理</h3><p><a href="/postImages/%E7%9B%91%E5%90%AC%E5%99%A8%E5%8E%9F%E7%90%86.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E7%9B%91%E5%90%AC%E5%99%A8%E5%8E%9F%E7%90%86.png" class="lazyload"></a></p>
+<ol>
+<li>在main线程中创建ZK客户端，然后创建两个线程，一个负责通信，一个负责监听。</li>
+<li>通过connect线程将注册的监听事件发送给zk</li>
+<li>在zk中，将监听事件添加到注册监听器列表中</li>
+<li>当监听到数据或路径变化的适合，将消息发送到listener线程</li>
+<li>listener线程内部调用了process方法</li>
+</ol>
+<h3 id="7-2-JAVA-API"><a href="#7-2-JAVA-API" class="headerlink" title="7.2 JAVA API"></a>7.2 JAVA API</h3><p>client能够通过watch机制在数据发生变化时收到通知。</p>
 <p>client可以在read 节点时设置观察者。watch机制会发送通知给注册的客户端。</p>
-<p>观察模式只触发一次。</p>
+<p><strong>观察模式只触发一次（watcher时间是一次性的触发器）</strong>。</p>
 <p>session过期，watch机制删除了。</p>
-<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 观察者</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testWatch</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ZooKeeper zk = <span class="keyword">new</span> ZooKeeper(<span class="string">"192.168.174.201:2181"</span>, <span class="number">5000</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">    Stat st = <span class="keyword">new</span> Stat();</span><br><span class="line"></span><br><span class="line">    Watcher w = <span class="keyword">null</span> ;</span><br><span class="line">    w = <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">        <span class="comment">//回调</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent event)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">"数据改了:"</span> + <span class="keyword">new</span> String(zk.getData(<span class="string">"/a"</span>, <span class="keyword">this</span>, <span class="keyword">null</span>)));</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] data = zk.getData(<span class="string">"/a"</span>, w , st);</span><br><span class="line">    System.out.println(<span class="keyword">new</span> String(data));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 观察者</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testWatch</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">// ZK集群地址，会话超时时间，监听器</span></span><br><span class="line">    <span class="keyword">final</span> ZooKeeper zk = <span class="keyword">new</span> ZooKeeper(<span class="string">"192.168.174.201:2181"</span>, <span class="number">5000</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">    Stat st = <span class="keyword">new</span> Stat();</span><br><span class="line"></span><br><span class="line">    Watcher w = <span class="keyword">null</span> ;</span><br><span class="line">    w = <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">        <span class="comment">//回调</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent event)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">"数据改了:"</span> + <span class="keyword">new</span> String(zk.getData(<span class="string">"/a"</span>, <span class="keyword">this</span>, <span class="keyword">null</span>)));</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] data = zk.getData(<span class="string">"/a"</span>, w , st);</span><br><span class="line">    System.out.println(<span class="keyword">new</span> String(data));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 
 
@@ -8623,14 +8811,17 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 </li>
 <li><p>client周期性发送心跳信息给节点保证连接不会丢失。</p>
 </li>
-<li><p>如果client读取数据，发送请求给node，node读取自己数据库，返回节点数据给client。</p>
+<li><p>如果client<strong>读取数据（读流程）</strong>，发送请求给node，node读取自己数据库，返回节点数据给client。</p>
 </li>
-<li><p>如果client存储数据，将路径和数据发送给server，server转发给leader。</p>
+<li><p>如果client<strong>存储数据（写流程）</strong>，将路径和数据发送给server，server转发给leader。</p>
 </li>
 <li><p>leader再补发请求给所有follower。只有大多数(超过半数)节点成功响应，则写操作成功。</p>
 </li>
 </ol>
-<h2 id="九、leader推选"><a href="#九、leader推选" class="headerlink" title="九、leader推选"></a>九、leader推选</h2><ol>
+<h2 id="九、leader推选"><a href="#九、leader推选" class="headerlink" title="九、leader推选"></a>九、leader推选</h2><h3 id="9-1-选举机制"><a href="#9-1-选举机制" class="headerlink" title="9.1 选举机制"></a>9.1 选举机制</h3><ol>
+<li>半数机制：集群中半数以上机器存活，集群可用。所以zookeeper适合安装在奇数台服务器。</li>
+</ol>
+<h3 id="9-2-选举流程"><a href="#9-2-选举流程" class="headerlink" title="9.2 选举流程"></a>9.2 选举流程</h3><ol>
 <li>所有节点在同一目录下创建临时序列节点。</li>
 <li>节点下会生成/xxx/xx000000001等节点。</li>
 <li>序号最小的节点就是leader，其余就是follower.</li>
@@ -8638,6 +8829,13 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 <li>如果leader挂了，对应znode删除了。</li>
 <li>观察者收到通知。</li>
 </ol>
+<h2 id="十、使用场景"><a href="#十、使用场景" class="headerlink" title="十、使用场景"></a>十、使用场景</h2><p>在HBase中主要是：</p>
+<ul>
+<li>Master高可用管理</li>
+<li>RegionServer宕机异常检测</li>
+<li>分布式锁</li>
+</ul>
+<p>其他的什么负载均衡、服务器上下线等等。</p>
 ]]></content>
       <categories>
         <category>大数据</category>
@@ -8645,6 +8843,108 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
       </categories>
       <tags>
         <tag>ZooKeeper</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入理解Java虚拟机第3版（虚拟机执行子系统）</title>
+    <url>/2020/05/25/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AC%AC3%E7%89%88%EF%BC%88%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%89%A7%E8%A1%8C%E5%AD%90%E7%B3%BB%E7%BB%9F%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="深入理解Java虚拟机第3版（虚拟机执行子系统）"><a href="#深入理解Java虚拟机第3版（虚拟机执行子系统）" class="headerlink" title="深入理解Java虚拟机第3版（虚拟机执行子系统）"></a>深入理解Java虚拟机第3版（虚拟机执行子系统）</h1><h2 id="一、类文件结构（暂无）"><a href="#一、类文件结构（暂无）" class="headerlink" title="一、类文件结构（暂无）"></a>一、类文件结构（暂无）</h2><h2 id="二、虚拟机类加载机制"><a href="#二、虚拟机类加载机制" class="headerlink" title="二、虚拟机类加载机制"></a>二、虚拟机类加载机制</h2><h3 id="2-1-类加载的时机（什么时候加载类）"><a href="#2-1-类加载的时机（什么时候加载类）" class="headerlink" title="2.1 类加载的时机（什么时候加载类）"></a>2.1 类加载的时机（什么时候加载类）</h3><p><a href="/postImages/%E7%B1%BB%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E7%B1%BB%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png" class="lazyload"></a></p>
+<p>这些阶段通常都是相互交叉地混合进行，会在一个阶段执行的过程种调用、激活另一个阶段。</p>
+<p>《Java虚拟机规范》约定了<strong>有且只有</strong>六种情况必须对类进行<strong>初始化</strong>（而加载、验证、准备自然需要在此之前开始）：</p>
+<ol>
+<li>遇到 <code>new</code> 、<code>getstatic</code> 、<code>putstatic</code>  、<code>invokestatic</code> 这四条字节码指令时，如果类型没有进行过初始化，则需要先触发其初始化阶段。<ul>
+<li>使用 new 关键字时候</li>
+<li>读取或设置一个类型的静态字段（被 final 修饰、已在编译器把结果放入常量池的静态字段除外）的时候</li>
+<li>调用一个类型的静态方法的时候</li>
+</ul>
+</li>
+<li>使用 <code>java.lang.reflect</code> 包的方法对类型进行反射调用的时候。</li>
+<li>当初始化类的时候，如果发现其父类还没有进行初始化，则需要先触发其父类的初始化。</li>
+<li>当虚拟机启动时，用户需要指定一个要执行的主类（包含 main() 方法的那个类）。虚拟机会先初始化这个主类。</li>
+<li>当使用 JDK7 新加入的动态语言支持时。</li>
+<li>当一个接口种定义了 JDK8 新加入的默认方法（被 default 关键字修斯的接口方法）时，如果这个接口的实现类发生了初始化，那么该接口要在其之前被初始化。</li>
+</ol>
+<h3 id="2-2-类加载的过程"><a href="#2-2-类加载的过程" class="headerlink" title="2.2 类加载的过程"></a>2.2 类加载的过程</h3><h4 id="2-2-1-加载"><a href="#2-2-1-加载" class="headerlink" title="2.2.1 加载"></a>2.2.1 加载</h4><p>在加载阶段，Java虚拟机需要完成三件事：</p>
+<ol>
+<li><p>通过一个类的全限定名来获取定义此类的二进制字节流</p>
+<blockquote>
+<p>可以在本地磁盘的 .class 文件获取，也可以从ZIP压缩包中读取，也可以从网络等地方获取，没有规定。</p>
+</blockquote>
+</li>
+<li><p>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。</p>
+<blockquote>
+<p>在加载阶段结束后，Java虚拟机外部的二进制字节流就按照虚拟机所设定的格式存储在方法区中，方法区中的数据存储格式完全由虚拟机自行实现。（即，把二进制字节流以指定格式保存在方法区中）</p>
+</blockquote>
+</li>
+<li><p>在内存种生成一个代表这个类的 java.lang.Class 对象，作为方法区这个类的各种数据的访问入口。</p>
+<blockquote>
+<p>类型数据妥善安置在方法区后，会在Java堆内存中实例化一个java.lang.Class类的对象，这个对象将作为程序访问方法区中的类型数据的外部接口。</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="2-2-2-验证"><a href="#2-2-2-验证" class="headerlink" title="2.2.2 验证"></a>2.2.2 验证</h4><p>确保Class文件的字节流中包含的信息符合《Java虚拟机规范》的全部约束要求，保证这些信息被当作代码运行后不会危害虚拟机自身的安全（<strong>Class文件不一定由Java源码编译来的，也可能是01编辑器上敲出来的！</strong>）。</p>
+<p><strong>检验动作4个阶段</strong></p>
+<ol>
+<li><p>文件格式验证</p>
+<blockquote>
+<p>检验字节流是否符合Class文件格式的规范，并且能被当前版本的虚拟机处理。这个阶段的验证是基于二进制字节流进行的，只有通过这个阶段的验证后，这段字节流才被允许进入Java虚拟机内存的方法区中进行存储，所以后面三个检验阶段全部是基于方法区的存储结构上进行的，不会再直接读取、操作字节流了。</p>
+</blockquote>
+</li>
+<li><p>元数据验证</p>
+<blockquote>
+<p>对字节码描述进行语义分析，保证其符合《Java语言规范》。比如：这个内是否能被继承。【数据类型校验】</p>
+</blockquote>
+</li>
+<li><p>字节码验证</p>
+<blockquote>
+<p>最复杂的一个阶段！主要目的是通过数据流分析和控制流分析，确定程序语义是合法的、符合逻辑的。这阶段就要对类的方法体进行检验分析，确保不会出现什么跳转错误等行为，int用long来载入等。</p>
+</blockquote>
+</li>
+<li><p>符号引用验证</p>
+<blockquote>
+<p>检测该类是否缺少或者被进制访问它依赖的某些外部类、方法、字段等资源。</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="2-2-3-准备"><a href="#2-2-3-准备" class="headerlink" title="2.2.3 准备"></a>2.2.3 准备</h4><p>该阶段是正式为类中定义的变量（即<strong>静态变量</strong>，被static修饰的变量）分配内存并设置类变量初始值的阶段（这里的初始值一般是指<strong>零值</strong>）。</p>
+<blockquote>
+<p>一般情况下初始值是零值。如果，有 final 关键字的话，javac将会给变量生成ConstantValue属性，这时候就会设置value的值为123。</p>
+<p>public static <strong>final</strong> int value = 123;</p>
+</blockquote>
+<p>这些变量所使用的内存都应当再方法区中进行分配，但是方法区毕竟只是个逻辑上的区域。JDK7及之前由永久代实现方法区，符合这种逻辑。但JDK8及之后，类变量会随着Class对象一起存放在Java堆中。</p>
+<p>注意这里内存分配的仅包括类变量，而不包括实例变量。</p>
+<h4 id="2-2-4-解析"><a href="#2-2-4-解析" class="headerlink" title="2.2.4 解析"></a>2.2.4 解析</h4><p>Java虚拟机将常量池内的<strong>符号引用</strong>替换为<strong>直接引用</strong>的过程。</p>
+<h4 id="2-2-5-初始化"><a href="#2-2-5-初始化" class="headerlink" title="2.2.5 初始化"></a>2.2.5 初始化</h4><p>直到初始化阶段，Java虚拟机才真正开始执行类中编写的Java程序代码，将主导权交给应用程序。在准备阶段，变量已经赋值过一次零值，而在初始化阶段，则会根据代码主观计划区初始化类变量和其他资源。</p>
+<h3 id="2-3-类加载器"><a href="#2-3-类加载器" class="headerlink" title="2.3 类加载器"></a>2.3 类加载器</h3><p>”通过一个类的全限定名来获取描述该类的二进制字节流“这个动作放到Java虚拟机外部区实现，以便让应用程序自己决定如何区获取所需的类。这个动作的代码被称为”类加载器“。</p>
+<h4 id="2-3-1-类与类加载器"><a href="#2-3-1-类与类加载器" class="headerlink" title="2.3.1 类与类加载器"></a>2.3.1 类与类加载器</h4><p>对于任意一个类，都必须由加载它的<strong>类加载器</strong>和这个<strong>类本身</strong>一起共同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。（即，判断两个类是否”相等“，只有在这两个类是由同一个类加载器加载的前提下才有意义，否则，即使两个Class类来源于同一个Class文件，被同一个Java虚拟机加载，只有加载他们的加载器不一样，这两个类就不相等）</p>
+<h4 id="2-3-2-双亲委派模型"><a href="#2-3-2-双亲委派模型" class="headerlink" title="2.3.2 双亲委派模型"></a>2.3.2 双亲委派模型</h4><p>在Java虚拟机角度看，只有两种类加载器：</p>
+<ol>
+<li>启动类加载器（是虚拟机的一部分）</li>
+<li>其他所有的类加载器（由Java语言实现，独立存在于虚拟机外，且都继承自抽象类java.lang.ClassLoader）</li>
+</ol>
+<p>在Java开发人员角度看，就划分的细致了：</p>
+<ol>
+<li><p>启动类加载器（负责加载<java_home>\lib 或被 -XbootclassPath 参数指定的路径）</java_home></p>
+<blockquote>
+<p>需要把加载请求委派给引导类加载器处理，直接用null代替即可</p>
+</blockquote>
+</li>
+<li><p>扩展类加载器（负责加载<java_home>\lib\ext 或者被 java.ext.dirs系统变量指定的路径）</java_home></p>
+</li>
+<li><p>应用程序类加载器（负责加载用户类路径（ClassPath）上所有的类库，如果应用程序种没有自定义过自己的类加载器，一般情况下这个就是程序中默认的类加载器）</p>
+</li>
+</ol>
+<p>JDK9之前的Java应用都是由这三种类加载器互相配合完成加载的，用户还可以自定义类加载来进行扩展。这些类加载器之间的协作关系<strong>”通常“</strong>会下所示：</p>
+<p><a href="/postImages/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8.png" class="lazyload"></a></p>
+<p>双亲委派模型工作过程：</p>
+<p>如果一个类加载器收到了类的加载的请求，它首先不会自己区尝试加载这个类，而是把这个请求委派给父类去加载器去完成，每一个层次的类加载器都是如此，因此所有的类加载器最终都应该传送到最顶层的启动类加载器中，只有父加载器反馈自己无法完成这个加载请求（它的搜索范围中没有找到所需要的类）时，子加载器才会尝试自己去完成加载。（因此Object类在程序各种加载器环境中都能够保证是同一个类）</p>
+]]></content>
+      <categories>
+        <category>服务器</category>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
       </tags>
   </entry>
   <entry>
@@ -8805,108 +9105,6 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
       </tags>
   </entry>
   <entry>
-    <title>深入理解Java虚拟机第3版（虚拟机执行子系统）</title>
-    <url>/2020/05/25/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AC%AC3%E7%89%88%EF%BC%88%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%89%A7%E8%A1%8C%E5%AD%90%E7%B3%BB%E7%BB%9F%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="深入理解Java虚拟机第3版（虚拟机执行子系统）"><a href="#深入理解Java虚拟机第3版（虚拟机执行子系统）" class="headerlink" title="深入理解Java虚拟机第3版（虚拟机执行子系统）"></a>深入理解Java虚拟机第3版（虚拟机执行子系统）</h1><h2 id="一、类文件结构（暂无）"><a href="#一、类文件结构（暂无）" class="headerlink" title="一、类文件结构（暂无）"></a>一、类文件结构（暂无）</h2><h2 id="二、虚拟机类加载机制"><a href="#二、虚拟机类加载机制" class="headerlink" title="二、虚拟机类加载机制"></a>二、虚拟机类加载机制</h2><h3 id="2-1-类加载的时机（什么时候加载类）"><a href="#2-1-类加载的时机（什么时候加载类）" class="headerlink" title="2.1 类加载的时机（什么时候加载类）"></a>2.1 类加载的时机（什么时候加载类）</h3><p><a href="/postImages/%E7%B1%BB%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E7%B1%BB%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png" class="lazyload"></a></p>
-<p>这些阶段通常都是相互交叉地混合进行，会在一个阶段执行的过程种调用、激活另一个阶段。</p>
-<p>《Java虚拟机规范》约定了<strong>有且只有</strong>六种情况必须对类进行<strong>初始化</strong>（而加载、验证、准备自然需要在此之前开始）：</p>
-<ol>
-<li>遇到 <code>new</code> 、<code>getstatic</code> 、<code>putstatic</code>  、<code>invokestatic</code> 这四条字节码指令时，如果类型没有进行过初始化，则需要先触发其初始化阶段。<ul>
-<li>使用 new 关键字时候</li>
-<li>读取或设置一个类型的静态字段（被 final 修饰、已在编译器把结果放入常量池的静态字段除外）的时候</li>
-<li>调用一个类型的静态方法的时候</li>
-</ul>
-</li>
-<li>使用 <code>java.lang.reflect</code> 包的方法对类型进行反射调用的时候。</li>
-<li>当初始化类的时候，如果发现其父类还没有进行初始化，则需要先触发其父类的初始化。</li>
-<li>当虚拟机启动时，用户需要指定一个要执行的主类（包含 main() 方法的那个类）。虚拟机会先初始化这个主类。</li>
-<li>当使用 JDK7 新加入的动态语言支持时。</li>
-<li>当一个接口种定义了 JDK8 新加入的默认方法（被 default 关键字修斯的接口方法）时，如果这个接口的实现类发生了初始化，那么该接口要在其之前被初始化。</li>
-</ol>
-<h3 id="2-2-类加载的过程"><a href="#2-2-类加载的过程" class="headerlink" title="2.2 类加载的过程"></a>2.2 类加载的过程</h3><h4 id="2-2-1-加载"><a href="#2-2-1-加载" class="headerlink" title="2.2.1 加载"></a>2.2.1 加载</h4><p>在加载阶段，Java虚拟机需要完成三件事：</p>
-<ol>
-<li><p>通过一个类的全限定名来获取定义此类的二进制字节流</p>
-<blockquote>
-<p>可以在本地磁盘的 .class 文件获取，也可以从ZIP压缩包中读取，也可以从网络等地方获取，没有规定。</p>
-</blockquote>
-</li>
-<li><p>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。</p>
-<blockquote>
-<p>在加载阶段结束后，Java虚拟机外部的二进制字节流就按照虚拟机所设定的格式存储在方法区中，方法区中的数据存储格式完全由虚拟机自行实现。（即，把二进制字节流以指定格式保存在方法区中）</p>
-</blockquote>
-</li>
-<li><p>在内存种生成一个代表这个类的 java.lang.Class 对象，作为方法区这个类的各种数据的访问入口。</p>
-<blockquote>
-<p>类型数据妥善安置在方法区后，会在Java堆内存中实例化一个java.lang.Class类的对象，这个对象将作为程序访问方法区中的类型数据的外部接口。</p>
-</blockquote>
-</li>
-</ol>
-<h4 id="2-2-2-验证"><a href="#2-2-2-验证" class="headerlink" title="2.2.2 验证"></a>2.2.2 验证</h4><p>确保Class文件的字节流中包含的信息符合《Java虚拟机规范》的全部约束要求，保证这些信息被当作代码运行后不会危害虚拟机自身的安全（<strong>Class文件不一定由Java源码编译来的，也可能是01编辑器上敲出来的！</strong>）。</p>
-<p><strong>检验动作4个阶段</strong></p>
-<ol>
-<li><p>文件格式验证</p>
-<blockquote>
-<p>检验字节流是否符合Class文件格式的规范，并且能被当前版本的虚拟机处理。这个阶段的验证是基于二进制字节流进行的，只有通过这个阶段的验证后，这段字节流才被允许进入Java虚拟机内存的方法区中进行存储，所以后面三个检验阶段全部是基于方法区的存储结构上进行的，不会再直接读取、操作字节流了。</p>
-</blockquote>
-</li>
-<li><p>元数据验证</p>
-<blockquote>
-<p>对字节码描述进行语义分析，保证其符合《Java语言规范》。比如：这个内是否能被继承。【数据类型校验】</p>
-</blockquote>
-</li>
-<li><p>字节码验证</p>
-<blockquote>
-<p>最复杂的一个阶段！主要目的是通过数据流分析和控制流分析，确定程序语义是合法的、符合逻辑的。这阶段就要对类的方法体进行检验分析，确保不会出现什么跳转错误等行为，int用long来载入等。</p>
-</blockquote>
-</li>
-<li><p>符号引用验证</p>
-<blockquote>
-<p>检测该类是否缺少或者被进制访问它依赖的某些外部类、方法、字段等资源。</p>
-</blockquote>
-</li>
-</ol>
-<h4 id="2-2-3-准备"><a href="#2-2-3-准备" class="headerlink" title="2.2.3 准备"></a>2.2.3 准备</h4><p>该阶段是正式为类中定义的变量（即<strong>静态变量</strong>，被static修饰的变量）分配内存并设置类变量初始值的阶段（这里的初始值一般是指<strong>零值</strong>）。</p>
-<blockquote>
-<p>一般情况下初始值是零值。如果，有 final 关键字的话，javac将会给变量生成ConstantValue属性，这时候就会设置value的值为123。</p>
-<p>public static <strong>final</strong> int value = 123;</p>
-</blockquote>
-<p>这些变量所使用的内存都应当再方法区中进行分配，但是方法区毕竟只是个逻辑上的区域。JDK7及之前由永久代实现方法区，符合这种逻辑。但JDK8及之后，类变量会随着Class对象一起存放在Java堆中。</p>
-<p>注意这里内存分配的仅包括类变量，而不包括实例变量。</p>
-<h4 id="2-2-4-解析"><a href="#2-2-4-解析" class="headerlink" title="2.2.4 解析"></a>2.2.4 解析</h4><p>Java虚拟机将常量池内的<strong>符号引用</strong>替换为<strong>直接引用</strong>的过程。</p>
-<h4 id="2-2-5-初始化"><a href="#2-2-5-初始化" class="headerlink" title="2.2.5 初始化"></a>2.2.5 初始化</h4><p>直到初始化阶段，Java虚拟机才真正开始执行类中编写的Java程序代码，将主导权交给应用程序。在准备阶段，变量已经赋值过一次零值，而在初始化阶段，则会根据代码主观计划区初始化类变量和其他资源。</p>
-<h3 id="2-3-类加载器"><a href="#2-3-类加载器" class="headerlink" title="2.3 类加载器"></a>2.3 类加载器</h3><p>”通过一个类的全限定名来获取描述该类的二进制字节流“这个动作放到Java虚拟机外部区实现，以便让应用程序自己决定如何区获取所需的类。这个动作的代码被称为”类加载器“。</p>
-<h4 id="2-3-1-类与类加载器"><a href="#2-3-1-类与类加载器" class="headerlink" title="2.3.1 类与类加载器"></a>2.3.1 类与类加载器</h4><p>对于任意一个类，都必须由加载它的<strong>类加载器</strong>和这个<strong>类本身</strong>一起共同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。（即，判断两个类是否”相等“，只有在这两个类是由同一个类加载器加载的前提下才有意义，否则，即使两个Class类来源于同一个Class文件，被同一个Java虚拟机加载，只有加载他们的加载器不一样，这两个类就不相等）</p>
-<h4 id="2-3-2-双亲委派模型"><a href="#2-3-2-双亲委派模型" class="headerlink" title="2.3.2 双亲委派模型"></a>2.3.2 双亲委派模型</h4><p>在Java虚拟机角度看，只有两种类加载器：</p>
-<ol>
-<li>启动类加载器（是虚拟机的一部分）</li>
-<li>其他所有的类加载器（由Java语言实现，独立存在于虚拟机外，且都继承自抽象类java.lang.ClassLoader）</li>
-</ol>
-<p>在Java开发人员角度看，就划分的细致了：</p>
-<ol>
-<li><p>启动类加载器（负责加载<java_home>\lib 或被 -XbootclassPath 参数指定的路径）</java_home></p>
-<blockquote>
-<p>需要把加载请求委派给引导类加载器处理，直接用null代替即可</p>
-</blockquote>
-</li>
-<li><p>扩展类加载器（负责加载<java_home>\lib\ext 或者被 java.ext.dirs系统变量指定的路径）</java_home></p>
-</li>
-<li><p>应用程序类加载器（负责加载用户类路径（ClassPath）上所有的类库，如果应用程序种没有自定义过自己的类加载器，一般情况下这个就是程序中默认的类加载器）</p>
-</li>
-</ol>
-<p>JDK9之前的Java应用都是由这三种类加载器互相配合完成加载的，用户还可以自定义类加载来进行扩展。这些类加载器之间的协作关系<strong>”通常“</strong>会下所示：</p>
-<p><a href="/postImages/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8.png" class="lazyload"></a></p>
-<p>双亲委派模型工作过程：</p>
-<p>如果一个类加载器收到了类的加载的请求，它首先不会自己区尝试加载这个类，而是把这个请求委派给父类去加载器去完成，每一个层次的类加载器都是如此，因此所有的类加载器最终都应该传送到最顶层的启动类加载器中，只有父加载器反馈自己无法完成这个加载请求（它的搜索范围中没有找到所需要的类）时，子加载器才会尝试自己去完成加载。（因此Object类在程序各种加载器环境中都能够保证是同一个类）</p>
-]]></content>
-      <categories>
-        <category>服务器</category>
-        <category>JVM</category>
-      </categories>
-      <tags>
-        <tag>JVM</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Spark学习笔记</title>
     <url>/2020/04/28/Spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="Spark学习笔记"><a href="#Spark学习笔记" class="headerlink" title="Spark学习笔记"></a>Spark学习笔记</h1><h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><p>Lightning-fast cluster computing。</p>
@@ -9047,7 +9245,7 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 <li><p>/conf/spark-default.conf</p>
 <div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$cp spark-defaults.conf.template spark-defaults.conf</span><br><span class="line">$vi spark-defaults.conf</span><br></pre></td></tr></table></figure></div>
 
-<p>直接在文件末尾添加如下内容（spark的jars在HDFS上的位置）</p>
+<p>直接在文件末尾添加如下内容（spark的jars在HDFS上的位置，也可以在提交的时候加–jars 以及 –files）</p>
 <div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">spark.yarn.jars&#x3D;hdfs:&#x2F;&#x2F;mycluster&#x2F;spark&#x2F;jars&#x2F;*</span><br></pre></td></tr></table></figure></div>
 </li>
 <li><p>/conf/spark-env.sh</p>
@@ -9058,7 +9256,7 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 </li>
 </ul>
 </li>
-<li><p>分发<strong>spark-default.conf *<em>和 *</em>spark-env.sh</strong> 到所有节点上。重启spark集群。</p>
+<li><p>分发<strong>spark-default.conf *<em>和 *</em>spark-env.sh</strong> 到所有节点上。重启spark集群。(这里只要提交作业的那个机器就可以了)</p>
 </li>
 <li><p>提交作业（master改为yarn，即作业交给yarn来管理）</p>
 <ul>
@@ -9453,6 +9651,53 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 <li><p>启动thriftserver服务器</p>
 <pre><code>$&gt;start</code></pre></li>
 </ol>
+<h3 id="10-5-拓展和总结"><a href="#10-5-拓展和总结" class="headerlink" title="10.5 拓展和总结"></a>10.5 拓展和总结</h3><h4 id="10-5-1-使用场景"><a href="#10-5-1-使用场景" class="headerlink" title="10.5.1 使用场景"></a>10.5.1 使用场景</h4><p>处理结构化数据：</p>
+<ul>
+<li>即席/普通查询文件中的数据</li>
+<li>对流数据处理（SparkStreaming）</li>
+<li>使用SQL的方式处理ETL</li>
+<li>对外部数据库进行查询</li>
+</ul>
+<h4 id="10-5-2-加载数据"><a href="#10-5-2-加载数据" class="headerlink" title="10.5.2 加载数据"></a>10.5.2 加载数据</h4><ul>
+<li>直接加载数据到DataFrame中</li>
+<li>可以加载数据到RDD然后做相应的转换</li>
+<li>可以从本地或云端加载数据</li>
+</ul>
+<h4 id="10-5-3-DataFrame函数-和-SQL"><a href="#10-5-3-DataFrame函数-和-SQL" class="headerlink" title="10.5.3 DataFrame函数 和 SQL"></a>10.5.3 DataFrame函数 和 SQL</h4><ul>
+<li><p>DataFrame = RDD + Schema：表格 = 数据 + 结构</p>
+</li>
+<li><p>DataFrame只是DataSet的Row类型的别名</p>
+</li>
+<li><p>DataFrame可以处理Text、JSON、parquet等（即外部数据源）</p>
+</li>
+<li><p>不管用DF的API还是SQL，最后生成的逻辑执行计划都是一样的，优化后效率都是一样的</p>
+</li>
+</ul>
+<h4 id="10-5-4-Schema"><a href="#10-5-4-Schema" class="headerlink" title="10.5.4 Schema"></a>10.5.4 Schema</h4><ul>
+<li>隐式：JSON、parquet、ORC等自动推导</li>
+<li>显示：<ul>
+<li>先创建RDD</li>
+<li>然后创建一个schema</li>
+<li>然后整合</li>
+</ul>
+</li>
+</ul>
+<h4 id="10-5-5-加载和保存结果"><a href="#10-5-5-加载和保存结果" class="headerlink" title="10.5.5 加载和保存结果"></a>10.5.5 加载和保存结果</h4><p>SaveMode：存在报错、Append追加、Overwrite覆盖、不理睬</p>
+<p>spark.read.format(“json”).load(“file:///…/…”)</p>
+<p>df.write.format(“parquet”).mode(“overwrite”).save(“file:///…/…”)</p>
+<p>如果保存到数据库的话：saveAsTable</p>
+<p>还可以分区写出去df.toDF.write.partitionBy(“year”,”month”).avor(“…”)</p>
+<h4 id="10-5-6-SQL函数覆盖"><a href="#10-5-6-SQL函数覆盖" class="headerlink" title="10.5.6 SQL函数覆盖"></a>10.5.6 SQL函数覆盖</h4><p>支持了好多SQL语法</p>
+<h4 id="10-5-7-复杂JSON处理"><a href="#10-5-7-复杂JSON处理" class="headerlink" title="10.5.7 复杂JSON处理"></a>10.5.7 复杂JSON处理</h4><p>数组情况</p>
+<p>select name,nums[1] from json_table</p>
+<p>多层嵌套可以用A.B</p>
+<h4 id="10-5-8-外部数据源"><a href="#10-5-8-外部数据源" class="headerlink" title="10.5.8 外部数据源"></a>10.5.8 外部数据源</h4><ul>
+<li><p>关系型数据库，需要JDBC jars</p>
+</li>
+<li><p>spark-packeages.org（就是format不一样.将原来JSON因为是自带的，可以直接写JSON，不然就要写对应的包。可以去那个网站上找）</p>
+<p>spark.read.format(“com.databricks.spark.avro”).load(“…”)</p>
+</li>
+</ul>
 <h2 id="十一、Spark-Streaming"><a href="#十一、Spark-Streaming" class="headerlink" title="十一、Spark Streaming"></a>十一、Spark Streaming</h2><h3 id="11-1-介绍"><a href="#11-1-介绍" class="headerlink" title="11.1 介绍"></a>11.1 介绍</h3><p>是spark core的扩展，针对实时数据流处理,具有可扩展、高吞吐量、容错。数据可以是来自于kafka,flume,tcpsocket,使用高级函数(map reduce filter ,join , windows),<br>处理的数据可以推送到database,hdfs,针对数据流处理可以应用到机器学习和图计算中。</p>
 <p>内部，spark接受实时数据流，分成batch(分批次)进行处理，最终在每个batch终产生结果stream。</p>
 <p><strong>discretized stream or DStream</strong><br>离散流,表示的是连续的数据流。<br>通过kafka、flume等输入数据流产生，也可以通过对其他DStream进行高阶变换产生。<br>在内部，DStream是表现为RDD序列。</p>
@@ -9779,6 +10024,28 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
 
 </li>
 </ol>
+<h2 id="十四、优化"><a href="#十四、优化" class="headerlink" title="十四、优化"></a>十四、优化</h2><h3 id="14-1-存储格式的选择"><a href="#14-1-存储格式的选择" class="headerlink" title="14.1 存储格式的选择"></a>14.1 存储格式的选择</h3><p>在sparkSQL中可以使用 <code>parquet</code> ：一种文件格式类型，可以按照这个读取写出文件。</p>
+<h3 id="14-2-压缩格式"><a href="#14-2-压缩格式" class="headerlink" title="14.2 压缩格式"></a>14.2 压缩格式</h3><h3 id="14-3-代码优化"><a href="#14-3-代码优化" class="headerlink" title="14.3 代码优化"></a>14.3 代码优化</h3><ol>
+<li><p>选择高性能算子</p>
+<p>在将数据写入到数据库中的时候</p>
+<p>DataFrame变量.foreachPartition</p>
+<p>每一次对每一个分区进行插入。不要一条记录插一次</p>
+<p>先关掉自动提交，然后批量插入。最后commit。</p>
+</li>
+</ol>
+<ol start="2">
+<li><p>复用已有数据</p>
+<p>通用的dataframe，可以XXX.cache()，不用了再XXX.unpersist(ture)</p>
+</li>
+</ol>
+<h3 id="14-4-参数优化"><a href="#14-4-参数优化" class="headerlink" title="14.4 参数优化"></a>14.4 参数优化</h3><ol>
+<li><p>并行度</p>
+<p>spark.sql.shuffle.partitions</p>
+</li>
+<li><p>分区字段类型推测</p>
+<p>spark.sql.sources.partionColumnTypeInference.enabled</p>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>大数据</category>
@@ -9786,6 +10053,729 @@ Array(100) = 200    //Array.update(200)</code></pre><h3 id="7-6-闭包"><a href=
       </categories>
       <tags>
         <tag>Spark</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《HBase原理与实践》学习笔记</title>
+    <url>/2020/06/14/%E3%80%8AHBase%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="《HBase原理与实践》学习笔记"><a href="#《HBase原理与实践》学习笔记" class="headerlink" title="《HBase原理与实践》学习笔记"></a>《HBase原理与实践》学习笔记</h1><h2 id="一、HBase概述"><a href="#一、HBase概述" class="headerlink" title="一、HBase概述"></a>一、HBase概述</h2><h3 id="1-1-HBase数据模型"><a href="#1-1-HBase数据模型" class="headerlink" title="1.1 HBase数据模型"></a>1.1 HBase数据模型</h3><h4 id="1-1-1-逻辑视图"><a href="#1-1-1-逻辑视图" class="headerlink" title="1.1.1 逻辑视图"></a>1.1.1 逻辑视图</h4><ul>
+<li>table：表</li>
+<li>row：行</li>
+<li>column：列</li>
+<li>timestamp：时间戳</li>
+<li>cell：单元格</li>
+</ul>
+<h4 id="1-1-2-物理视图"><a href="#1-1-2-物理视图" class="headerlink" title="1.1.2 物理视图"></a>1.1.2 物理视图</h4><p>HBase中的数据是按照列族存储的，即将数据按照列族分别存储在不同目录中。</p>
+<h3 id="1-2-HBase体系结构"><a href="#1-2-HBase体系结构" class="headerlink" title="1.2 HBase体系结构"></a>1.2 HBase体系结构</h3><p><a href="/postImages/HBase%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HBase%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<h4 id="1-2-1-Master"><a href="#1-2-1-Master" class="headerlink" title="1.2.1 Master"></a>1.2.1 Master</h4><p>主要负责HBase系统的各种管理工作：</p>
+<ul>
+<li>处理用户的各种管理请求，包括建表、修改表、权限操作、切分表、合并数据等。</li>
+<li>管理集群中的RegionSerer，包括其中Region的负载均衡、迁移等。</li>
+<li>清理过期日志以及文件</li>
+</ul>
+<h4 id="1-2-2-RegionServer"><a href="#1-2-2-RegionServer" class="headerlink" title="1.2.2 RegionServer"></a>1.2.2 RegionServer</h4><p>主要用来相应用户IO请求，是HBase中最核心的模块：</p>
+<ul>
+<li><p><strong>WAL(HLog)</strong></p>
+<ol>
+<li>用于实现数据的高可靠性，HBase数据随机写入时，并非直接写入HFile数据文件，而是先写入缓存，再异步刷新落盘。为了防止缓存数据丢失，数据写入缓存之前需要首先顺序写入HLog。这样即使缓存数据丢失，也能够通过HLog日志恢复。</li>
+<li>用于实现HBase集群间的主从复制，通过回放主集群推送过来的HLog日志实现主从复制。</li>
+</ol>
+</li>
+<li><p><strong>BlockCache</strong></p>
+<p>HBase中的读缓存。客户端从磁盘上熟读数据后通常会将数据缓存在系统内存中，后续再次访问相同的一行数据，可以直接从内存中获取，对于大量热点读的业务来说，可以很大提高性能。</p>
+<blockquote>
+<p>BlockCache缓存对象是一系类Block块，默认64K。利用了空间局部性和时间局部性原理，来实现。</p>
+</blockquote>
+</li>
+<li><p><strong>Region</strong></p>
+<p>数据表的一个分片，当数据表大小超过一定阈值就会“水平切分”，分裂为两个Region。Region是集群负载均衡的基本单位。通常一张表的Region会分布在整个集群的多台RegionServer上，一个RegionServer会管理多个Region。</p>
+<blockquote>
+<p>一个Region由一个或者多个Store构成。Store的个数取决于表中列族的个数，多少个列族就有多少个Store。（每个列族的数据都集中存放在一起形成一个存储单元Store）</p>
+<p>每个Store由一个MemStore和多个HFile组成。MemStore成为写缓存，用户写入数据时，会先写到MemStore，当MemStore写满之后（阈值默认为128M），系统会异步将数据flush成一个HFile文件。显然，随着数据不断写入HFile文件越来越多，当HFile文件数超过一定阈值的时候，会执行Compact操作，将小文件通过一定策略合并成一个大文件。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="1-3-HBase系统特性"><a href="#1-3-HBase系统特性" class="headerlink" title="1.3 HBase系统特性"></a>1.3 HBase系统特性</h3><h4 id="1-3-1-HBase的优点"><a href="#1-3-1-HBase的优点" class="headerlink" title="1.3.1 HBase的优点"></a>1.3.1 HBase的优点</h4><ul>
+<li>容量巨大：单表支持千亿行、百万列的数据规模。</li>
+<li>良好的可扩展性：集群扩展容易，主要是数据存储节点的扩展以及读写服务节点扩展。（添加RegionServer节点）</li>
+<li>稀疏性：允许大量列值为空，并不占用任何存储空间。</li>
+<li>高性能：主要擅长OLTP场景，数据写操作性能强劲，对于 <strong>随机单点读</strong> 以及 <strong>小范围扫描读</strong> ，其性能也能得到保障。对于大范围的扫描读可以使用MR的API，以便实现更高效的并行扫描。</li>
+<li>多版本：时间戳，可以保留多个历史版本。</li>
+<li>支持过期：TTL过期特性，只要设置过期时间，就可以自动清理。</li>
+<li>Hadoop原生支持</li>
+</ul>
+<h4 id="1-3-2-HBase的缺点"><a href="#1-3-2-HBase的缺点" class="headerlink" title="1.3.2 HBase的缺点"></a>1.3.2 HBase的缺点</h4><ul>
+<li>HBase本身<strong>不支持很复杂的聚合运算</strong>（如，Join、GroupBy等）。如果业务中需要使用聚合运算，可以在HBase之上架设Phoenix组件（小规模OLTP）或者Spark组件（大规模聚合的OLTP）。</li>
+<li>HBase本身没有二级索引功能，不支持二级索引查找。好在针对HBase实现的第三方二级索引方案非常丰富，比如目前比较普遍的使用Phoenix提供的二级索引功能。</li>
+<li>HBase原生不支持全局跨行事务，只支持单行事务模型。同样，可以使用Phoenix提供的全局事务模型组件来弥补HBase的这个缺陷。</li>
+</ul>
+<h2 id="二、基础数据结构与算法"><a href="#二、基础数据结构与算法" class="headerlink" title="二、基础数据结构与算法"></a>二、基础数据结构与算法</h2><h3 id="2-1-跳跃表"><a href="#2-1-跳跃表" class="headerlink" title="2.1 跳跃表"></a>2.1 跳跃表</h3><p>跳跃表是一种能高效实现插入、删除、查找的内存数据结构，这些操作期望复杂度都是O(logN)。</p>
+<h3 id="2-2-LSM树"><a href="#2-2-LSM树" class="headerlink" title="2.2 LSM树"></a>2.2 LSM树</h3><p>LSM树（Log-Strucured Merge-Tree）本质上和B+树一样，是一种磁盘数据的索引结构。但和B+树不同的是，LSM树的索引对写入请求更友好。</p>
+<p>LSM树的索引一般由两部分组成：</p>
+<ul>
+<li>内存部分：采用跳跃表来维护一个有序的KeyValue集合。</li>
+<li>磁盘部分：由多个内部KeyValue有序的文件组成。</li>
+</ul>
+<h4 id="2-2-1-KeyValue存储格式"><a href="#2-2-1-KeyValue存储格式" class="headerlink" title="2.2.1 KeyValue存储格式"></a>2.2.1 KeyValue存储格式</h4><p>一般来说，LSM中存储的是多个KeyValue组成的集合，每一个KeyValue一般都会用一个字节数组来表示。</p>
+<p>HBase为例，其中，<strong>Rowkey</strong>、<strong>Family</strong>、<strong>Qualifier</strong>（列族下的列）、<strong>Timestamp</strong>、<strong>Type</strong>这5个字段组成KeyValue中的key部分（Key二进制内容，表示版本号64位long值，HBase中表现为timestamp，type三个必不可少）。Value部分直接存储这个KeyValue中Value的二进制内容。</p>
+<p><strong>其中type字段表示这个KeyValue操作的类型，这表明了LSM树内存储的不只是数据，而是每一次记录。</strong></p>
+<h4 id="2-2-2-多路并归"><a href="#2-2-2-多路并归" class="headerlink" title="2.2.2 多路并归"></a>2.2.2 多路并归</h4><p>类似归并排序算法一样，来合并多个有序文件成一个大文件。</p>
+<h4 id="2-2-3-LSM树的索引结构"><a href="#2-2-3-LSM树的索引结构" class="headerlink" title="2.2.3 LSM树的索引结构"></a>2.2.3 LSM树的索引结构</h4><p>分为内存部分和磁盘部分，本质是将写入操作全部转化成磁盘的顺序写入，极大地提高了写入操作的性能。但是对读取操作不友好，因为需要在读取的过程中，通过归并所有文件来读取所对应的KV，非常耗资源。因此HBase中设计了异步compaction来降低文件个数。</p>
+<h3 id="2-3布隆过滤器"><a href="#2-3布隆过滤器" class="headerlink" title="2.3布隆过滤器"></a>2.3布隆过滤器</h3><p><strong>场景</strong></p>
+<p>用来判断一个元素是否存在于一个集合中（当集合很大很大远远超出内存的时候）。</p>
+<p><strong>原理</strong></p>
+<p>布隆过滤器由一个长度为N的01数组组成。一开始全部初始化为0，然后对集合A中的每个元素进行K次Hash并对长度取模后获得K个下标索引，然后把这些下标对应的数组元素置为1。</p>
+<p>现在需要判断w是否存在于集合A中，只要把w用上述方法一样K次Hash，每次的结果去数组里面查找，只要有一个值为0就说明这个元素<strong>不存在</strong>。如果全部为1，只能说明<strong>可能存在</strong>（假设x经过3次hash后，下标为1、2、6；y为3、4、5，这时候w的hash结果是1、2、3。虽然都是为1，但是属于2个元素）</p>
+<blockquote>
+<p>N=K*|A|/ln2 ，使用这个公式可以保证最佳的误判率。N为数组长度，K为Hash次数，|A|为集合中元素个数。</p>
+</blockquote>
+<p><strong>HBase与布隆过滤器</strong></p>
+<p>在HBase 1.X中有3中类型：</p>
+<ul>
+<li>NONE：不启用</li>
+<li>ROW：按照rowkey来计算布隆过滤器的二进制串并存储。</li>
+<li>ROWCOL：按照rowkey+family+qualifier这3个字段拼出byte[]来计算布隆过滤器值并存储。如果在查询的时候，get能指定这3个字段，那么布隆过滤器肯定能提高性能。但是如果缺少任何一个，则无法提升性能。</li>
+</ul>
+<blockquote>
+<p>腾讯团队介绍了一种设计，他们游戏业务rowkey的设计：</p>
+<p>rowkey=&lt; userid&gt;#&lt; other-field&gt;</p>
+<p>即按照userid来做前缀扫描。（前缀固定，所以计算布隆过滤器的key值也就固定）</p>
+</blockquote>
+<p><strong>总结</strong></p>
+<p>布隆过滤器对Get和基于前缀扫描的Scan都非常友好。</p>
+<h2 id="三、HBase依赖服务"><a href="#三、HBase依赖服务" class="headerlink" title="三、HBase依赖服务"></a>三、HBase依赖服务</h2><h3 id="3-1-ZooKeeper"><a href="#3-1-ZooKeeper" class="headerlink" title="3.1 ZooKeeper"></a>3.1 ZooKeeper</h3><p>关于Zookeeper内容可以参考另一篇文章（ZooKeeper学习笔记）。现在来看一下HBase在ZK上创建的内容：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 1] ls &#x2F;hbase</span><br><span class="line">[meta-region-server, rs, splitWAL, backup-masters, flush-table-proc, master-maintenance, online-snapshot, switch, master, running, draining, namespace, hbaseid, table]</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><p>meta-region-server：存储HBase集群元数据hbase:meta元数据表所在的RegionServer访问地址。</p>
+</li>
+<li><p>master/backup-masters：主/备管理节点，防止单点故障。</p>
+</li>
+<li><p>table：集群中所有表信息。</p>
+</li>
+<li><p>splitWAL：分布式故障恢复。</p>
+</li>
+<li><p>rs：集群中所有运行的RegionServer。</p>
+</li>
+<li><p>等等。。。</p>
+</li>
+</ul>
+<h3 id="3-2-HDFS"><a href="#3-2-HDFS" class="headerlink" title="3.2 HDFS"></a>3.2 HDFS</h3><p>HDFS读写流程，具体详情参考文章（Hadoop学习笔记（二）HDFS）。</p>
+<p><strong>HDFS在HBase中扮演的角色</strong></p>
+<ul>
+<li>HBase本身不存储文件，它只规定文件格式以及文件内容，实际文存储件由HDFS实现。</li>
+<li>HBase不提供机制保证存储数据高可靠性，数据的高可靠性由HDFS多副本保证。</li>
+</ul>
+<h3 id="3-3-HBase在HDFS中的文件布局"><a href="#3-3-HBase在HDFS中的文件布局" class="headerlink" title="3.3 HBase在HDFS中的文件布局"></a>3.3 HBase在HDFS中的文件布局</h3><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;.hbck</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 04:01 &#x2F;hbase&#x2F;.tmp</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-18 21:15 &#x2F;hbase&#x2F;MasterProcWALs</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 04:01 &#x2F;hbase&#x2F;WALs</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-03 17:31 &#x2F;hbase&#x2F;archive</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;corrupt</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;data</span><br><span class="line">-rw-r--r--   3 hadoop supergroup         42 2020-05-29 02:05 &#x2F;hbase&#x2F;hbase.id</span><br><span class="line">-rw-r--r--   3 hadoop supergroup          7 2020-05-29 02:05 &#x2F;hbase&#x2F;hbase.version</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;mobdir</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-18 21:15 &#x2F;hbase&#x2F;oldWALs</span><br><span class="line">drwx--x--x   - hadoop supergroup          0 2020-05-29 02:05 &#x2F;hbase&#x2F;staging</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h2 id="四、HBase客户端"><a href="#四、HBase客户端" class="headerlink" title="四、HBase客户端"></a>四、HBase客户端</h2><h3 id="4-1-客户端与服务端交互流程"><a href="#4-1-客户端与服务端交互流程" class="headerlink" title="4.1 客户端与服务端交互流程"></a>4.1 客户端与服务端交互流程</h3><ol>
+<li><p><strong>获取Configuration对象</strong></p>
+<blockquote>
+<p>一般需要3个配置文件：hbase-size.xml、core-site.xml、hdfs-site.xml放到JVM可以加载到的地方</p>
+</blockquote>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Configuration conf = HBaseConfiguration.create();</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>通过Configuration初始化Connection</strong></p>
+<p>Connection是HBase客户端一切操作的基础，维持了客户端到整个HBase集群的连接。</p>
+<blockquote>
+<p>例如，集群里有2个Master、5个RegionServer。那么Connection会维持一个到Active Master的TCP和5个到RegionServer的TCP。</p>
+<p>通常，一个进程只需要为一个独立的集群建立一个Connection即可，<strong>并不需要连接池</strong>。</p>
+</blockquote>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Connection conn = ConnectionFactory.createConnection(conf);</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>通过Connection初始化Table</strong></p>
+<p>Table是一个非常轻量级的对象，实现了用户访问表的所有API操作，如：Put、Get、Delete、Scan等。本质上，它使用的连接资源、配置信息、线程池、Meta缓存等，都来自Connection对象，因此由同一个Connection创建的多个Table，都可以共享上述这些资源。</p>
+<blockquote>
+<p>注意：branch-1以及之前版本，Table不是线程安全的类，不建议共享一个Table实例。但是，HBase2.0.0之后的版本，Table已经实现为线程安全类。可以通过同一个Connection为每个请求创建一个Table，但是要记得关闭Table对象。</p>
+</blockquote>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">TableName tableName = TableName.valueOf(<span class="string">"ns1:t1"</span>);</span><br><span class="line">Table table = conn.getTable(tableName);</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>通过Table执行Put和Scan操作</strong></p>
+<p>put（这里注意到参数都是byte[]）:</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 通过bytes工具类创建字节数组(将字符串)</span></span><br><span class="line"><span class="keyword">byte</span>[] rowId = Bytes.toBytes(<span class="string">"row3"</span>);</span><br><span class="line"><span class="comment">// 创建put对象</span></span><br><span class="line">Put put = <span class="keyword">new</span> Put(rowId);</span><br><span class="line"><span class="keyword">byte</span>[] f1 = Bytes.toBytes(<span class="string">"f1"</span>);</span><br><span class="line"><span class="keyword">byte</span>[] id = Bytes.toBytes(<span class="string">"id"</span>);</span><br><span class="line"><span class="keyword">byte</span>[] value = Bytes.toBytes(<span class="number">102</span>);</span><br><span class="line">put.addColumn(f1, id, value);</span><br><span class="line"><span class="comment">// 执行插入</span></span><br><span class="line">table.put(put);</span><br></pre></td></tr></table></figure></div>
+
+<p>scan:</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Configuration conf = HBaseConfiguration.create();</span><br><span class="line"><span class="keyword">try</span> (Connection connection = ConnectionFactory.createConnection(conf)) &#123;</span><br><span class="line">    <span class="keyword">try</span> (Table table = connection.getTable(TableName.valueOf(<span class="string">"ns1:t1"</span>))) &#123;</span><br><span class="line">        <span class="comment">// scan设置</span></span><br><span class="line">        Scan scan = <span class="keyword">new</span> Scan();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">try</span> (ResultScanner scanner = table.getScanner(scan)) &#123;</span><br><span class="line">            <span class="comment">// 每次scanner.next()返回一个结果</span></span><br><span class="line">            <span class="keyword">for</span> (Result result : scanner) &#123;</span><br><span class="line">                <span class="comment">// 这里可以看出每一个result中的cell都是相同的rowKey</span></span><br><span class="line">                <span class="keyword">final</span> String rowKey = Bytes.toString(result.getRow());</span><br><span class="line">                System.out.println(rowKey);</span><br><span class="line">                <span class="comment">// 1个result结果包含N个cells</span></span><br><span class="line">                <span class="keyword">for</span> (Cell cell : result.listCells()) &#123;</span><br><span class="line">                    System.out.print(<span class="string">"["</span> +</span><br><span class="line">                                     Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength()) + <span class="string">":"</span> +</span><br><span class="line">                                     Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()) + <span class="string">"]"</span> + <span class="string">"\t"</span></span><br><span class="line">                                    );</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">"------------------------------------------"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<h3 id="4-2-定位Meta表"><a href="#4-2-定位Meta表" class="headerlink" title="4.2 定位Meta表"></a>4.2 定位Meta表</h3><p>HBase一张表由多个Region构成，这些Region分布在不同RegionServer上。客户端在做任何操作的时候，要先确定数据在哪个Region上，然后根据Region的RegionServer信息，去对应的RegionServer上读取数据。因此，有一张特殊的表（<strong>hbase:meta</strong>），来存放整个集群所有Region的信息。</p>
+<blockquote>
+<p>hbase:meta表始终只有一个Region，这是为了确保meta表多次操作的原子性，因为hbase只支持Region级别的事务。</p>
+</blockquote>
+<h4 id="4-2-1-Meta表构成"><a href="#4-2-1-Meta表构成" class="headerlink" title="4.2.1 Meta表构成"></a>4.2.1 Meta表构成</h4><p>总体来说hbase:meta的一个rowkey就对应一个Region。</p>
+<ul>
+<li><p><strong>rowkey</strong> 主要由4部分组成</p>
+<ul>
+<li>TableName（业务表明，带命名空间）</li>
+<li>StarRow（业务表Region区间的起始rowkey）</li>
+<li>Timestamp（Region创建的时间戳）</li>
+<li>EncodedName（上面3个字段的MD5 Hex值）</li>
+</ul>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ns1:t1,,1592659846948.9c7ccaa30b993abc7d60a2d790289e51.</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>每一行数据又主要分为4列</p>
+<ul>
+<li><p>info:regioninfo：对应的Value存储4个信息</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">column&#x3D;info:regioninfo, timestamp&#x3D;1592659847921, value&#x3D;&#123;</span><br><span class="line">	&#x2F;&#x2F; EncodedName</span><br><span class="line">    ENCODED &#x3D;&gt; 9c7ccaa30b993abc7d60a2d790289e51, </span><br><span class="line">    &#x2F;&#x2F; RegionName</span><br><span class="line">    NAME &#x3D;&gt; &#39;ns1:t1,,1592659846948.9c7ccaa30b993abc7d60a2d790289e51.&#39;, </span><br><span class="line">    &#x2F;&#x2F; Region的StarRow和StopRow</span><br><span class="line">    STARTKEY &#x3D;&gt; &#39;&#39;, </span><br><span class="line">    ENDKEY &#x3D;&gt; &#39;&#39;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>info:seqnumDuringOpen：存储Region打开时的sequenceId</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">column&#x3D;info:seqnumDuringOpen, timestamp&#x3D;1592659847921, value&#x3D;\x00\x00\x00\x00\x00\x00\x00\x02</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>info:server：存储Region落在哪个RegionServer上</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">column&#x3D;info:server, timestamp&#x3D;1592659847921, value&#x3D;hadoop001:16020</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>info:serverstartcode：所在RegionServer的启动时间戳</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">column&#x3D;info:serverstartcode, timestamp&#x3D;1592659847921, value&#x3D;1592658086718</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-2-2-热点Region问题"><a href="#4-2-2-热点Region问题" class="headerlink" title="4.2.2 热点Region问题"></a>4.2.2 热点Region问题</h4><p>之前说到所有的操作要确定Region的位置，而这些位置信息都在hbase:meta表上。所有请求都访问这个表，那么会产生热点问题。<strong>解决方案就是将Region信息缓存在客户端。</strong></p>
+<p><a href="/postImages/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9A%E4%BD%8DRegion.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9A%E4%BD%8DRegion.png" class="lazyload"></a></p>
+<p>以上就是<strong>客户端定位Region示意图</strong>，在客户端有一个<strong>MetaCache</strong>的缓存，客户端调用API时，会先去缓存中找业务rowkey所在的Region，情况可能如下：</p>
+<ul>
+<li><strong>Region信息为空</strong>：即缓存中没有这个Region信息，那么要去hbase:meta中查找（当然首次查找，需要到ZK集群获取hbase:meta所在的RegionServer）。然后返回一个二元组（regionStartRow, region）放到MetaCache中。</li>
+<li><strong>Region信息不为空，但是RPC请求对应的RegionServer上并没有该Region信息</strong>：说明缓存信息过期了，可能是Region迁移了，这时候就要重新去hbase:meta表找了。</li>
+<li><strong>Region信息不为空，且RPC请求对应的RegionServer上存在该Region信息</strong>：这就是大部分情况。</li>
+</ul>
+<h3 id="4-3-Scan-操作"><a href="#4-3-Scan-操作" class="headerlink" title="4.3 Scan 操作"></a>4.3 Scan 操作</h3><p>常用的有：startRow、endRow、Filter、caching、batch、reversed、maxResultSize、version、timeRange等。</p>
+<p>我们已经知道可以通过 table.getScanner(scan) 可以拿到一个scanner，然后不断执行scanner.next()就能拿到一个Result。</p>
+<blockquote>
+<p>通常一个Result内部有多个cell，这些cell的rowkey一样，就相当于一行完整的数据。如果设置了setBatch那么就有可能是一行的一部分数据，即有batch个cell。</p>
+</blockquote>
+<h4 id="4-3-1-客户端读取Result流程"><a href="#4-3-1-客户端读取Result流程" class="headerlink" title="4.3.1 客户端读取Result流程"></a>4.3.1 客户端读取Result流程</h4><p><a href="/postImages/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%BB%E5%8F%96Result%E6%B5%81%E7%A8%8B.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%BB%E5%8F%96Result%E6%B5%81%E7%A8%8B.png" class="lazyload"></a></p>
+<ol>
+<li><p>每次执行scanner.next()都会去cache队列中<strong>拿一个result</strong>（步骤4）</p>
+</li>
+<li><p>如果cache队列为空，那么发起RPC请求当前scanner后续的result数据（步骤1）</p>
+</li>
+<li><p>客户端收到result列表后（步骤2）</p>
+</li>
+<li><p>通过scanResultCache把这些result内的多个cell进行重组，最终组成用户需要的result放入cache中（步骤3）</p>
+<blockquote>
+<p>为什么要重组？因为RPC请求有限制，达到某个资源阈值就会立即返回当前获取到的cell，即可能无法一次拿那么多数据，那么这时候从服务器返回的result就有可能是一行中的部分数据，而我们需要的result是一行完整的数据。这时候就需要对result进行重组，来获得我们期望的数据。</p>
+</blockquote>
+</li>
+</ol>
+<p>以上步骤1+2+3，称为loadCache。</p>
+<h4 id="4-3-2-Scan的几个重要概念"><a href="#4-3-2-Scan的几个重要概念" class="headerlink" title="4.3.2 Scan的几个重要概念"></a>4.3.2 Scan的几个重要概念</h4><ul>
+<li><strong>caching</strong>：每次loadCache操作最多存放caching个result到cache队列中。控制caching也就可以控制每次loadCache向服务器请求的数据量，避免出现某一次next()操作耗时极长。</li>
+<li><strong>batch</strong>：用户拿到的result中最多含有一行数据中的batch个cell。</li>
+<li><strong>allowPartial</strong>：跳过重组过程，直接把收到的服务端result返回给用户。</li>
+<li><strong>maxResultSize</strong>：loadCache单次RPC操作最多拿到maxResultSize字节的结果集。</li>
+</ul>
+<h3 id="4-4-HBase-客户端避坑指南"><a href="#4-4-HBase-客户端避坑指南" class="headerlink" title="4.4 HBase 客户端避坑指南"></a>4.4 HBase 客户端避坑指南</h3><h4 id="4-4-1-RPC重试配置要点（几个超时参数）"><a href="#4-4-1-RPC重试配置要点（几个超时参数）" class="headerlink" title="4.4.1 RPC重试配置要点（几个超时参数）"></a>4.4.1 RPC重试配置要点（几个超时参数）</h4><ul>
+<li>hbase.rpc.timeout：单次RPC请求的超时时间（默认60 000ms）</li>
+<li>hbase.client.retries.number：调用API时最多容许多生多少次RPC重试操作（默认35次）</li>
+<li>hbase.client.pause：连续两次RPC重试之间的休眠时间（默认100ms。注意采用的是退避算法，也就是说重试次数越多，则休眠时间越长）</li>
+<li>hbase.client.operation.timeout：单次API（即get/put/delete等操作）的超时时间（默认1 200 000ms）</li>
+</ul>
+<h4 id="4-4-2-Scan-Filter-设置"><a href="#4-4-2-Scan-Filter-设置" class="headerlink" title="4.4.2 Scan Filter 设置"></a>4.4.2 Scan Filter 设置</h4><ul>
+<li><p><strong>PrefixFilter（前缀过滤器）</strong></p>
+<p>会返回前缀为指定内容的rowkey，但是不高效，因为会对(-∞,rowkey)区间的内容全部扫描。解决方法是可以设置一个setStartRow()，RegionServer发现有这个属性会首先寻址定位到这个startRow，然后从这个位置开始扫描数据，这样就跳过了大量数据。</p>
+<p>不过，更简单的是<strong>直接设置setStartRow和setStopRow，即区间直接定位。这样效率最高</strong>。</p>
+</li>
+<li><p><strong>PageFilter（分页过滤器）</strong></p>
+<p>用来限制返回的数据数量的。</p>
+<p>注意，HBase里Filter状态全部都是Region内部有效的。如果扫描的数据，一旦从一个Region切换到另一个Region那么之前那个Filter的内部状态就无效了（即计数器清0）。新的Region内部用的是一个新的Filter。</p>
+<p>当然，如果<strong>想实现分页功能，可以直接通过limit实现：setLimit(1000);</strong></p>
+</li>
+</ul>
+<h4 id="4-4-3-少量写和批量写"><a href="#4-4-3-少量写和批量写" class="headerlink" title="4.4.3 少量写和批量写"></a>4.4.3 少量写和批量写</h4><ul>
+<li><strong>table.put(put)：单行数据写入</strong>，在服务端先写WAL，然后邪写到MenStore，一旦写满flush到磁盘上。吞吐量受限于磁盘带宽、网络带宽、flush速度。但是保证不会丢数据，保证put的原子性。</li>
+<li><strong>table.put(List&lt; Put&gt; puts)：批量写入</strong>，在客户端缓存put，凑足一批后打包成一次RPC发送到服务端，一次性写WAL，和MenStore。耗时会长一点，另外如果put分布在多个Region内，可能有一部分会失败（HBase不提供跨Region的多行事务），失败的会重试。</li>
+<li><strong>bulk load：直接将带写入数据生成HFile，直接加载到对应的Region下的CF内</strong>。在HBase服务器端没有任何RPC只有load HFile时会调用，是一种完全离线的快速写入方式。</li>
+</ul>
+<h2 id="五、RegionServer的核心模块"><a href="#五、RegionServer的核心模块" class="headerlink" title="五、RegionServer的核心模块"></a>五、RegionServer的核心模块</h2><p>RegionServer的内部结构，在之前已经了解过了。现在我们来逐个解析。</p>
+<h3 id="5-1-HLog"><a href="#5-1-HLog" class="headerlink" title="5.1 HLog"></a>5.1 HLog</h3><p>HBase中系统故障恢复及主从复制都基于HLog实现。</p>
+<h4 id="5-1-1-HLog文件结构"><a href="#5-1-1-HLog文件结构" class="headerlink" title="5.1.1 HLog文件结构"></a>5.1.1 HLog文件结构</h4><p><a href="/postImages/HLog%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HLog%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<p>每个RegionServer拥有一个或多个HLog（默认1个，1.1以后允许多个）。每个HLog是多个Region共享的。</p>
+<h4 id="5-1-2-HLog文件存储"><a href="#5-1-2-HLog文件存储" class="headerlink" title="5.1.2 HLog文件存储"></a>5.1.2 HLog文件存储</h4><p>在HDFS上的目录：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;hbase&#x2F;WALs&#x2F;hadoop001,16020,1592727464395&#x2F;hadoop001%2C16020%2C1592727464395.1592727473513</span><br></pre></td></tr></table></figure></div>
+
+<p>有3个部分：hadoop001是RegionServer域名，16020端口号，1592727464395目录生成时间戳。</p>
+<p>可以使用命令查看内容：<code>hbase hlog</code> （但是我这个版本好像没有hlog，而是wal）</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[hadoop@hadoop002 &#x2F;home&#x2F;hadoop&#x2F;app&#x2F;hbase-2.2.4&#x2F;logs]$hbase wal &#x2F;hbase&#x2F;WALs&#x2F;hadoop002,16020,1592729053980&#x2F;hadoop002%2C16020%2C1592729053980.1592729063117</span><br><span class="line">Writer Classes: ProtobufLogWriter AsyncProtobufLogWriter</span><br><span class="line">Cell Codec Class: org.apache.hadoop.hbase.regionserver.wal.WALCellCodec</span><br><span class="line">Sequence&#x3D;34, table&#x3D;ns1:t1, region&#x3D;9c7ccaa30b993abc7d60a2d790289e51, at write timestamp&#x3D;Sun Jun 21 16:44:25 CST 2020</span><br><span class="line">row&#x3D;\x00, column&#x3D;METAFAMILY:HBASE::REGION_EVENT::REGION_OPEN</span><br><span class="line">cell total size sum: 320</span><br><span class="line">edit heap size: 360</span><br><span class="line">position: 408</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="5-1-3-HLog生命周期"><a href="#5-1-3-HLog生命周期" class="headerlink" title="5.1.3 HLog生命周期"></a>5.1.3 HLog生命周期</h4><ol>
+<li><p>HLog构建：HBase任何写入（更新、删除）操作都会先把记录追加写入HLog文件中。</p>
+</li>
+<li><p>HLog滚动：HBase后台启动一个线程，每隔一段时间（’<strong>hbase.regionserver.logroll.period</strong>‘决定，默认1小时）进行日志滚动。滚动的主要目的是方便过期日志以文件形式删除。</p>
+</li>
+<li><p>HLog失效：写入数据一旦从MemStore落盘，那么对应的日志数据就失效了。只要日志文件中所有日志记录都已经落盘，那么该文件失效。一旦失效，被移动到oldWALs文件夹。（注意此时HLog还没有被删除）</p>
+</li>
+<li><p>HLog删除：Mater后台会启动一个线程，每隔一段时间（’<strong>hbase.master.cleaner.interval</strong>‘，默认1分钟）检查一次oldWALs文件夹下的所有失效日志文件，确定可以删除后执行删除：（确认条件主要有2个）</p>
+<ul>
+<li><p>该HLog文件是否还在参与主从复制</p>
+</li>
+<li><p>该HLog文件是否已经在oldWALs目录中存在10分钟（可以通过’<strong>hbase.master.logcleaner.ttl</strong>‘设置，默认10分钟）</p>
+<blockquote>
+<p>有个奇怪的地方，我的集群内，oldWALs并不会自动清理！？查阅资料后添加参数也没有效果。即，存在一大堆 /hbase/oldWALs/pv2-00000000000000000596.log 这样的文件，它们生成的时间间隔是1小时，可以看出是HLog滚动的1小时。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-2-MemStore"><a href="#5-2-MemStore" class="headerlink" title="5.2 MemStore"></a>5.2 MemStore</h3><p>HBase没有直接使用原始的跳跃表，而是用了JDK自带的ConcurrentSkipListMap，此外这是线程安全的。</p>
+<p>MemStore由两个ConcurrentSkipListMap实现，写入操作会先写入A，当A中数据量达到阈值之后，会创建B来接受用户新的请求，而已经写满的A，会执行异步flush落盘形成HFile。</p>
+<p><strong>MemStore的GC问题</strong></p>
+<p>既然是缓存，那么就会涉及到GC问题。MemStore本身会占用大量内存，因此GC问题不可避免。而且MemStore的工作模式会引起严重的内存碎片问题。</p>
+<p>一个RegionServer有多个Region构成，一个Region有多个MemStore。而这些所有的MemStore会共享内存，即数据混合在一起。因此如果有一个Region执行落盘操作，那么会产生大量内存碎片。</p>
+<p><strong>MSLAB内存管理方式</strong></p>
+<p>为了解决上述内存碎片可能导致的Full GC。借鉴了线程本地分配缓存的内存管理方式：</p>
+<ol>
+<li>每个MemStore会实例化得到一个MemStoreLAB对象</li>
+<li>MemStoreLAB会申请一个2M大小的Chunk数组，同时维护一个Chunk偏移量，初始为0</li>
+<li>当一个KeyValue值插入MemStore后，MemStoreLAB会把data数组复制到Chunk数组中，然后移动偏移量</li>
+<li>当前Chunk满了之后，再申请一个新的Chunk</li>
+</ol>
+<p>这样通过整块的方案即将一个Region的数据放到一起，可以很大程度减少内存碎片。但是这还存在一些小问题。</p>
+<p><strong>MemStore Chunk Pool</strong></p>
+<p>当Chunk写满之后，系统会重新申请一个新的Chunk，新建Chunk对象会再JVM的新生代申请内存，如果申请比较频繁会导致JVM的新生代Eden区满掉，触发YGC。</p>
+<p>MemStore Chunk Pool 的思路：</p>
+<ol>
+<li>系统创建一个Chunk Pool来管理所有未被引用的Chunk，这些Chunk就不会再被JVM当作垃圾回收。</li>
+<li>如果一个Chunk没有再被引用，将其放入Chunk Pool</li>
+<li>如果当前Chunk Pool已经达到容量最大值，就不会再接纳新的Chunk</li>
+<li>如果需要申请新的Chunk来存储KeyValue，首先从Chunk Pool中获取，如果有就重复利用，没有就申请一个新的Chunk。</li>
+</ol>
+<h3 id="5-3-HFile"><a href="#5-3-HFile" class="headerlink" title="5.3 HFile"></a>5.3 HFile</h3><h4 id="5-3-1-逻辑结构-V2"><a href="#5-3-1-逻辑结构-V2" class="headerlink" title="5.3.1 逻辑结构(V2)"></a>5.3.1 逻辑结构(V2)</h4><p><a href="/postImages/HFile%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HFile%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<p>HFile文件主要有4个部分：</p>
+<ul>
+<li><p><strong>Scanned Block</strong> 部分：表示顺序扫描的时候数据块将会被读取。</p>
+<blockquote>
+<p>这个部分包含3个数据块：</p>
+<ol>
+<li>Data Block：存储用户KeyValue数据</li>
+<li>Leaf Index Block：存储索引树的叶子节点数据（索引树有3层，这是最后一层）</li>
+<li>Bloom Block：存储布隆过滤器相关数据</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>Non-scanned  Block</strong> 部分：再HFile顺序扫描时候数据不会被读取</p>
+<blockquote>
+<p>主要包括两部分：</p>
+<ol>
+<li>Meta Block</li>
+<li>Intermediate Level Data Index Blocks（索引树第二层）</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>Load-on-open</strong> 部分：这部分数据会在RegionServer打开HFile时直接加载到内存中</p>
+<blockquote>
+<p>包括：</p>
+<ol>
+<li>FlieInfo：固定长度数据块，主要记录文件的一些统计元信息，比较重要的是AVG_KEY_LEN和AVG_VALUE_LEN分别表示平均Key和Value的长度</li>
+<li>布隆过滤器MetaBlock：记录布隆过滤器相关元数据信息</li>
+<li>RootDataIndex（索引树第一层，即索引树根节点信息）</li>
+<li>Meta Index Block</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>Trailer</strong> 部分：主要记录了HFile的版本信息、<strong>其他各个部分</strong>的偏移值和寻址信息。</p>
+</li>
+</ul>
+<h4 id="5-3-2-物理结构"><a href="#5-3-2-物理结构" class="headerlink" title="5.3.2 物理结构"></a>5.3.2 物理结构</h4><p><a href="/postImages/HFile%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HFile%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<p>HFile文件由各种不同类型的Block（数据块）构成，虽然这些<strong>Block的类型不一样，但是数据结构相同</strong>。</p>
+<p>Block的大小可以创建列族的时候加上参数 blocksize=&gt;’65535’ 指定，默认是64K。大号Block有利于大规模顺序扫描，而小号Block有利于随机查找。</p>
+<p><strong>HFileBlock 结构</strong></p>
+<p><a href="/postImages/HFileBlock%E7%BB%93%E6%9E%84.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HFileBlock%E7%BB%93%E6%9E%84.png" class="lazyload"></a></p>
+<p>HFileBlock主要包含两部分：</p>
+<ul>
+<li><p>BlockHeader：存储相关元数据</p>
+<ul>
+<li><p>BlockType：最核心字段，表示Block的类型。HBase定义了8种BlockType类型，核心如下：</p>
+<p><a href="/postImages/%E6%A0%B8%E5%BF%83BlockType.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E6%A0%B8%E5%BF%83BlockType.png" class="lazyload"></a></p>
+</li>
+</ul>
+</li>
+<li><p>BlockData：存储具体数据</p>
+</li>
+</ul>
+<h4 id="5-3-3-HFile基础Block"><a href="#5-3-3-HFile基础Block" class="headerlink" title="5.3.3 HFile基础Block"></a>5.3.3 HFile基础Block</h4><h5 id="1-Trailer-Block"><a href="#1-Trailer-Block" class="headerlink" title="1) Trailer Block"></a>1) Trailer Block</h5><p>主要记录了HFile的版本信息、各个部分的偏移量和寻址地址信息。</p>
+<p><a href="/postImages/TrailerBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/TrailerBlock.png" class="lazyload"></a></p>
+<p>RegionServer在打开HFile时，会加载所有HFile的<strong>Trailer部分</strong>以及<strong>load-on-open部分</strong>到内存中。实际加载过程首先会解析Trailer Block，然后进一布加载load-on-open。具体步骤如下：</p>
+<ol>
+<li>加载 HFile version 版本信息，包含majorVersion和minorVersion（主版本V1、V2还是V3，次版本信息），不同版本使用不同的文件解析器对HFile进行读取解析。</li>
+<li>HBase根据version信息计算Trailer Block大小，加载整个HFile Trailer Block到内存中。其中有很多信息，如上图。</li>
+<li>然后根据其中两个重要字段：LoadOnOpenDataOffset和LoadOnOpenDataSize，前者表示偏移量，后者表示大小。HBase会在启动后讲load-on-open部分的数据全部加载到内存中。</li>
+</ol>
+<h5 id="2-Data-Block"><a href="#2-Data-Block" class="headerlink" title="2) Data Block"></a>2) Data Block</h5><p>Bata Block 是 HBase中文件读取的最小单元。Data Block中存储用户的KeyValue（HBase存储的核心），HBase中所有数据都是以KeyValue结构存储在HBase中。</p>
+<p><a href="/postImages/DataBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/DataBlock.png" class="lazyload"></a></p>
+<p><strong>KeyValue结构</strong>：</p>
+<p>其中key length 和 value length 是两个固定长度的数值。value是实际写入的数据。</p>
+<p>key由多个部分组成，从上图可以看出有各个部分。其中<strong>KeyType类型有4种：Put、Delete、DeleteColumn、DeleteFamily</strong></p>
+<p>从这里可以看出，每个KeyValue都包含rowkey、column family、column qulifier。因此在表结构设计时，这些字段尽可能设置短的原因。</p>
+<h5 id="3-布隆过滤器相关Block"><a href="#3-布隆过滤器相关Block" class="headerlink" title="3) 布隆过滤器相关Block"></a>3) 布隆过滤器相关Block</h5><p>布隆过滤器之前说过了。可以想象HFile文件越大，里面KeyValue存储的越多，那么位数组就相应越大，太大就不适合加载到内存了。因此HFile V2 在设计上将位数组进行拆分成多个独立的位数组（根据Key拆分，一部分连续JKey使用一个位数组）。这样根据Key查询的时候，只要加载相应的位数组，减少内存开销。</p>
+<p>在文件结构上多个位数组对应多个Bloom Block（数组+firstkey），为了方便定位对应的位数组，V2又设计了Bloom Index Block：</p>
+<p><a href="/postImages/BloomIndexBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/BloomIndexBlock.png" class="lazyload"></a></p>
+<p><strong>HFile种仅有一个Bloom Index Block数据块，位于load-on-open部分。</strong>如上图，从大方向上可以分为2部分：一个是HFile种布隆过滤器元数据基本信息（绿色），以及指向Bloom Block的索引项（红色）。</p>
+<p>其中<strong>Block Key（图上显示FirstKey）</strong>是个非常关键的字段，表示该Index Entry指向的Bloom Block种第一个KV的Key值。<strong>BlockOffset</strong>表示对应Bloom Block在HFile中的偏移量。</p>
+<p><strong>get请求根据布隆过滤器查找流程：</strong></p>
+<ol>
+<li>首先根据带查找Key在Bloom Index Block所有的索引项中根据BlockKey进行二分查找。定位到对应的Bloom Index Entry。</li>
+<li>再根据Bloom Index Entry中BlockOffset以及BlockOndiskSize加载该Key对应的位数组</li>
+<li>对Key进行Hash映射，根据映射结果再位数组中查看是否都是1，如果不是，表示不存在Key，否则有可能存在。</li>
+</ol>
+<h5 id="4-索引相关Block"><a href="#4-索引相关Block" class="headerlink" title="4) 索引相关Block"></a>4) 索引相关Block</h5><p>根据索引层级不同，HFile中索引结构分为两种：single-level和mutil-level，前者表示单层索引，后者表示多级索引，一般为两级或者三级。</p>
+<p>V2版本的Index Block有两类：</p>
+<ol>
+<li><p><strong>Root Index Block</strong>（索引数根节点，属于load-on-open部分）</p>
+<p> <a href="/postImages/RootIndexBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/RootIndexBlock.png" class="lazyload"></a></p>
+<p>如图为多层索引的结构（单层索引，仅仅缺少mid的3个字段）。其中Index Entry为具体的索引对象。由3个字段组成：<strong>索引指向的DataBlock偏移量</strong>、<strong>DataBlock在磁盘上的大小</strong>、<strong>索引指向DataBlock中第一个的Key</strong>。</p>
+<p>除此之外的MidKey相关信息，用于在对HFile进行split操作时，快速定位HFile的切分点位置。</p>
+</li>
+<li><p>NonRoot Index Block</p>
+<ul>
+<li><strong>Intermediate Index Block</strong>（中间节点，属于Non-Scanned block 部分）</li>
+<li><strong>Leaf Index Block</strong>（叶子节点，直接指向实际DataBlock。属于scanned block部分）</li>
+</ul>
+<p><a href="/postImages/HFile%E6%96%87%E4%BB%B6%E7%B4%A2%E5%BC%95.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HFile%E6%96%87%E4%BB%B6%E7%B4%A2%E5%BC%95.png" class="lazyload"></a></p>
+<p>一开始，由于HFile刚开始数量小，索引采用单层索引，只有Root Index一层索引，直接指向Data Block。当数据变大的时候，Root Index Block大小超过阈值后，索引分裂为多级结构，由一层索引变为两层，根节点指向叶子节点，叶子节点指向实际Data Block。如果数据更大，索引层变为三层。</p>
+</li>
+</ol>
+<p>   <strong>NonRootIndexBlock 结构</strong></p>
+<p>   <a href="/postImages/NonRootIndexBlock.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/NonRootIndexBlock.png" class="lazyload"></a></p>
+<p>   不管是中间还是叶子节点，结构都是一样的。和根索引块不同的是多了一个内部索引（entry offset），表示index Entry相对于第一个Index Entry的偏移量。用于实现二分查找，加快速度。</p>
+<h4 id="5-3-4-HFile文件查看工具"><a href="#5-3-4-HFile文件查看工具" class="headerlink" title="5.3.4 HFile文件查看工具"></a>5.3.4 HFile文件查看工具</h4><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hbase hfile</span><br><span class="line">usage: hfile [-a] [-b] [-e] [-f &lt;arg&gt; | -r &lt;arg&gt;] [-h] [-i] [-k] [-m] [-p]</span><br><span class="line">       [-s] [-v] [-w &lt;arg&gt;]</span><br><span class="line"> -a,--checkfamily         Enable family check</span><br><span class="line"> -b,--printblocks         Print block index meta data</span><br><span class="line"> -e,--printkey            Print keys</span><br><span class="line"> -f,--file &lt;arg&gt;          File to scan. Pass full-path; e.g.</span><br><span class="line">                          hdfs:&#x2F;&#x2F;a:9000&#x2F;hbase&#x2F;hbase:meta&#x2F;12&#x2F;34</span><br><span class="line"> -h,--printblockheaders   Print block headers for each block.</span><br><span class="line"> -i,--checkMobIntegrity   Print all cells whose mob files are missing</span><br><span class="line"> -k,--checkrow            Enable row order check; looks for out-of-order</span><br><span class="line">                          keys</span><br><span class="line"> -m,--printmeta           Print meta data of file</span><br><span class="line"> -p,--printkv             Print key&#x2F;value pairs(这个可以直接打印KV内容)</span><br><span class="line"> -r,--region &lt;arg&gt;        Region to scan. Pass region name; e.g.</span><br><span class="line">                          &#39;hbase:meta,,1&#39;</span><br><span class="line"> -s,--stats               Print statistics</span><br><span class="line"> -v,--verbose             Verbose output; emits file and meta data</span><br><span class="line">                          delimiters</span><br><span class="line"> -w,--seekToRow &lt;arg&gt;     Seek to this row and print all the kvs for this</span><br><span class="line">                          row only</span><br></pre></td></tr></table></figure></div>
+
+<p>示例：通过shell命令来查看内容，这里引用6.2.2生成的HFile来进行查看：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hbase hfile -m -f hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData&#x2F;out&#x2F;f1&#x2F;5314cd3465004280a7ad779dbcbe6a2f</span><br><span class="line"></span><br><span class="line">2020-06-22 23:57:39,198 INFO  [main] metrics.MetricRegistries: Loaded MetricRegistries class org.apache.hadoop.hbase.metrics.impl.MetricRegistriesImpl</span><br><span class="line">Block index size as per heapsize: 320</span><br><span class="line">reader&#x3D;hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData&#x2F;out&#x2F;f1&#x2F;5314cd3465004280a7ad779dbcbe6a2f,</span><br><span class="line">    compression&#x3D;none,</span><br><span class="line">    cacheConf&#x3D;cacheDataOnRead&#x3D;false,</span><br><span class="line">    cacheDataOnWrite&#x3D;false,</span><br><span class="line">    cacheIndexesOnWrite&#x3D;false,</span><br><span class="line">    cacheBloomsOnWrite&#x3D;false,</span><br><span class="line">    cacheEvictOnClose&#x3D;false,</span><br><span class="line">    cacheDataCompressed&#x3D;false,</span><br><span class="line">    prefetchOnOpen&#x3D;false,</span><br><span class="line">    firstKey&#x3D;Optional[row100&#x2F;f1:age&#x2F;1592841003333&#x2F;Put&#x2F;seqid&#x3D;0],</span><br><span class="line">    lastKey&#x3D;Optional[row102&#x2F;f1:name&#x2F;1592841003333&#x2F;Put&#x2F;seqid&#x3D;0],</span><br><span class="line">    avgKeyLen&#x3D;23,</span><br><span class="line">    avgValueLen&#x3D;3,</span><br><span class="line">    entries&#x3D;9,</span><br><span class="line">    length&#x3D;5319</span><br><span class="line">Trailer:</span><br><span class="line">    fileinfoOffset&#x3D;531,</span><br><span class="line">    loadOnOpenDataOffset&#x3D;421,</span><br><span class="line">    dataIndexCount&#x3D;1,</span><br><span class="line">    metaIndexCount&#x3D;0,</span><br><span class="line">    totalUncomressedBytes&#x3D;5226,</span><br><span class="line">    entryCount&#x3D;9,</span><br><span class="line">    compressionCodec&#x3D;NONE,</span><br><span class="line">    uncompressedDataIndexSize&#x3D;36,</span><br><span class="line">    numDataIndexLevels&#x3D;1,</span><br><span class="line">    firstDataBlockOffset&#x3D;0,</span><br><span class="line">    lastDataBlockOffset&#x3D;0,</span><br><span class="line">    comparatorClassName&#x3D;org.apache.hadoop.hbase.CellComparatorImpl,</span><br><span class="line">    encryptionKey&#x3D;NONE,</span><br><span class="line">    majorVersion&#x3D;3,</span><br><span class="line">    minorVersion&#x3D;3</span><br><span class="line">Fileinfo:</span><br><span class="line">    BLOOM_FILTER_TYPE &#x3D; ROW</span><br><span class="line">    BULKLOAD_SOURCE_TASK &#x3D; attempt_1592722718442_0004_r_000000_0</span><br><span class="line">    BULKLOAD_TIMESTAMP &#x3D; 1592841004789</span><br><span class="line">    DELETE_FAMILY_COUNT &#x3D; 0</span><br><span class="line">    EARLIEST_PUT_TS &#x3D; 1592841003333</span><br><span class="line">    EXCLUDE_FROM_MINOR_COMPACTION &#x3D; false</span><br><span class="line">    KEY_VALUE_VERSION &#x3D; 1</span><br><span class="line">    LAST_BLOOM_KEY &#x3D; row102</span><br><span class="line">    MAJOR_COMPACTION_KEY &#x3D; true</span><br><span class="line">    MAX_MEMSTORE_TS_KEY &#x3D; 0</span><br><span class="line">    TIMERANGE &#x3D; 1592841003333....1592841003333</span><br><span class="line">    hfile.AVG_KEY_LEN &#x3D; 23</span><br><span class="line">    hfile.AVG_VALUE_LEN &#x3D; 3</span><br><span class="line">    hfile.CREATE_TIME_TS &#x3D; 0</span><br><span class="line">    hfile.LASTKEY &#x3D; row102&#x2F;f1:name&#x2F;1592841003333&#x2F;Put&#x2F;vlen&#x3D;0&#x2F;mvcc&#x3D;0</span><br><span class="line">    hfile.MAX_TAGS_LEN &#x3D; 0</span><br><span class="line">    hfile.TAGS_COMPRESSED &#x3D; false</span><br><span class="line">Mid-key: Optional[row100&#x2F;f1:age&#x2F;1592841003333&#x2F;Put&#x2F;seqid&#x3D;0]</span><br><span class="line">Bloom filter:</span><br><span class="line">    BloomSize: 8</span><br><span class="line">    No of Keys in bloom: 3</span><br><span class="line">    Max Keys for bloom: 6</span><br><span class="line">    Percentage filled: 50%</span><br><span class="line">    Number of chunks: 1</span><br><span class="line">    Comparator: ByteArrayComparator</span><br><span class="line">Delete Family Bloom filter:</span><br><span class="line">    Not present</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="5-4-BlockCache"><a href="#5-4-BlockCache" class="headerlink" title="5.4 BlockCache"></a>5.4 BlockCache</h3><p>BlockCache是RegionServer级别的，一个RegionServer只有一个BlockCache，在RegionServer启动的时候完成初始化工作。目前为止有3种实现方案：</p>
+<ul>
+<li><strong>LRUBlockCache（默认）</strong>：将数据放入JVM Heap中</li>
+<li><strong>SlabCache</strong>：部分数据存放在堆外，可以缓解系统长事件GC</li>
+<li><strong>BucketCache</strong>：同上</li>
+</ul>
+<h2 id="六、HBase读写流程"><a href="#六、HBase读写流程" class="headerlink" title="六、HBase读写流程"></a>六、HBase读写流程</h2><h3 id="6-1-HBase写入流程"><a href="#6-1-HBase写入流程" class="headerlink" title="6.1 HBase写入流程"></a>6.1 HBase写入流程</h3><p><a href="/postImages/HBase%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/HBase%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B.png" class="lazyload"></a></p>
+<h4 id="6-1-1-客户端处理阶段"><a href="#6-1-1-客户端处理阶段" class="headerlink" title="6.1.1 客户端处理阶段"></a>6.1.1 客户端处理阶段</h4><ol>
+<li><p>用户提交put请求后，HBase客户端会将写入的数据添加到本地缓冲区中，符合一定条件（阈值大小默认2M）就会通过AsyncProcess异步批量提交。</p>
+<blockquote>
+<p><strong>注意！HBase默认设置autoflush为true，表示put请求会直接提交给服务器处理</strong>。将autoflush设置成false后，可以极大提升写入吞吐量，但是没有保护机制，如果客户端崩溃，会导致已经提交的数据丢失。</p>
+</blockquote>
+</li>
+<li><p>在提交前，HBase会在元数据表hbase:meta中根据rowkey找到它们归属的RegionServer。如果是批量请求，还会把这些rowkey按照HRegionLocation分组，不同分组的请求意味着发送到不同的RegionServer，因此每个分组对应一次RPC请求。</p>
+<p><a href="/postImages/%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B%E5%90%84%E7%BB%84%E4%BB%B6%E4%BA%A4%E4%BA%92.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B%E5%90%84%E7%BB%84%E4%BB%B6%E4%BA%A4%E4%BA%92.png" class="lazyload"></a></p>
+<ul>
+<li>首先客户端根据rowkey在元数据缓存中查找，如果能找到该rowkey所在的RegionServer和Region，就可以直接发送写入请求（携带Region信息）到目标RegionServer</li>
+<li>如果客户端缓存没有找到对应信息，那么就要去ZK集群获取hbase:mate表所在的RegionServer，然后向该RegionServer发送查询请求，在hbase:meta表中查找rowkey所在的RegionServer以及Region信息，并将结果缓存在客户端。</li>
+<li>客户端根据获得的相关元数据信息将写入请求发送给目标RegionServer。</li>
+</ul>
+</li>
+</ol>
+<h4 id="6-1-2-Region-写入阶段"><a href="#6-1-2-Region-写入阶段" class="headerlink" title="6.1.2 Region 写入阶段"></a>6.1.2 Region 写入阶段</h4><p>服务端RegionServer接受到客户端的写入请求后，首先会反序列化为put对象，然后执行各种检查。检查后，执行一系列核心操作：</p>
+<ol>
+<li><p><strong>Acquire locks</strong>：HBase中使用行锁保证对同一行数据的更新原子性。</p>
+</li>
+<li><p><strong>Update LATEST_TIMESTAMP timestamp</strong>：更新所有待写入（更新）KeyValue的时间戳为当前系统时间。</p>
+</li>
+<li><p><strong>Build WAL edit</strong>：在内存中构建WALEdit对象。（<strong>注意！这时候还没有写到HLog</strong>）</p>
+</li>
+<li><p><strong>Append WALEdit To WAL</strong>：将步骤3中构造的在内存中的WALEdit记录顺序写入HLog中，此时不需要sync（同步到HDFS）操作。</p>
+<blockquote>
+<p><strong>1. HLog持久化等级</strong></p>
+<ul>
+<li>SKIP_WAL：只写缓存，不写HLog。有数据丢失风险。</li>
+<li>ASYNC_WAL：异步将数据写入HLog日志中。</li>
+<li>SYNC_WAL：同步将数据写入日志文件中，注意数据只是写入文件系统，并没有真正落盘。还要看HDFS Flush策略。</li>
+<li>FSYNC_WAL：同步将数据写入日志文件并强制落盘。</li>
+<li>USER_DEFAULT：默认使用SYNC_WAL</li>
+</ul>
+<p><strong>2. HLog写入模型</strong></p>
+<p>HLog写入都要经过3个阶段：<strong>首先将数据写入本地缓存，然后将本地缓存写入文件系统，最后执行sync操作同步到磁盘</strong>。</p>
+<p>当前版本使用了LMAX Disruptor框架实现了无锁有界队列操作。</p>
+</blockquote>
+</li>
+<li><p><strong>Write back to MemStore</strong>：写入WAL之后，再将数据写入MemStore。</p>
+<blockquote>
+<p>MemStore使用数据结构ConcurrentSkipListMap来实际存储KeyValue。</p>
+<p>根据之前的知识可以知道HBase使用了MSLAB机制，预先申请一个大的（2M）Chunk内存，避免严重的内存碎片问题而触发的Full GC。写入的KeyValue会进行一次封装，顺序拷贝到这个Chunk中。因此MemStore写入过程可以归为3步：</p>
+<ol>
+<li>检查当前Chunk是否写满，如果写满，重新申请一个2M的Chunk</li>
+<li>将当前KeyValue在内存中重新构建，在可用Chunk的指定offset处申请内存创建一个新的KeyValue</li>
+<li>将新创建的KeyValue对象写入ConcurrentSkipListMap中。</li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>Release row locks</strong>：释放行锁。</p>
+</li>
+<li><p><strong>Sync wal</strong>：HLog真正sync到HDFS，再释放行锁之后执行sync操作是为了尽量减少持锁时间，提升写性能。<strong>如果sync失败，执行回滚操作将MemStore中已经写入的数据移除</strong>。</p>
+</li>
+<li><p><strong>结束写事务</strong>：此时该线程的更新操作才会对其他读请求可见，更新才实际生效。</p>
+</li>
+</ol>
+<h4 id="6-1-3-MemStore-Flush-阶段"><a href="#6-1-3-MemStore-Flush-阶段" class="headerlink" title="6.1.3 MemStore Flush 阶段"></a>6.1.3 MemStore Flush 阶段</h4><p>当MemStore越来越大，达到一定的条件的时候，就会触发flush操作：</p>
+<h5 id="1-触发条件"><a href="#1-触发条件" class="headerlink" title="1) 触发条件"></a>1) 触发条件</h5><ul>
+<li><p>MemStore级别限制：Region中任意一个MemStore大小达到上限（hbase.hregion.memstore.flush.size，默认128MB）</p>
+</li>
+<li><p>Region级别限制：当Region中所有MemStore的大小总和达到上限（hbase.hregion.memstore.block.multiplier * hbase.hregion.memstore.flush.size）</p>
+</li>
+<li><p>RegionServer级别限制：当RegionServer中MemStore的大小总和超过低水位阈值（hbase.regionserver.global.memstore.size.lower.limit * hbase.regionserver.global.memstore.size）开始强制执行flush，先flush MemStore最大的Region，再flush次大的。</p>
+<blockquote>
+<p>如果此时写入吞吐量依然很高，导致总MemStore大小超过高水位阈值hbase.regionserver.global.memstore.size，<strong>RegionServer会阻塞更新并强制执行flush，直至总MemStore大小下降到低水位阈值</strong>。</p>
+</blockquote>
+</li>
+<li><p>当一个RegionServer中HLog数量达到上限（hbase.regionserver.maxlogs）</p>
+</li>
+<li><p>HBase定期刷新MemStore（默认周期1小时，确保MemStore不会长时间没有持久化）</p>
+</li>
+<li><p>手动执行flush（可以通过shell命令：flush ‘tablename’ 或者 flush ‘regionname’分别对表和Region进行flush）</p>
+</li>
+</ul>
+<blockquote>
+<p>一般情况下flush不会对系统有太大的影响，只有RegionServe级别的会阻塞所有落在该RegionServer上的写入操作。直到MemStore数据量降低到配置阈值内。</p>
+</blockquote>
+<h5 id="2-执行流程"><a href="#2-执行流程" class="headerlink" title="2) 执行流程"></a>2) 执行流程</h5><p>为了减少flush过程对读写的影响（写数据的时候会写到MemStore，而再flush的时候数据不能改变），HBase采用了类似于两个阶段提交的方式，将flush过程分为3个阶段：</p>
+<ol>
+<li><p><strong>prepare阶段</strong>：遍历当前Region中所有的MemStore，将MemStore中当前数据集CellSkipListSet（内部实现采用ConcurrentSkipListMap）做一个快照snapshot，然后再新建一个CellSkipListSet接受新的数据写入（即5.2中说的AB两个跳跃表）。</p>
+</li>
+<li><p><strong>flush阶段</strong>：遍历所有MemStore，将prepare阶段生成的snapshot持久化为临时文件（<strong>第3点介绍具体流程</strong>），这个过程涉及磁盘IO操作，因此相对耗时。</p>
+</li>
+<li><p><strong>commit阶段</strong>：遍历所有的MemStore，将flush阶段生成的临时文件移到指定的ColumnFamily目录下（应该就是HDFS目录 /hbase/data/命名空间/表名/region名/列族名 下），针对HFile生成对应的storeflie(实际上StoreFile就是对HFile做了轻量级包装，即StoreFile底层就是HFile)和Reader，把storefile添加到Store的storefiles列表中，最后再清空prepare阶段生成的snapshot。</p>
+</li>
+</ol>
+<h5 id="3-HFile-文件构建流程"><a href="#3-HFile-文件构建流程" class="headerlink" title="3) HFile 文件构建流程"></a>3) HFile 文件构建流程</h5><p>HBase执行flush操作之后将内存中的数据按照特定格式写成HFile文件，<strong>HFile文件中各个Block部分的构建流程</strong>如下：（文件结构在5.3中已经说明）</p>
+<ol>
+<li><p><strong>构建“Scanned Block”部分</strong></p>
+<ol>
+<li><p>MemStore执行flush，首先新建一个Scanner，这个Scanner从存储KV数据的CellSkipListSet中<strong>依次从小到大读出每个cell（KeyValue）</strong>。</p>
+</li>
+<li><p>appendGrneralBloomFilter：在内存中使用布隆过滤器算法构建Bloom Block，下文也称为（Bloom Chunk）。</p>
+</li>
+<li><p>appendDeleteFamilyBloomFilter：针对标记为”DeleteFamily”或者”DeleteFamilyVersion”的cell，在内存中使用布隆过滤器算法构建Bloom Block，基本流程和appendGrneralBloomFilter相同。</p>
+</li>
+<li><p>（HFile.Write）writer.append：将cell写入Data Block中，这是<strong>HFile构建的核心</strong>。</p>
+</li>
+</ol>
+</li>
+<li><p><strong>构建 Bloom Block</strong></p>
+<p>布隆过滤器内存中维护了多个称为chunk（即Block，具体实现叫Chunk）的数据结构，一个chunk的组成：</p>
+<ul>
+<li><strong>一块连续的内存区域</strong>，主要存储一个特定的数组。默认数组中所有位都是0。对于row类型的布隆过滤器，cell进来之后会对其rowkey执行hash映射，将其映射到位数组某一位，并修改值为1。</li>
+<li><strong>fistkey</strong>，第一个写入该chunk的cell的rowkey，用来构建Bloom Index Block（可以看5.3.3第3点图中左边红色部分）。</li>
+</ul>
+<blockquote>
+<p>cell写进来之后，首先判断当前chunk是否已经写满（chunk个数是否超过阈值）。如果超过阈值，会重新申请一个新的chunk，并将当前chunk加入ready chunks集合中。如果没有写满，则根据布隆过滤器算法使用多个hash函数分别对cell的rowkey进行映射，并修改值为1。</p>
+</blockquote>
+</li>
+<li><p><strong>构建 Data Block</strong></p>
+<p>一个cell在内存中生成对应的布隆过滤器信息（即，位数组置1）之后就会写入DataBlock，写入过程分两步：</p>
+<ol>
+<li><p><strong>Encoding Key Value：使用特定编码对cell进行编码处理。</strong></p>
+<blockquote>
+<p>编码思路：根据上一个KeyValue和当前KeyValue比较之后取delta（即，分别对rowkey、column family、 column进行比较然后取delta）。假如前后两个前后两个KeyValue的rowkey相同，当前rowkey就可以用一个特定的flag标记，不需要完整地存储整个rowkey。这样在某些场景下可以极大减少存储空间。</p>
+</blockquote>
+</li>
+<li><p><strong>将编码后的KeyValue写入DataOutputStream</strong></p>
+<blockquote>
+<p>随着cell不断写入，当前Data Block会因为大小超过阈值（默认64KB）而写满。写满后Data Block会将DataOutputStream的数据flush到文件，该Data Block此时完成落盘。</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><p><strong>构建 Leaf Index Block</strong></p>
+<p>Data Block落盘之后会立刻在内存中构建一个Leaf Index Entry对象，并加入到当前Leaf Index Block中。Leaf Index Entry对象有三个重要字段：</p>
+<ul>
+<li><strong>firstKey</strong>：落盘Data Block的第一个key。用来作为索引节点的实际内容。</li>
+<li><strong>blockOffset</strong>：落盘Data Block在HFile文件中的偏移量。用于定位Data Block。</li>
+<li><strong>blockDataSize</strong>：落盘Data Block的大小。用于定位之后加载数据。</li>
+</ul>
+<blockquote>
+<p>同样的，Leaf Index Block随着Entry的不断写入慢慢变大，一旦超过阈值（64KB），就要flush到文件执行落盘。需要注意的是，Leaf Index Block落盘是追加写入文件的，所以会形成HFile中Data Block和Leaf Index Block交叉出现的原因。</p>
+<p>和Data Block一样，在Leaf Index Block落盘之后，还需要往上构建Root Index Entry并写入Root Index Block，形成索引树的根节点。但是根节点没有追加写入到”Scanned block”部分，而是最后写入”load-on-open”。</p>
+</blockquote>
+</li>
+<li><p><strong>构建 Bloom Block Index</strong></p>
+<p>完成Data Block落盘还有一件非常重要的事情：检查是否有已经写满的Bloom Block。如果有，将该Bloom Block追加写入文件（在第二步中只是把chunk加到一个集合中），在内存中构建一个Bloom Index Entry并写入Bloom Index Block。</p>
+</li>
+<li><p><strong>基本流程总结</strong></p>
+<p>flush阶段生成的HFile和Compaction阶段生成的HFile流程完全相同，不同的是flush读取的MemStore中的KeyValue，而Compaction读取的是多个HFile中的KeyValue写成一个大的HFile，即KeyValue来源不同。</p>
+<p>首先<strong>从MemStore中获取KeyValue</strong>，然后根据KeyValue通过布隆过滤器算法<strong>生成Bloom Block</strong>加到ready chunks集合中，然后<strong>写入Data Block</strong>。一旦Data Block写满，就要将其<strong>落盘</strong>，同时构造一个索引<strong>Leaf Index Entry</strong> 加到 <strong>Leaf Index Block</strong>中，直到写满<strong>落盘</strong>（追加到Data Block之后）时，再构造一个索引<strong>Root Index Entry</strong> 加到 <strong>Root Index Block</strong>（后期写入”load-on-open”）。紧接着Data Block落盘，在raedy chunks中的chunk也要落盘（即，<strong>Bloom Block落盘</strong>），也是追加写入的。然后构建该Bloom Block的索引 <strong>Bloom Index Entry</strong> 加到 <strong>Bloom Index Block</strong>。 </p>
+<p>实际上，每写入一个KeyValue就会动态的去构建“Scanned Block”部分，等所有KeyValue都写入完成之后再再静态地构建“Non-scanned Block”部分、“Load on open”部分以及“Trailer”部分。</p>
+</li>
+</ol>
+<h3 id="6-2-BulkLoad-功能"><a href="#6-2-BulkLoad-功能" class="headerlink" title="6.2 BulkLoad 功能"></a>6.2 BulkLoad 功能</h3><p>有这么一个场景：</p>
+<p>用户数据位于HDFS中，业务需要定期将这部分数据海量导入HBase系统，以执行随机查询更新操作。这种场景如果调用API操作的话，会给RegionServer带来极大的压力。</p>
+<ul>
+<li>RegionServer频繁flush，不断compact、split。影响稳定性。</li>
+<li>RegionServer频繁GC。</li>
+<li>消耗大量CPU、带宽、内存、IO资源，与其他资源产生竞争。</li>
+<li>某些场景下，比如平均KV大小比较大，会耗尽RegionServer的处理线程，导致集群阻塞。</li>
+</ul>
+<p>在4.4.3中提到过。bulk load：直接将带写入数据生成HFile，直接加载到对应的Region下的CF内。在HBase服务器端没有任何RPC只有load HFile时会调用，是一种完全离线的快速写入方式。</p>
+<h4 id="6-2-1-核心流程"><a href="#6-2-1-核心流程" class="headerlink" title="6.2.1 核心流程"></a>6.2.1 核心流程</h4><ol>
+<li><p>HFile生成阶段</p>
+<p>这个阶段会运行一个MapReduce任务，mapper需要自己来实现。将HDFS文件中的数据读出来组装成一个复合KV，其中Key是rorkey，Value可以是KeyValue对象、Put对象甚至是Delete对象；reducer由HBase负责，通过HFileOutputFormat2.configureIncrementalLoad()进行配置，这个方法负责：</p>
+<ul>
+<li>根据表信息配置一个全局有序的partitioner</li>
+<li>将partitioner文件上传到HDFS集群并写入DistributedCache</li>
+<li>设置 reduce task 的个数为目标Region的个数</li>
+<li>设置输出key/value类满足HFileOutputFormat所规定的格式要求</li>
+<li>根据类型设置reducer执行相应的排序（KeyValueSortReducer或者PutSortReducer）</li>
+</ul>
+<p><strong>这个阶段会为每个Region生成一个对应的HFile文件</strong></p>
+</li>
+<li><p>HFile导入阶段</p>
+<p>在HFile准备就绪后，就可以使用工具completebulkload将HFile加载到在线HBase集群。completebulkload工具负责：</p>
+<ul>
+<li>依次检查第一步生成的所有HFile文件，将每个文件映射到对应的Region</li>
+<li>将HFile文件移动到对应Region所在的HDFS文件目录下</li>
+<li>告知Region对应的RegionServer，加载HFile文件对外提供服务</li>
+</ul>
+</li>
+</ol>
+<p><a href="/postImages/Bulkload%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/Bulkload%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.png" class="lazyload"></a></p>
+<h4 id="6-2-2-基础案例"><a href="#6-2-2-基础案例" class="headerlink" title="6.2.2 基础案例"></a>6.2.2 基础案例</h4><ol>
+<li><p><strong>生成HDFS上的数据源</strong></p>
+<p>BulkLoad的数据源一定是在HDFS上的文件！如果是其他地方的数据要转换成HDFS上的文件。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 首先我们创建一个文件上传到HDFS中</span><br><span class="line">[BulkLoadData.txt]</span><br><span class="line">100 zhangsan 16</span><br><span class="line">101 wangwu 11</span><br><span class="line">102 lisi 30</span><br><span class="line"></span><br><span class="line">$hdfs dfs -mkdir &#x2F;MRData</span><br><span class="line">$hdfs dfs -put BulkLoadData.txt &#x2F;MRData&#x2F;BulkLoadData.txt</span><br><span class="line">$hdfs dfs -ls &#x2F;MRData&#x2F;</span><br><span class="line">Found 1 items</span><br><span class="line">-rw-r--r--   3 hadoop supergroup         42 2020-06-22 22:08 &#x2F;MRData&#x2F;BulkLoadData.txt</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p><strong>使用MR Job Driver程序将源文件转化为HFile</strong></p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">java</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.TableName;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Connection;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Put;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Table;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.io.ImmutableBytesWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.LongWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.TextInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.util.GenericOptionsParser;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * BulkLoadDemo class</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> BoWenWang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020/6/22 22:12</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BulkLoadDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="comment">// 获取运行参数(其中至少一个输入路径以及一个输出路径)</span></span><br><span class="line">        Configuration conf = HBaseConfiguration.create();</span><br><span class="line">        String[] remainingArgs = (<span class="keyword">new</span> GenericOptionsParser(conf, args)).getRemainingArgs();</span><br><span class="line">        <span class="keyword">if</span> (remainingArgs.length &lt; <span class="number">2</span>) &#123;</span><br><span class="line">            System.err.println(<span class="string">"Usage: BulkLoadDemo &lt;in&gt; &lt;out&gt;"</span>);</span><br><span class="line">            System.exit(<span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// HBase</span></span><br><span class="line">        Connection connection = ConnectionFactory.createConnection(conf);</span><br><span class="line">        Table table = connection.getTable(TableName.valueOf(<span class="string">"ns1:t1"</span>));</span><br><span class="line">        <span class="comment">// 创建Job任务</span></span><br><span class="line">        Job job = Job.getInstance(conf, <span class="string">"BulkLoadDemo"</span>);</span><br><span class="line">        <span class="comment">// 设置Jar包运行的类</span></span><br><span class="line">        job.setJarByClass(BulkLoadDemo<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="comment">// （核心）设置Map</span></span><br><span class="line">        job.setMapperClass(BulkLoadMapper<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setMapOutputKeyClass(ImmutableBytesWritable<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setMapOutputValueClass(Put<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="comment">// （核心）通过HFileOutputFormat2.configureIncrementalLoad对Reduce进行配置</span></span><br><span class="line">        HFileOutputFormat2.configureIncrementalLoad(job, table, connection.getRegionLocator(TableName.valueOf(<span class="string">"ns1:t1"</span>)));</span><br><span class="line">        <span class="comment">// 设置输入输出数据类型</span></span><br><span class="line">        job.setInputFormatClass(TextInputFormat<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        job.setOutputFormatClass(HFileOutputFormat2<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="comment">// 指定数据输入、输出路径</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; remainingArgs.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">            FileInputFormat.addInputPath(job, <span class="keyword">new</span> Path(remainingArgs[i]));</span><br><span class="line">        &#125;</span><br><span class="line">        FileOutputFormat.setOutputPath(job, <span class="keyword">new</span> Path(remainingArgs[remainingArgs.length - <span class="number">1</span>]));</span><br><span class="line">        <span class="comment">// 将job提交给集群运行</span></span><br><span class="line">        System.exit(job.waitForCompletion(<span class="keyword">true</span>) ? <span class="number">0</span> : <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Mapper程序</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BulkLoadMapper</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">LongWritable</span>, <span class="title">Text</span>, <span class="title">ImmutableBytesWritable</span>, <span class="title">Put</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] ID_QUALIFIER = <span class="string">"id"</span>.getBytes();</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] NAME_QUALIFIER = <span class="string">"name"</span>.getBytes();</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] AGE_QUALIFIER = <span class="string">"age"</span>.getBytes();</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] COLUMN_FAMILY = <span class="string">"f1"</span>.getBytes();</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(LongWritable key, Text value, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">            String line = value.toString();</span><br><span class="line">            String[] fields = line.split(<span class="string">" "</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">byte</span>[] rowKey = (<span class="string">"row"</span> + fields[<span class="number">0</span>]).getBytes();</span><br><span class="line">            <span class="keyword">byte</span>[] id = fields[<span class="number">0</span>].getBytes();</span><br><span class="line">            <span class="keyword">byte</span>[] name = fields[<span class="number">1</span>].getBytes();</span><br><span class="line">            <span class="keyword">byte</span>[] age = fields[<span class="number">2</span>].getBytes();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 存储的数据</span></span><br><span class="line">            <span class="keyword">final</span> ImmutableBytesWritable putRowKey = <span class="keyword">new</span> ImmutableBytesWritable(rowKey);</span><br><span class="line">            Put put = <span class="keyword">new</span> Put(rowKey).addColumn(COLUMN_FAMILY, ID_QUALIFIER, id)</span><br><span class="line">                    .addColumn(COLUMN_FAMILY, NAME_QUALIFIER, name)</span><br><span class="line">                    .addColumn(COLUMN_FAMILY, AGE_QUALIFIER, age);</span><br><span class="line"></span><br><span class="line">            context.write(putRowKey, put);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>然后打包jar到集群上运行：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hadoop jar HBase2-1.0-SNAPSHOT.jar BulkLoadDemo hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData&#x2F;out</span><br></pre></td></tr></table></figure></div>
+
+<p>然后查看结果：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hdfs dfs -ls -R &#x2F;MRData</span><br><span class="line">-rw-r--r--   3 hadoop supergroup         42 2020-06-22 22:08 &#x2F;MRData&#x2F;BulkLoadData.txt</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-22 23:50 &#x2F;MRData&#x2F;out</span><br><span class="line">-rw-r--r--   3 hadoop supergroup          0 2020-06-22 23:50 &#x2F;MRData&#x2F;out&#x2F;_SUCCESS</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2020-06-22 23:50 &#x2F;MRData&#x2F;out&#x2F;f1</span><br><span class="line">-rw-r--r--   3 hadoop supergroup       5319 2020-06-22 23:50 &#x2F;MRData&#x2F;out&#x2F;f1&#x2F;5314cd3465004280a7ad779dbcbe6a2f</span><br></pre></td></tr></table></figure></div>
+
+
+
+</li>
+</ol>
+<blockquote>
+<p><strong>注意！可能会报错NoClassDefFoundError: org/apache/hadoop/hbase/HBaseConfiguration，原因是没有导入hbase相关的包。因此要在hadoop-env.sh中添加如下内容：</strong></p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 改成你自己对应的hbase目录</span><br><span class="line">export HADOOP_CLASSPATH&#x3D;$HADOOP_CLASSPATH:&#x2F;home&#x2F;hadoop&#x2F;apps&#x2F;hbase&#x2F;lib&#x2F;*</span><br></pre></td></tr></table></figure></div>
+</blockquote>
+<ol start="3">
+<li><p><strong>将生成的HFile加载到HBase</strong></p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$hadoop jar hbase-mapreduce-2.2.4.jar completebulkload hdfs:&#x2F;&#x2F;mycluster&#x2F;MRData&#x2F;out ns1:t1</span><br></pre></td></tr></table></figure></div>
+
+<blockquote>
+<p>这里要注意！可能是书上使用的HBase和我使用的不一样，导致命令失效，这个是采用HBase官网上找的命令。为此写了一篇博文：<a href="https://blog.csdn.net/weixin_42167895/article/details/106913686" target="_blank" rel="noopener">https://blog.csdn.net/weixin_42167895/article/details/106913686</a></p>
+<p>原书上命令如下：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ bin&#x2F;hbase org.apache.hadoop.hbase.tool.LoadIncrementalHFiles &lt;hdfs:&#x2F;&#x2F;storefileoutput&gt; &lt;tablename&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>另一种是</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">Code</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HADOOP_CLASSPATH&#x3D;&#39;$&#123;HBASE_HOME&#125;&#x2F;bin&#x2F;hbase classpath&#39; $&#123;HADOOP_HOME&#125;&#x2F;bin&#x2F;hadoop jar $&#123;HBASE_HOME&#125;&#x2F;hbase-server-VERSION.jar completebulkload &lt;hdfs:&#x2F;&#x2F;storefileoutput&gt; &lt;tablename&gt;</span><br></pre></td></tr></table></figure></div>
+</blockquote>
+</li>
+<li><p>scan 查看表内容确实导入成功</p>
+</li>
+</ol>
+<h3 id="6-3-HBase读取流程"><a href="#6-3-HBase读取流程" class="headerlink" title="6.3 HBase读取流程"></a>6.3 HBase读取流程</h3><h4 id="6-3-1-Client-Server读取交互逻辑"><a href="#6-3-1-Client-Server读取交互逻辑" class="headerlink" title="6.3.1 Client-Server读取交互逻辑"></a>6.3.1 Client-Server读取交互逻辑</h4><p>和6.1写入阶段客户端处理方式一样。Client会首先从ZooKeeper中获取元数据hbase:meta表所在的RegionServer，然后根据待读写rowkey发送请求到元数据所在RegionServer，获取数据所在的目标RegionServer和Region（并存储到本地缓存），最后将请求进行封装发送到目标RegionServer进行处理。<strong>（参考6.1.1和4.3.1 Scan流程）</strong></p>
+<h4 id="6-3-2-Server端Scan框架体系"><a href="#6-3-2-Server端Scan框架体系" class="headerlink" title="6.3.2 Server端Scan框架体系"></a>6.3.2 Server端Scan框架体系</h4><p>从宏观角度看，依次Scan可以能会扫描一张表的多个Region，对于这种扫描，<strong>客户端</strong>会根据hbase:meta元数据将扫描的起始区间进行划分，切分成多个相互独立的查询子区间，每个子区间对应一个Regin。</p>
+<blockquote>
+<p>比如：当前表有3个Region，区间分别为[“a”, “c”)，[“c”, “e”)，[“e”, “g”)，客户端设置的scan扫描区间为[“b”, “f”)。因为扫描跨越了多个Region，所以需要进行切分，切分后的区间[“b”, “c”)，[“c”, “e”)，[“e”, “f”)</p>
+</blockquote>
+<p>HBase种每个Region都是一个独立的存储引擎，因此客户端可以将每个子区间请求分别发送给对应的Region进行处理。</p>
+<p>RegionServer接收到客户端的get/scan请求后：</p>
+<p><a href="/postImages/Scanner%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/Scanner%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png" class="lazyload"></a></p>
+<h5 id="1-构建Scanner-Iterator体系"><a href="#1-构建Scanner-Iterator体系" class="headerlink" title="1) 构建Scanner Iterator体系"></a>1) 构建Scanner Iterator体系</h5><ul>
+<li><strong>一个RegionScanner由多个StoreScanner构成</strong>。一张表由多少个列族组成，就有多少个StoreScanner，每个StoreScanner负责对应Store的数据查找。（即图上步骤1）</li>
+<li><strong>一个StoreScanner由MemStore和StoreFileScanner构成</strong>。每个Store的数据由内存中的MemStore和磁盘上的StoreFile文件组成。因此分别为两者创建Scanner。（步骤2）</li>
+</ul>
+<blockquote>
+<p>注意！RegionScanner和StoreScanner并不负责实际查找操作，他们更多是承当组织调度任务，负责KeyValue最终查找的操作的StoreFileScanner和MemStoreScanner。</p>
+</blockquote>
+<h5 id="2-过滤淘汰部分部不满足查询条件的Scanner"><a href="#2-过滤淘汰部分部不满足查询条件的Scanner" class="headerlink" title="2) 过滤淘汰部分部不满足查询条件的Scanner"></a>2) 过滤淘汰部分部不满足查询条件的Scanner</h5><p>StoreCanner为每一个HFile构建一个对应的StoreFileScanner，需要注意的是，并不是每一个HFile都包含用户想要查找的KeyValue。相反，可以用过一些查询条件过滤掉很多肯定不存在待查找KeyValue的HFile（步骤3，其中StoreFile3检查不通过而被过滤）。主要过滤策略有：</p>
+<ul>
+<li><p><strong>Rowkey Range过滤</strong></p>
+<p>因为StoreFile中所有KeyValue数据都是有序排列的，所以如果待检索范围[startkey, stopkey]与文件起始key范围[firstkey, lastkey]没有交集，如stoprow&lt;firstkey或者startkey&gt;lastkey，就可以过滤掉该StoreFile。</p>
+</li>
+<li><p><strong>Time Range过滤</strong></p>
+<p>StoreFile中元数据有一个关于该File的TimeRange属性，和上面一样，如果范围没有交集，过滤。</p>
+</li>
+<li><p><strong>布隆过滤器</strong></p>
+<p>在5.3.3第三点和6.1.3第三点中已经知道了结构。系统根据待检索的rowkey获取对应的Bloom Block并加载到内存（通常情况下热点Bloom Block会常驻内存），再用hash函数对待检索rowkey进行hash，根据hash后的结果再布隆过滤器数据中进行寻址，即可确定待检索rowkey是否一定不存在于该HFile中。</p>
+</li>
+</ul>
+<h5 id="3-每个Scanner-seek-到-startKey"><a href="#3-每个Scanner-seek-到-startKey" class="headerlink" title="3) 每个Scanner seek 到 startKey"></a>3) 每个Scanner seek 到 startKey</h5><p>在每个HFile文件（或MemStoer）中seek扫描起始点startKey。如果没有HFile中没有找到startKey，则seek下一个KeyValue地址。（步骤4）</p>
+<p>在一个HFile文件中seek待查找的key，该过程可以分解为4步操作：</p>
+<ol>
+<li><p><strong>根据HFile索引树定位目标Block</strong></p>
+<p>HRegionServer打开HFile时会将所有HFile的<strong>Trailer部分和Load-on-open部分加载到内存</strong>。其中Load-on-open部分有一个非常重要的Root Index Block，索引树的根节点。</p>
+<p><a href="/postImages/IndexEntry.png" data-fancybox="group" data-caption="avatar" class="fancybox"><img alt="avatar" title="avatar" data-src="/postImages/IndexEntry.png" class="lazyload"></a></p>
+<p>BlockKey是整个Block的第一个rowkey。（索引树流程图在5.3.3 第4点，红虚线箭头表示一次查询索引过程。第一次根据rowkey二分查找，找到区间的第一个rowkey，这个root index block常驻内存所以很快，然后根据偏移量和大小，把对应中间节点索引Block载到内存。然后在该Block中通过二分查找定位范围，指向叶子节点索引Block加载到内存，同样的再进行定位，最后指向<strong>Data Block，加载到内存</strong>。而Data Block中存放的都是KeyValue，所以通过遍历的方式找到对应的KeyValue，完成seek。）</p>
+<blockquote>
+<p>这里我有一个理解（重点）：就是在上面过滤完Scanenr后，每一个Scanner对应一个HFile。首先它会吧HFile的Trailer部分和Load-on-open部分加载到内存，以便获取到索引树。然后根据索引树去查找rowkey所在的Data Block，获取对应的BlockOffset和BlockDataSize。然后利用这些信息先去BlockCache里面看有没有DataBlock的缓存，如果有直接用（即下面的第二点）。如果没有就要去HDFS文件中找（即下面的第三点，因为数据都是放在HDFS上的），找到后加载到内存并缓存到BlockCache里。然后从Block中遍历KeyValue（即下面第四点）。<strong>因此第一点是主流程，剩下的3点只是条件分支，下面第3点有一个总体的流程，和这个描述差不多。</strong></p>
+</blockquote>
+</li>
+<li><p><strong>BlockCache 中检索目标Block</strong></p>
+<p><strong>Block缓存到BlockCache之后会构建一个Map，Map的Key是BlockKey,Value是Block在内存中的地址</strong>。其中BlockKey由两部分构成——HFile名称以及Block在HFile中的偏移量。很显然，BlockKey是全局唯一的。根据BlockKey可以获取该Block在BlockCache中内存位置（即通过Map），然后直接加载出该Block对象。如果Block在BlockCache中没有找到待查Block，就需要去HDFS文件中查找（即，缓存中没有就要去磁盘上找）。</p>
+</li>
+<li><p><strong>HDFS文件中检索目标Block</strong></p>
+<p>在上文中说到根据文件索引提供的BlockOffset以及BlockDataSize这两个元素可以在HDSF上读取到对应的DataBlock内容。这个阶段HBase下发命令给HDFS，HDFS执行真正的Data Block查找工作。</p>
+<p><strong>HBase阶段</strong></p>
+<ol>
+<li>根据HFile中Block索引信息定位给定KV所在的DataBlock的基本信息：BlockOffset和BlockDataSize</li>
+<li>根据HFile以及BlockOffset和BlockDataSize在BlockCache中查找是否存在，如果在直接返回，否则在HDFS中进行文件查找</li>
+<li>调用FSDataInputStream(HFile文件打开后HBase就会为该文件建议一个输入流，后续该文件的所有读操作都会使用这个全局的FSDataInputStream)，返回该文件偏移量为BlcokOffset，数据量为BlockDataSize大小的数据</li>
+</ol>
+<p><strong>HDFS-NameNode阶段</strong></p>
+<ol>
+<li><p>NameNode根据文件返回属于该文件的所有HDFS Block列表，客户端（这里的客户端是指HBase客户端，调用HDFS的API进行读取数据）可以将HDFSBlock列表进行缓存。</p>
+<blockquote>
+<p>这里要说明一下，在HDFS中，文件被切分为多个Block（这里可以理解为一个HFile被分割成很多个Block存在磁盘上）。这里的HDFSBlock列表，也就相当于是多个HDFSBlock组合成一个HFile。</p>
+</blockquote>
+</li>
+<li><p>遍历HDFSBlock列表，根据HDFSBlock元数据以及HBaseBlockOffset、HBaseBlockDataSize确定待查找HBase Block所属的HDFSBlock。</p>
+<blockquote>
+<p>因为HFile中的Block存在于HDFSBlock列表中的部分HDFSBlock上，并不是所有HDFSBlock都有需要的数据。</p>
+<p>NameNode上会存储数据文件与这些HDFSBlock的对应关系。</p>
+</blockquote>
+</li>
+<li><p>定位到HDFSBlock之后，再在NameNode中查找HDFSBlock都在哪些DateNode上，根据一定的规则选择最优的DateNode（本地DN最优）</p>
+<blockquote>
+<p>NameNode存放的只是元数据信息，真正的数据是放在DataNode上的。</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>HDFS-DataNode阶段</strong></p>
+<ol>
+<li><p>同选定DN建立通信，传进HDFSBlockId、数据在该Block中偏移量以及数据量大小</p>
+</li>
+<li><p>DN会在该HDFSBlock中seek到指定偏移量，并从磁盘读取指定大小的数据返回。</p>
+<blockquote>
+<p>注意：ND不会加载出整个HDFSBlock数据（128M）</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>磁盘阶段</strong></p>
+<p>HDFS读取磁盘数据是按照磁盘最小IO单位（4K）进行读取，直至读取出完整的64K数据。</p>
+</li>
+<li><p><strong>从Block中读取待查找KeyValue</strong></p>
+<p>HFile Block由KeyValue（由小到大依次存储）构成，但这些KeyValue并不是固定长度的，只能遍历扫描查找。</p>
+</li>
+</ol>
+<h5 id="4-KeyValueScanner合并构建最小堆"><a href="#4-KeyValueScanner合并构建最小堆" class="headerlink" title="4) KeyValueScanner合并构建最小堆"></a>4) KeyValueScanner合并构建最小堆</h5><p>将该Store中的所有StoreFileScanner和MemStoreScanner合并形成一个heap（最小堆）。最小堆管理Scanner可以保证取出来的KeyValue都是最小的，保证有序。（步骤5）</p>
+<h5 id="5-执行next函数获取KeyValue并对其进行条件过滤"><a href="#5-执行next函数获取KeyValue并对其进行条件过滤" class="headerlink" title="5) 执行next函数获取KeyValue并对其进行条件过滤"></a>5) 执行next函数获取KeyValue并对其进行条件过滤</h5><p>经过上述Scanner体系的构建后，此时从小到大的KeyValue已经可以由KeyValueScanner获得，但是还要进一步检查，以及是否满足用户设定的过滤条件：</p>
+<ol>
+<li>检查该KeyValue的<strong>KeyType</strong>是否是Deleted/DeletedColumn/DeletedFamily等，如果是，则直接忽略该列所有其他版本，跳到下一列（列族）。</li>
+<li>检查该KeyValue的<strong>Timastamp</strong>是否在用户设定的Timestamp Range范围。</li>
+<li>检查该KeyValue是否满足用户设置的各种<strong>filer过滤器</strong>。</li>
+<li>检查该KeyValue是否满足用户查询中设定的<strong>版本数</strong></li>
+</ol>
+<p>过滤完之后，返回给用户数据。每次返回多少数据还要看用户设置的参数。可以看4.3.1的内容。</p>
+<h2 id="七、Compaction-实现"><a href="#七、Compaction-实现" class="headerlink" title="七、Compaction 实现"></a>七、Compaction 实现</h2><p>待续。。。</p>
+]]></content>
+      <categories>
+        <category>大数据</category>
+        <category>HBase</category>
+      </categories>
+      <tags>
+        <tag>HBase</tag>
       </tags>
   </entry>
 </search>
